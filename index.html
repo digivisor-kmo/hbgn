@@ -7,6 +7,9 @@
 <meta name="theme-color" content="#000000">
 <link rel="canonical" href="https://hbgn.be/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preload" as="image" href="/assets/lig.jpg" fetchpriority="high">
 <meta name="description" content="Halloween Boardgame Night 2026. Zaterdag 7 november, Kerk Minnestraat Lebbeke, van 18:00 tot ongeveer 24:00. Gratis inkom. Inschrijven voor D&amp;D, Magic en Atmosfear.">
 <meta property="og:type" content="website">
@@ -660,12 +663,20 @@ dialog > p{margin:0;padding:1rem 1.7rem 1.7rem;text-align:right}
 /* ================= partners ================= */
 .partnerrij{list-style:none;padding:0;margin:0;
   display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:.7rem}
-.partnerrij li{border:1px solid var(--paars-diep);background:rgba(11,5,18,.6);
-  color:var(--grijs);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-  display:grid;place-items:center;aspect-ratio:3/2;
-  transition:border-color .2s ease,background .2s ease,transform .2s ease}
-.partnerrij li:hover{border-color:var(--groen);background:rgba(74,184,101,.1);
-  transform:translateY(-.25rem) rotate(-1deg)}
+.partnerrij{grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));max-width:44rem;gap:1rem}
+.partnerrij li{position:relative;border:1px dashed rgba(146,56,230,.45);
+  background:rgba(11,5,18,.6);aspect-ratio:3/2;overflow:hidden;
+  display:grid;place-content:center;gap:.5rem;text-align:center;padding:.8rem;
+  transition:border-color .25s ease,background .25s ease,transform .25s ease}
+.partnerrij li:hover{border-color:var(--groen);background:rgba(74,184,101,.08);
+  transform:translateY(-.3rem) rotate(-1deg)}
+.vraagteken{font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:clamp(2.2rem,5vw,3rem);line-height:.9;color:var(--paars);
+  text-shadow:0 0 1.6rem rgba(146,56,230,.5);
+  transition:color .25s ease,text-shadow .25s ease}
+.partnerrij li:hover .vraagteken{color:var(--groen);text-shadow:0 0 2rem rgba(74,184,101,.7)}
+.partnernaam{font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grijs)}
 .partner-onder{margin:1.3rem 0 0;font-size:.85rem;color:var(--grijs)}
 .partner-onder a{color:var(--paars-op)}
 
@@ -854,10 +865,8 @@ footer a:hover{color:var(--groen-op)}
 
 /* ---- het logo van LAB, klein en centraal ---- */
 .lab{position:absolute;top:clamp(1.4rem,3.4vw,2.6rem);left:50%;translate:-50% 0;z-index:4;
-  width:clamp(3rem,5.5vw,4.3rem);opacity:.72;
-  filter:drop-shadow(0 .2em .8rem rgba(0,0,0,.9));
-  transition:opacity .3s ease,transform .3s ease}
-.lab:hover{opacity:1;transform:translate(-50%,-.12rem)}
+  width:clamp(3rem,5.5vw,4.3rem);transition:none;
+  filter:drop-shadow(0 .2em .8rem rgba(0,0,0,.9))}
 .lab svg{width:100%;height:auto}
 @media (max-width:640px){ .lab{width:2.8rem;top:.9rem} }
 
@@ -3165,6 +3174,17 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     [].forEach.call(dingen, function(el){ waarnemer.observe(el); });
   }
 
+  /* externe links openen in een nieuw venster, zodat niemand de pagina kwijtraakt */
+  function blanko(wortel){
+    [].forEach.call((wortel || document).querySelectorAll("a[href]"), function(a){
+      var h = a.getAttribute("href") || "";
+      if(/^https?:/i.test(h) && a.hostname && a.hostname !== location.hostname){
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+    });
+  }
+
   function flits(){
     if(stil) return;
     bliksem.classList.remove("flits");
@@ -3178,6 +3198,37 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       onweer();
     }, 24000 + Math.random() * 28000);
   }
+
+  /* ---------- de tab roept je terug als je wegkijkt ---------- */
+  var TITELS = [
+    "BOE!!!!",
+    "Waar ga jij naartoe???",
+    function(){
+      var d = Math.max(0, Math.ceil((AVOND - new Date()) / 86400000));
+      return d === 1 ? "Nog \u00e9\u00e9n nacht..." : "Nog " + d + " nachten...";
+    },
+    "Ik zie je nog altijd",
+    "KOM TERUG, LIJKWORMPJE",
+    "Je hebt mijn deur open laten staan",
+    "Ik wacht wel. Ik heb alle tijd."
+  ];
+  var echteTitel = document.title, titelKlok = null, titelIx = 0;
+
+  function wisselTitel(){
+    var t = TITELS[titelIx % TITELS.length];
+    document.title = typeof t === "function" ? t() : t;
+    titelIx++;
+  }
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){
+      titelIx = 0;
+      wisselTitel();
+      titelKlok = setInterval(wisselTitel, 2400);
+    } else {
+      if(titelKlok){ clearInterval(titelKlok); titelKlok = null; }
+      document.title = echteTitel;
+    }
+  });
 
   /* ---------- de aftelling ---------- */
   function aftellen(){
@@ -3411,14 +3462,16 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
           '</div>' +
 
           '<h2 class="op kop kop-later" style="--i:1">Mijn <em>partners</em></h2>' +
-          '<p class="kopfijn op" style="--i:2">Zij leveren de prijzen voor mijn tombola. Voorlopig ' +
-          'heb ik ze nog niet verbannen.</p>' +
+          '<p class="kopfijn op" style="--i:2">Waarschijnlijk drie. Zij leveren de prijzen voor ' +
+          'mijn tombola. Wie het zijn verklap ik nog niet, dat zou de pret bederven.</p>' +
           '<ul class="partnerrij">' +
-            [1,2,3,4,5].map(function(n, i){
-              return '<li class="op" style="--i:' + (i + 3) + '">logo ' + n + '</li>';
+            [1,2,3].map(function(n, i){
+              return '<li class="op" style="--i:' + (i + 3) + '">' +
+                '<span class="vraagteken" aria-hidden="true">?</span>' +
+                '<span class="partnernaam">Nog niet verklapt</span></li>';
             }).join("") +
           '</ul>' +
-          '<p class="partner-onder op" style="--i:8">Plaatshouders. Wil je partner worden? ' +
+          '<p class="partner-onder op" style="--i:6">Wil jij een van de drie zijn, of de vierde? ' +
           '<a href="' + MAIL + '">Laat het weten</a>.</p>' +
         '</div>' +
       '</section>' +
@@ -3449,6 +3502,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     tekenFormulier();
     startKlok();
     meet();
+    blanko(app);
     wekOp(app);
   }
 
@@ -3703,6 +3757,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     boeking = null; stap = 1; deelnemerIx = 0;
     if(klok){ clearInterval(klok); klok = null; }
     meet();
+    blanko(app);
     wekOp(app);
   }
 
