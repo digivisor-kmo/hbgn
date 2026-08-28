@@ -1029,7 +1029,13 @@ footer a:hover{color:var(--groen-op)}
    DE PRIVACYPAGINA
    Rustig leesbaar, wel in dezelfde nacht.
    ================================================================ */
-.juridisch{max-width:44rem;padding-block:clamp(2rem,6vw,4rem)}
+.juridisch{padding-block:clamp(2rem,6vw,4rem)}
+/* de kop blijft op leesbreedte, de rest mag de volle breedte gebruiken */
+.juridisch-kop{max-width:var(--lees);margin-bottom:clamp(2.4rem,5vw,3.4rem)}
+/* twee kolommen die zichzelf uitbalanceren, één kolom op een smal scherm */
+.juridisch-blokken{columns:29rem 2;column-gap:clamp(2.4rem,5vw,4.5rem)}
+.jblok{break-inside:avoid;margin-bottom:clamp(1.8rem,3.5vw,2.8rem)}
+.jblok > :last-child{margin-bottom:0}
 .juridisch h1{margin:0 0 clamp(1.4rem,4vw,2rem);
   font-family:Creepster,"Archivo Black",Impact,sans-serif;font-weight:400;
   font-size:clamp(2.2rem,7vw,4rem);line-height:1;color:var(--groen);
@@ -1037,11 +1043,12 @@ footer a:hover{color:var(--groen-op)}
   text-shadow:.03em .03em 0 var(--paars),0 0 3rem rgba(74,184,101,.4)}
 .juridisch h2{margin:clamp(2.2rem,5vw,3rem) 0 .9rem;
   font-size:clamp(1.1rem,2.6vw,1.4rem);padding-left:.9rem;text-shadow:none}
+.juridisch .jblok h2{margin-top:0}
 .juridisch h2::before{width:.22rem;box-shadow:none}
 .juridisch p{margin:0 0 1rem;color:var(--zacht);line-height:1.72}
 .juridisch strong{color:var(--wit)}
-.juridisch a{color:var(--groen-op);text-decoration:underline;text-underline-offset:3px}
-.juridisch a:hover{color:var(--wit)}
+.juridisch a:not(.knop){color:var(--groen-op);text-decoration:underline;text-underline-offset:3px}
+.juridisch a:not(.knop):hover{color:var(--wit)}
 .juridisch ul{margin:0 0 1.2rem;padding-left:1.2rem;color:var(--zacht);line-height:1.72}
 .juridisch li{margin-bottom:.5rem}
 .juridisch li::marker{color:var(--paars)}
@@ -1049,10 +1056,8 @@ footer a:hover{color:var(--groen-op)}
   border-left:2px solid var(--paars);padding-left:1rem}
 .datum{font-family:"Archivo Black",Arial,sans-serif;font-size:.64rem;letter-spacing:.18em;
   text-transform:uppercase;color:var(--grijs)!important;margin-bottom:0!important}
-.juridisch .knop{margin:.4rem 0 .8rem;text-decoration:none;
-  box-shadow:.28rem .28rem 0 var(--paars)}
-.juridisch .knop:hover{box-shadow:.42rem .42rem 0 var(--paars-op);
-  transform:translate(-.08rem,-.08rem);color:var(--zwart)}
+/* de knop blijft precies dezelfde als op de startpagina */
+.juridisch .knop{margin:.4rem 0 .8rem}
 .terug-boven,.terug-onder{font-family:"Archivo Black",Arial,sans-serif;font-size:.68rem;
   letter-spacing:.14em;text-transform:uppercase}
 .terug-boven{margin-bottom:clamp(1.6rem,4vw,2.4rem)!important}
