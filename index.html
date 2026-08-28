@@ -388,6 +388,20 @@ select option{background:#0B0512;color:var(--wit)}
 .ticket-antw dt{margin:0;color:var(--grijs);line-height:1.7}
 .ticket-antw dd{margin:0;color:var(--zacht);text-align:right}
 
+/* ---- chips met een regeltje uitleg eronder ---- */
+.chips-groot{display:grid;grid-template-columns:1fr;gap:.6rem}
+@media (min-width:34rem){ .chips-groot{grid-template-columns:1fr 1fr} }
+.chips-groot .chip span{padding:.85em 1em;height:100%}
+.chips-groot .chip span{font-family:"Archivo Black",Arial,sans-serif;font-size:.86rem;
+  letter-spacing:.02em;color:var(--wit);text-transform:uppercase;line-height:1.2}
+.chips-groot .chip em{display:block;margin-top:.4rem;font-style:normal;
+  font-family:Archivo,Arial,sans-serif;font-weight:400;font-size:.8rem;letter-spacing:0;
+  text-transform:none;line-height:1.45;color:var(--grijs)}
+.chips-groot .chip span:hover{transform:none;border-color:var(--paars)}
+.chips-groot .chip span:hover em{color:var(--zacht)}
+.chips-groot .chip input:checked + span{transform:none;color:var(--zwart)}
+.chips-groot .chip input:checked + span em{color:rgba(0,0,0,.72)}
+
 /* ================================================================
    SFEER EN SCROLLBELEVING
    De pagina is één donkere nacht. Elke band heeft een eigen foto
@@ -3082,9 +3096,19 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       plaatsen:"5 à 6 per tafel", kost:"Kleine toelage. Hoeveel weet ik nog niet.",
       uitleg:"Nog nooit gerold, lijkwormpje? PERFECT. Je krijgt een personage in je klamme handjes geduwd en een spelleider die je aan het handje meeneemt. Je hoeft niets te kennen en niets mee te brengen. Je gaat waarschijnlijk dood. Dat hoort zo.",
       vragen:[
-        {id:"ervaring", label:"Heb je ooit gerold?", opties:["Nooit","Één keer geprobeerd","Al een paar sessies"]},
+        {id:"ervaring", label:"Heb je ooit gerold?", opties:[
+          "Nooit, ik weet niet eens hoe die dobbelstenen werken",
+          "Ik heb het zien spelen, op Critical Role of in Stranger Things",
+          "Ik heb het één of twee keer gedaan",
+          "Al wat meer dan dat"]},
         {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]},
-        {id:"aard", label:"Wat voor type ben jij?", hint:"Mijn spelleiders zoeken hier een personage bij dat past. Kies wat het dichtst bij je komt.", opties:["De dappere","De sluwe","De vrome","De geleerde","De grappenmaker","De stille"]}
+        {id:"held", label:"Wat voor held wil je zijn?",
+         hint:"Mijn spelleiders leggen een personage voor je klaar. Kies waar je zin in hebt, kennen hoef je er niets van.",
+         groot:true, opties:[
+          {t:"De frontliner", u:"Vooraan staan, zwaard zwaaien en klappen opvangen"},
+          {t:"De magiër",     u:"Van een veilige afstand spreuken naar de vijand gooien"},
+          {t:"De sluwe",      u:"Sluipen, sloten kraken, vallen ontmantelen, raak schieten"},
+          {t:"De hoeder",     u:"Je vrienden oplappen, versterken en overeind houden"}]}
       ] },
     { id:"magic-leren", naam:"Magic leren spelen", kort:"kleine toelage", fig:"jokerkaart",
       voorWie:"Wie Magic nog niet kent", duur:"1.5 tot 2 uur",
@@ -3750,12 +3774,14 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       return '<fieldset class="naakt"><legend class="vzw">' + esc(v.label) + '</legend>' +
         '<p class="veldkop">' + esc(v.label) + '</p>' +
         (v.hint ? '<p class="fijn fijn-boven">' + esc(v.hint) + '</p>' : "") +
-        '<div class="chips">' +
+        '<div class="chips' + (v.groot ? " chips-groot" : "") + '">' +
         v.opties.map(function(o, i){
+          var tekst = o.t || o, uitleg = o.u || "";
           var id = "v-" + v.id + "-" + i;
           return '<label class="chip"><input type="radio" name="' + v.id + '" id="' + id +
-            '" value="' + esc(o) + '"' + (p.antw[v.id] === o ? " checked" : "") +
-            '><span>' + esc(o) + '</span></label>';
+            '" value="' + esc(tekst) + '"' + (p.antw[v.id] === tekst ? " checked" : "") +
+            '><span>' + esc(tekst) +
+            (uitleg ? '<em>' + esc(uitleg) + '</em>' : "") + '</span></label>';
         }).join("") + '</div></fieldset>';
     }).join("");
 
