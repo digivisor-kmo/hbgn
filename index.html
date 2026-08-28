@@ -973,6 +973,16 @@ footer a:hover{color:var(--groen-op)}
   .hero-fijn{margin-top:1.1rem}
 }
 
+/* ---- het kenmerk op de bedanktpagina ---- */
+.kenmerk{margin:0 0 2rem;padding:1.1rem 1.3rem;border:1px dashed var(--paars);
+  background:rgba(146,56,230,.08);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.66rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--grijs)}
+.kenmerk b{display:block;margin:.5rem 0 .4rem;font-size:clamp(1.1rem,3.5vw,1.5rem);
+  letter-spacing:.06em;color:var(--groen-op);font-variant-numeric:tabular-nums}
+.kenmerk span{display:block;font-family:Archivo,Arial,sans-serif;font-size:.8rem;
+  letter-spacing:0;text-transform:none;color:var(--grijs);line-height:1.6}
+
 /* ================================================================
    SNELHEID
    Wat op een telefoon duur is, gaat eruit of gaat uit. De sfeer
@@ -3857,16 +3867,79 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         '<ol class="ticket-lijst">' + lijst + '</ol>' +
       '</div>' +
       '<form id="f" novalidate>' +
+        '<p class="vzw"><label for="gastenboek">Laat dit veld leeg</label>' +
+        '<input id="gastenboek" name="gastenboek" type="text" tabindex="-1" autocomplete="off"></p>' +
+        '<p class="fout" id="fout" role="alert"></p>' +
         '<p class="acties"><button type="submit" class="hoofd">Ja, mijn Poortwachter!</button>' +
         '<button type="button" id="terug">Terug</button></p>' +
       '</form>');
 
-    document.getElementById("terug").addEventListener("click", function(){
+    var terugknop = document.getElementById("terug");
+    terugknop.addEventListener("click", function(){
       stap = 2; deelnemerIx = boeking.aantal - 1; tekenFormulier(); springNaarFormulier();
     });
     document.getElementById("f").addEventListener("submit", function(e){
       e.preventDefault();
-      location.hash = "#/bedankt";
+      verzend(e.target.querySelector('button[type="submit"]'), terugknop);
+    });
+  }
+
+  /* ---------- de inschrijving naar de server sturen ---------- */
+  var kenmerk = "";
+
+  function verzend(knop, terugknop){
+    var a = vind(boeking.act);
+    var bezig = false;
+    if(bezig) return;
+    bezig = true;
+
+    knop.disabled = true;
+    terugknop.disabled = true;
+    var oudeTekst = knop.textContent;
+    knop.textContent = "Ik noteer je...";
+
+    var val = document.getElementById("gastenboek");
+
+    fetch("/api/inschrijven", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        spelId: a.id,
+        gastenboek: val ? val.value : "",
+        mensen: boeking.mensen.map(function(p){
+          return {
+            naam: p.naam,
+            email: p.mail,
+            antwoorden: a.vragen.map(function(v){
+              return {vraag: v.label, antwoord: p.antw[v.id] || ""};
+            })
+          };
+        })
+      })
+    }).then(function(r){
+      return r.json().then(function(j){ return {status:r.status, body:j}; })
+                     .catch(function(){ return {status:r.status, body:{}}; });
+    }).then(function(uit){
+      if(uit.body && uit.body.ok){
+        kenmerk = uit.body.kenmerk || "";
+        location.hash = "#/bedankt";
+        return;
+      }
+      knop.disabled = false; terugknop.disabled = false; knop.textContent = oudeTekst;
+      bezig = false;
+      var f = uit.body && uit.body.fout;
+      if(f === "nog niet ingesteld"){
+        toonFout("Mijn lijst ligt nog bij de drukker. Mail me even, dan zet ik je er zelf op.");
+      } else if(f === "mailadres" || f === "tweede mailadres"){
+        toonFout("Dat mailadres klopt niet. Ga een stap terug en kijk nog eens goed.");
+      } else {
+        toonFout("Er ging iets mis bij het noteren. Probeer het nog eens. " +
+                 "Blijft het misgaan, mail me dan, ik bijt niet. Meestal.");
+      }
+    }).catch(function(){
+      knop.disabled = false; terugknop.disabled = false; knop.textContent = oudeTekst;
+      bezig = false;
+      toonFout("Ik krijg geen verbinding. Kijk je internet na en probeer opnieuw.");
     });
   }
 
@@ -3897,30 +3970,33 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
           : '<div class="dank-bevestiging op" style="--i:1"><strong>Genoteerd</strong>' +
             'Ontsnappen kan niet meer.</div>') +
 
-        '<h2 class="op" style="--i:2">Wat er nu gebeurt</h2>' +
-        '<ol class="dank-stappen">' +
-          '<li class="op" style="--i:3">Je krijgt meteen een bevestiging' +
-            (eerste && eerste.mail ? " op " + esc(eerste.mail) : "") +
-            '. Kijk ook in je spam, daar woon ik graag.</li>' +
-          '<li class="op" style="--i:4">Zodra ik het uur en de toelage beslist heb, mail ik je opnieuw.</li>' +
-          '<li class="op" style="--i:5">Kan je toch niet komen? Zeg het via de link in die mail, dan ' +
-          'geef ik je plaats aan iemand die wel durft. Zwijgen is erger dan afzeggen.</li>' +
-        '</ol>' +
-        '<p class="dank-lach op" style="--i:6">HHAHAHAHAAHAHAHAAAAA!!!!</p>' +
+        (kenmerk ? '<p class="kenmerk op" style="--i:2">Jouw kenmerk<b>' + esc(kenmerk) +
+          '</b><span>Hou dat bij. Dan weet ik meteen over wie het gaat.</span></p>' : '') +
 
-        '<h2 class="op" style="--i:7">Blijf op de hoogte</h2>' +
-        '<p class="op" style="--i:8">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
+        '<h2 class="op" style="--i:3">Wat er nu gebeurt</h2>' +
+        '<ol class="dank-stappen">' +
+          '<li class="op" style="--i:4">Je staat op mijn lijst' +
+            (eerste && eerste.mail ? ", genoteerd bij " + esc(eerste.mail) : "") +
+            '. Daar stuur ik alles naartoe, dus kijk af en toe in je spam. Daar woon ik graag.</li>' +
+          '<li class="op" style="--i:5">Zodra ik het uur van je spelletje en de toelage beslist heb, ' +
+          'krijg je bericht van mij.</li>' +
+          '<li class="op" style="--i:6">Kan je toch niet komen? Mail het me, dan geef ik je plaats ' +
+          'aan iemand die wel durft. Zwijgen is erger dan afzeggen.</li>' +
+        '</ol>' +
+        '<p class="dank-lach op" style="--i:7">HHAHAHAHAAHAHAHAAAAA!!!!</p>' +
+
+        '<h2 class="op" style="--i:8">Blijf op de hoogte</h2>' +
+        '<p class="op" style="--i:9">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
         'Facebook-event: de uren, de toelage, en wat ik verder nog voor jullie in petto heb.</p>' +
-        '<p class="op" style="--i:9"><a class="dank-fb" href="' + FB_URL + '">' + FB +
+        '<p class="op" style="--i:10"><a class="dank-fb" href="' + FB_URL + '">' + FB +
         ' Volg het event op Facebook</a></p>' +
-        '<p class="op" style="--i:10">Nog iets te vragen? ' +
+        '<p class="op" style="--i:11">Nog iets te vragen? ' +
         '<a href="' + MAIL + '">Mail de Poortwachter</a></p>' +
 
         '<p><a class="dank-terug" href="#/">Terug naar het begin</a></p>' +
-        '<p class="let-op">In het prototype wordt nog niets bewaard of gemaild.</p>' +
       '</div></section></main>';
 
-    boeking = null; stap = 1; deelnemerIx = 0;
+    boeking = null; stap = 1; deelnemerIx = 0; kenmerk = "";
     if(klok){ clearInterval(klok); klok = null; }
     meet();
     blanko(app);
@@ -3939,8 +4015,5 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
   onweer();
 })();
 </script>
-
-<p class="let-op"><strong>Werkversie.</strong> De inschrijvingen worden nog niet bewaard en er wordt
-nog niets gemaild.</p>
 </body>
 </html>
