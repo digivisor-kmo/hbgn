@@ -290,11 +290,17 @@ fieldset.naakt{border:0;padding:0;margin:0 0 2rem}
   font-family:"Archivo Black",Arial,sans-serif;font-size:1.15rem;line-height:1.15;
   color:var(--wit);text-transform:uppercase;margin-bottom:.55rem}
 .spelkeuze.aan .spelnaam{color:var(--groen-op)}
+/* de prijs is na de naam het belangrijkste op de kaart, dus die mag gelezen worden */
 .spelprijs{display:inline-block;position:relative;z-index:1;
-  font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.1em;
-  text-transform:uppercase;padding:.32em .58em;background:var(--paars);color:var(--wit);
-  transform:rotate(-1.5deg)}
-.spelprijs.gratis{background:var(--groen);color:var(--zwart)}
+  font-family:"Archivo Black",Arial,sans-serif;
+  font-size:clamp(.92rem,2.6vw,1.05rem);letter-spacing:.02em;line-height:1;
+  text-transform:uppercase;padding:.34em .6em;
+  background:var(--paars-op);color:var(--zwart);
+  transform:rotate(-1.5deg);box-shadow:.16rem .16rem 0 rgba(0,0,0,.55)}
+.spelprijs.gratis{background:var(--groen);color:var(--zwart);
+  font-size:clamp(.7rem,2vw,.8rem);letter-spacing:.12em;padding:.45em .7em}
+.spelkeuze.aan .spelprijs{background:var(--groen-op)}
+.spelkeuze.aan .spelprijs.gratis{background:var(--groen-op)}
 .spelduur{display:block;position:relative;z-index:1;margin-top:.65rem;
   font-size:.8rem;color:var(--grijs);line-height:1.5;max-width:15rem}
 .spelkaart input:focus-visible ~ .spelnaam{outline:2px solid var(--groen-op);outline-offset:4px}
@@ -3540,7 +3546,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
      tekst:"Die hebben een begeleider, een startuur en veel te weinig plaatsen. Ze lopen allemaal tegelijk, dus je kiest er <strong>één</strong>. Het uur krijg je van mij per mail, zodra ik het beslist heb.",
      stempel:"Te laat is niet meer mee"},
     {nr:"03", kop:"Wat het kost", lead:"Binnenkomen kost je niets.",
-     tekst:"Atmosfear is ook gratis. D&amp;D kost <strong>&euro;5</strong>. Magic leren spelen kost <strong>&euro;15</strong> en je gaat naar huis met twee Jumpstart boosters. De draft kost <strong>&euro;20</strong> voor drie boosters die je zelf opent en houdt. Bij alles zit een hapje, een drankje en een begeleider. Je betaalt ter plaatse, cash.",
+     tekst:"Atmosfear is ook gratis. D&amp;D kost <strong>&euro;5</strong>. Magic leren spelen kost <strong>&euro;15</strong> en je gaat naar huis met twee Jumpstart boosters. De draft kost <strong>&euro;20</strong> voor drie boosters die je zelf opent en houdt. Bij alles zit een hapje, een drankje en een begeleider. Betalen doe je ter plaatse, cash of met je smartphone.",
      stempel:"Gratis inkom"},
     {nr:"04", kop:"Zonder mijn lijst", lead:"De spellenkast staat de hele avond open.",
      tekst:"Daarnaast draait er een tombola met prijzen van mijn partners. Daar moet je niets voor doen en niets voor invullen. Binnenkomen volstaat."},
@@ -4029,7 +4035,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
             (eerste && eerste.mail ? ", genoteerd bij " + esc(eerste.mail) : "") +
             '. Daar stuur ik alles naartoe, dus kijk af en toe in je spam. Daar woon ik graag.</li>' +
           '<li class="op" style="--i:4">Zodra ik het uur van je spelletje beslist heb, krijg je ' +
-          'bericht van mij. Betalen doe je ter plaatse.</li>' +
+          'bericht van mij. Betalen doe je ter plaatse, cash of met je smartphone.</li>' +
           '<li class="op" style="--i:5">Kan je toch niet komen? Mail het me, dan geef ik je plaats ' +
           'aan iemand die wel durft. Zwijgen is erger dan afzeggen.</li>' +
         '</ol>' +
