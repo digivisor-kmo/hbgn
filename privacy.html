@@ -693,17 +693,21 @@ dialog > p{margin:0;padding:1rem 1.7rem 1.7rem;text-align:right}
 .knop-zwart:active{transform:translate(.12rem,.12rem);box-shadow:.2rem .2rem 0 rgba(0,0,0,.28)}
 
 /* ================= partners ================= */
-.partnerrij{list-style:none;padding:0;margin:0;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:.7rem}
-.partnerrij{grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));max-width:44rem;gap:1rem}
+/* drie vlakken die samen de volle breedte van de inhoud innemen */
+.partnerrij{list-style:none;padding:0;margin:0;display:grid;
+  gap:clamp(.9rem,2vw,1.6rem);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr))}
 .partnerrij li{position:relative;border:1px dashed rgba(146,56,230,.45);
-  background:rgba(11,5,18,.6);aspect-ratio:3/2;overflow:hidden;
-  display:grid;place-content:center;gap:.5rem;text-align:center;padding:.8rem;
+  background:rgba(11,5,18,.6);aspect-ratio:5/2;overflow:hidden;
+  display:grid;place-content:center;gap:.6rem;text-align:center;padding:1rem;
   transition:border-color .25s ease,background .25s ease,transform .25s ease}
+@media (max-width:640px){
+  .partnerrij li{aspect-ratio:16/5}
+}
 .partnerrij li:hover{border-color:var(--groen);background:rgba(74,184,101,.08);
   transform:translateY(-.3rem) rotate(-1deg)}
 .vraagteken{font-family:Creepster,"Archivo Black",Impact,sans-serif;
-  font-size:clamp(2.2rem,5vw,3rem);line-height:.9;color:var(--paars);
+  font-size:clamp(2.6rem,6vw,3.8rem);line-height:.9;color:var(--paars);
   text-shadow:0 0 1.6rem rgba(146,56,230,.5);
   transition:color .25s ease,text-shadow .25s ease}
 .partnerrij li:hover .vraagteken{color:var(--groen);text-shadow:0 0 2rem rgba(74,184,101,.7)}
@@ -1066,6 +1070,56 @@ footer a:hover{color:var(--groen-op)}
 .voet-recht{margin-top:1.1rem!important;font-size:.76rem}
 .voet-recht a{color:var(--grijs);text-decoration:underline;text-underline-offset:3px}
 .voet-recht a:hover{color:var(--groen-op)}
+
+/* ================================================================
+   DE SPIN
+   Kruipt af en toe over het scherm, of laat zich aan een draad
+   naar beneden vallen. Ligt boven alles behalve het wachtscherm.
+   ================================================================ */
+.spinnenveld{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden;
+  contain:strict}
+.spin{position:absolute;left:0;top:0;width:var(--sp,64px);opacity:0}
+.spin.kruipt,.spin.valt{opacity:1}
+.spin.kruipt{animation:spin-kruip var(--dur,3s) linear forwards}
+.spin.valt{animation:spin-val var(--dur,2.8s) cubic-bezier(.4,0,.25,1) forwards}
+.spin-lijf{transform:rotate(var(--r,0deg));transform-origin:50% 50%}
+/* een zwarte spin op een zwarte pagina zie je niet, dus krijgt ze een dun
+   randlichtje mee en een schaduw die de pagina eronder verduistert */
+.spin svg{display:block;width:100%;height:auto;
+  filter:drop-shadow(0 0 1px rgba(222,214,236,.6))
+         drop-shadow(0 0 2.5px rgba(222,214,236,.34))
+         drop-shadow(0 .4rem .9rem rgba(0,0,0,.95))}
+
+/* het draadje hangt van de bovenrand tot aan de spin */
+.spin-draad{position:absolute;left:50%;bottom:calc(100% - .35rem);width:1px;height:220vh;
+  background:linear-gradient(180deg,rgba(214,205,225,.05),rgba(214,205,225,.28));
+  display:none}
+.spin.valt .spin-draad{display:block}
+
+@keyframes spin-kruip{
+  from{transform:translate3d(var(--x0),var(--y0),0)}
+  to  {transform:translate3d(var(--x1),var(--y1),0)}
+}
+/* vallen, even doorveren, blijven bengelen, en dan snel weer omhoog */
+@keyframes spin-val{
+  0%  {transform:translate3d(var(--x0),-26vh,0)}
+  20% {transform:translate3d(var(--x0),var(--y1),0)}
+  27% {transform:translate3d(var(--x0),calc(var(--y1) - 2.4vh),0)}
+  34% {transform:translate3d(var(--x0),var(--y1),0)}
+  70% {transform:translate3d(var(--x0),calc(var(--y1) - .6vh),0)}
+  100%{transform:translate3d(var(--x0),-26vh,0)}
+}
+
+/* de poten krabbelen, de ene helft tegen de andere in */
+.poot-a,.poot-b{transform-box:fill-box;transform-origin:50% 42%}
+.poot-a{animation:krabbel-a .26s ease-in-out infinite}
+.poot-b{animation:krabbel-b .26s ease-in-out infinite}
+@keyframes krabbel-a{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes krabbel-b{0%,100%{transform:rotate(5deg)} 50%{transform:rotate(-5deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .spinnenveld{display:none}
+}
 
 /* ================================================================
    SNELHEID
