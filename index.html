@@ -1075,49 +1075,43 @@ footer a:hover{color:var(--groen-op)}
 
 /* ================================================================
    DE SPIN
-   Kruipt af en toe over het scherm, of laat zich aan een draad
-   naar beneden vallen. Ligt boven alles behalve het wachtscherm.
+   Staat vast aan het scherm, niet aan de pagina, dus scrollen doet
+   haar niets. Ze wordt door JavaScript van punt naar punt gestuurd,
+   met een overgang per stap, zodat ze echt lijkt rond te lopen.
    ================================================================ */
 .spinnenveld{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden;
   contain:strict}
-.spin{position:absolute;left:0;top:0;width:var(--sp,64px);opacity:0}
-.spin.kruipt,.spin.valt{opacity:1}
-.spin.kruipt{animation:spin-kruip var(--dur,3s) linear forwards}
-.spin.valt{animation:spin-val var(--dur,2.8s) cubic-bezier(.4,0,.25,1) forwards}
-.spin-lijf{transform:rotate(var(--r,0deg));transform-origin:50% 50%}
-/* een zwarte spin op een zwarte pagina zie je niet, dus krijgt ze een dun
-   randlichtje mee en een schaduw die de pagina eronder verduistert */
-.spin svg{display:block;width:100%;height:auto;
-  filter:drop-shadow(0 0 1px rgba(222,214,236,.6))
-         drop-shadow(0 0 2.5px rgba(222,214,236,.34))
-         drop-shadow(0 .4rem .9rem rgba(0,0,0,.95))}
+.spin{position:absolute;left:0;top:0;width:var(--sp,110px);
+  margin-left:calc(var(--sp,110px) / -2);margin-top:calc(var(--sp,110px) / -2);
+  opacity:0;transform:translate3d(var(--x,0px),var(--y,0px),0);
+  transition:transform var(--dur,600ms) var(--soep,linear),opacity .22s linear;
+  will-change:transform}
+.spin.aan{opacity:1}
+/* het lijf draait naar de kant waar ze naartoe gaat */
+.spin-lijf{transform:rotate(var(--r,0deg));transition:transform .2s ease-out}
+
+/* Ze mag niet oplichten. Ze slikt licht op: een brede zwarte waas die de
+   pagina onder haar verduistert, één haardun randje zodat de vorm nog leest,
+   en een heel flauwe paarse walm die je eerder voelt dan ziet. */
+.spin svg{display:block;width:100%;height:auto;transform-origin:50% 10%;
+  filter:drop-shadow(0 0 1px rgba(214,205,225,.42))
+         drop-shadow(0 0 12px rgba(0,0,0,.92))
+         drop-shadow(0 0 34px rgba(146,56,230,.12))}
 
 /* het draadje hangt van de bovenrand tot aan de spin */
-.spin-draad{position:absolute;left:50%;bottom:calc(100% - .35rem);width:1px;height:220vh;
-  background:linear-gradient(180deg,rgba(214,205,225,.05),rgba(214,205,225,.28));
-  display:none}
-.spin.valt .spin-draad{display:block}
+.spin-draad{position:absolute;left:50%;bottom:50%;width:1px;height:320vh;display:none;
+  background:linear-gradient(180deg,rgba(214,205,225,.04),rgba(214,205,225,.3))}
+.spin.draad .spin-draad{display:block}
+.spin.bengelt svg{animation:bengel 2.3s ease-in-out infinite}
+@keyframes bengel{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
 
-@keyframes spin-kruip{
-  from{transform:translate3d(var(--x0),var(--y0),0)}
-  to  {transform:translate3d(var(--x1),var(--y1),0)}
-}
-/* vallen, even doorveren, blijven bengelen, en dan snel weer omhoog */
-@keyframes spin-val{
-  0%  {transform:translate3d(var(--x0),-26vh,0)}
-  20% {transform:translate3d(var(--x0),var(--y1),0)}
-  27% {transform:translate3d(var(--x0),calc(var(--y1) - 2.4vh),0)}
-  34% {transform:translate3d(var(--x0),var(--y1),0)}
-  70% {transform:translate3d(var(--x0),calc(var(--y1) - .6vh),0)}
-  100%{transform:translate3d(var(--x0),-26vh,0)}
-}
-
-/* de poten krabbelen, de ene helft tegen de andere in */
+/* de poten krabbelen, de ene helft tegen de andere in, sneller als ze loopt */
 .poot-a,.poot-b{transform-box:fill-box;transform-origin:50% 42%}
-.poot-a{animation:krabbel-a .26s ease-in-out infinite}
-.poot-b{animation:krabbel-b .26s ease-in-out infinite}
-@keyframes krabbel-a{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-@keyframes krabbel-b{0%,100%{transform:rotate(5deg)} 50%{transform:rotate(-5deg)}}
+.spin.aan .poot-a{animation:krabbel-a .42s ease-in-out infinite}
+.spin.aan .poot-b{animation:krabbel-b .42s ease-in-out infinite}
+.spin.loopt .poot-a,.spin.loopt .poot-b{animation-duration:.19s}
+@keyframes krabbel-a{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes krabbel-b{0%,100%{transform:rotate(6deg)} 50%{transform:rotate(-6deg)}}
 
 @media (prefers-reduced-motion:reduce){
   .spinnenveld{display:none}
@@ -3521,9 +3515,10 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
   })();
 
   /* ---------- de spin ----------
-     Af en toe kruipt er een over het scherm, en af en toe laat er zich een
-     aan een draad naar beneden vallen. Ze ligt boven alles, ze doet niets,
-     en ze is weg voor je goed en wel doorhebt wat je gezien hebt. */
+     Ze hangt aan het scherm en niet aan de pagina, dus scrollen schudt haar
+     er niet af. Ze wandelt in stappen rond, blijft af en toe staan, verdwijnt
+     langs een rand en duikt later ergens anders weer op. Soms komt ze in de
+     plaats daarvan aan een draad naar beneden. */
   (function spin(){
     if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -3541,7 +3536,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
 
     var TEKENING =
       '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
-        '<g fill="none" stroke="#050208" stroke-width="3.4" stroke-linecap="round">' + POTEN + '</g>' +
+        '<g fill="none" stroke="#07030d" stroke-width="3.4" stroke-linecap="round">' + POTEN + '</g>' +
         '<g fill="#07030d">' +
           '<ellipse cx="50" cy="63" rx="15.5" ry="19"/>' +
           '<ellipse cx="50" cy="41" rx="10" ry="11"/>' +
@@ -3554,8 +3549,8 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         '<ellipse cx="45" cy="56" rx="6" ry="8.5" fill="rgba(178,92,255,.13)" ' +
           'transform="rotate(-18 45 56)"/>' +
         /* en twee oogjes, anders is ze op zwart helemaal niet te zien */
-        '<g fill="rgba(178,92,255,.8)">' +
-          '<circle cx="46.6" cy="38" r="1.8"/><circle cx="53.4" cy="38" r="1.8"/>' +
+        '<g fill="rgba(178,92,255,.5)">' +
+          '<circle cx="46.6" cy="38" r="1.6"/><circle cx="53.4" cy="38" r="1.6"/>' +
         '</g>' +
       '</svg>';
 
@@ -3567,7 +3562,123 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     document.body.appendChild(veld);
     var beest = veld.firstChild;
 
+    var x = 0, y = 0, bezigNu = false;
+    function B(){ return window.innerWidth  || 1200; }
+    function Hg(){ return window.innerHeight || 800; }
     function tussen(a, b){ return a + Math.random() * (b - a); }
+
+    function plaats(nx, ny){
+      x = nx; y = ny;
+      beest.style.setProperty("--x", Math.round(nx) + "px");
+      beest.style.setProperty("--y", Math.round(ny) + "px");
+    }
+    function richt(g){ beest.style.setProperty("--r", g.toFixed(1) + "deg"); }
+    /* zonder animatie ergens neerzetten */
+    function spring(nx, ny){
+      beest.style.setProperty("--dur", "0ms");
+      void beest.offsetWidth;
+      plaats(nx, ny);
+      void beest.offsetWidth;
+    }
+    /* eerst draaien naar waar ze heen wil, dan pas lopen */
+    function ga(nx, ny, tempo, soep, na){
+      var dx = nx - x, dy = ny - y;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      var ms = Math.max(220, d / tempo * 1000);
+      richt(Math.atan2(dy, dx) * 180 / Math.PI + 90);
+      setTimeout(function(){
+        beest.style.setProperty("--soep", soep || "linear");
+        beest.style.setProperty("--dur", Math.round(ms) + "ms");
+        void beest.offsetWidth;
+        beest.classList.add("loopt");
+        plaats(nx, ny);
+        setTimeout(function(){
+          beest.classList.remove("loopt");
+          if(na) na();
+        }, ms + 40);
+      }, 190);
+    }
+
+    /* een punt net buiten beeld, om binnen te komen of te verdwijnen */
+    function randpunt(){
+      var m = 150, k = Math.floor(Math.random() * 4);
+      if(k === 0) return [tussen(.1, .9) * B(), -m];
+      if(k === 1) return [B() + m, tussen(.1, .9) * Hg()];
+      if(k === 2) return [tussen(.1, .9) * B(), Hg() + m];
+      return [-m, tussen(.1, .9) * Hg()];
+    }
+    function binnenpunt(){ return [tussen(.07, .93) * B(), tussen(.09, .9) * Hg()]; }
+
+    /* rondwandelen: binnenkomen, een paar keer van hoek veranderen, weg */
+    function zwerf(klaar){
+      var p = randpunt();
+      spring(p[0], p[1]);
+      beest.classList.add("aan");
+      var stappen = 2 + Math.floor(Math.random() * 4);
+      (function volgende(){
+        if(stappen-- <= 0){
+          var u = randpunt();
+          ga(u[0], u[1], tussen(500, 850), "cubic-bezier(.3,0,.7,1)", function(){
+            beest.classList.remove("aan");
+            klaar();
+          });
+          return;
+        }
+        var t = binnenpunt();
+        /* soms slentert ze, soms schiet ze plots vooruit */
+        var tempo = Math.random() < .35 ? tussen(430, 720) : tussen(140, 330);
+        ga(t[0], t[1], tempo, "cubic-bezier(.35,0,.65,1)", function(){
+          setTimeout(volgende, tussen(120, 1400));
+        });
+      })();
+    }
+
+    /* aan een draad naar beneden, en dan omhoog of eraf en weglopen */
+    function val(klaar){
+      var px = tussen(.15, .85) * B(), diep = tussen(.2, .5) * Hg();
+      spring(px, -170);
+      richt(tussen(-6, 6));
+      beest.classList.add("aan");
+      beest.classList.add("draad");
+      setTimeout(function(){
+        beest.style.setProperty("--soep", "cubic-bezier(.3,1.45,.5,1)");
+        beest.style.setProperty("--dur", "640ms");
+        void beest.offsetWidth;
+        plaats(px, diep);
+        setTimeout(function(){
+          beest.classList.add("bengelt");
+          setTimeout(function(){
+            beest.classList.remove("bengelt");
+            if(Math.random() < .5){
+              /* ze laat los, valt op de pagina en gaat er lopend vandoor */
+              beest.classList.remove("draad");
+              beest.style.setProperty("--soep", "cubic-bezier(.4,0,.9,.5)");
+              beest.style.setProperty("--dur", "430ms");
+              void beest.offsetWidth;
+              plaats(px, Hg() * tussen(.7, .93));
+              setTimeout(function(){
+                var u = randpunt();
+                ga(u[0], u[1], tussen(480, 780), "cubic-bezier(.3,0,.7,1)", function(){
+                  beest.classList.remove("aan");
+                  klaar();
+                });
+              }, 620);
+            } else {
+              /* of ze trekt zichzelf weer omhoog */
+              beest.style.setProperty("--soep", "cubic-bezier(.5,0,.9,.55)");
+              beest.style.setProperty("--dur", "540ms");
+              void beest.offsetWidth;
+              plaats(px, -170);
+              setTimeout(function(){
+                beest.classList.remove("aan");
+                beest.classList.remove("draad");
+                klaar();
+              }, 580);
+            }
+          }, tussen(900, 2200));
+        }, 680);
+      }, 60);
+    }
 
     function bezet(){
       /* niet storen tijdens een venster, tijdens het verzenden, of als de
@@ -3581,37 +3692,18 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     }
 
     function toon(){
-      var maat = Math.round(tussen(48, 92));
-      beest.className = "spin";
-      void beest.offsetWidth;                     /* de animatie opnieuw laten starten */
+      if(bezigNu) return;
+      bezigNu = true;
+      var maat = Math.round(Math.min(tussen(96, 175), B() * .36));
       beest.style.setProperty("--sp", maat + "px");
-
-      if(Math.random() < .38){
-        /* aan een draad naar beneden, met een veer op het einde */
-        beest.style.setProperty("--x0", Math.round(tussen(12, 82)) + "vw");
-        beest.style.setProperty("--y1", Math.round(tussen(18, 48)) + "vh");
-        beest.style.setProperty("--dur", tussen(3.4, 4.4).toFixed(2) + "s");
-        beest.style.setProperty("--r", tussen(-8, 8).toFixed(1) + "deg");
-        beest.classList.add("valt");
-      } else {
-        /* dwars over het scherm, met de kop in de richting waarin ze loopt */
-        var naarRechts = Math.random() < .5;
-        var y = tussen(10, 78);
-        beest.style.setProperty("--x0", (naarRechts ? -18 : 118) + "vw");
-        beest.style.setProperty("--x1", (naarRechts ? 118 : -18) + "vw");
-        beest.style.setProperty("--y0", y.toFixed(1) + "vh");
-        beest.style.setProperty("--y1", (y + tussen(-9, 9)).toFixed(1) + "vh");
-        beest.style.setProperty("--dur", tussen(2.6, 4.2).toFixed(2) + "s");
-        beest.style.setProperty("--r", (naarRechts ? 90 : -90) + tussen(-9, 9) + "deg");
-        beest.classList.add("kruipt");
-      }
+      (Math.random() < .35 ? val : zwerf)(function(){ bezigNu = false; });
     }
 
     function plan(eerste){
       setTimeout(function(){
         if(!document.hidden && !bezet()) toon();
         plan(false);
-      }, eerste ? tussen(16000, 30000) : tussen(38000, 88000));
+      }, eerste ? tussen(5000, 10000) : tussen(9000, 22000));
     }
     plan(true);
   })();
