@@ -411,7 +411,7 @@ select option{background:#0B0512;color:var(--wit)}
 /* ================================================================
    SFEER EN SCROLLBELEVING
    De pagina is één donkere nacht. Elke band heeft een eigen foto
-   die trager beweegt dan de tekst, en vloeit met een lange verloop
+   die trager beweegt dan de tekst en vloeit met een lange verloop
    in de volgende. Geen harde scheidingen, geen losse tekeningen.
    ================================================================ */
 :root{ --breed:76rem; --lees:46rem; }
@@ -1105,13 +1105,24 @@ footer a:hover{color:var(--groen-op)}
 .spin.bengelt svg{animation:bengel 2.3s ease-in-out infinite}
 @keyframes bengel{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
 
-/* de poten krabbelen, de ene helft tegen de andere in, sneller als ze loopt */
+/* de poten krabbelen alleen als ze zich verplaatst, de ene helft tegen de
+   andere in. Staat ze stil, dan staat ze ook echt doodstil. */
 .poot-a,.poot-b{transform-box:fill-box;transform-origin:50% 42%}
-.spin.aan .poot-a{animation:krabbel-a .42s ease-in-out infinite}
-.spin.aan .poot-b{animation:krabbel-b .42s ease-in-out infinite}
-.spin.loopt .poot-a,.spin.loopt .poot-b{animation-duration:.19s}
+.spin.loopt .poot-a{animation:krabbel-a .19s ease-in-out infinite}
+.spin.loopt .poot-b{animation:krabbel-b .19s ease-in-out infinite}
 @keyframes krabbel-a{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
 @keyframes krabbel-b{0%,100%{transform:rotate(6deg)} 50%{transform:rotate(-6deg)}}
+
+/* stilstaan doet ze niet zomaar: ze kijkt en af en toe knippert ze */
+.spin.aan:not(.loopt) .ogen{animation:knipper 4.6s ease-in-out var(--knip,0s) infinite}
+@keyframes knipper{
+  0%,80%,100%{opacity:1}
+  82%{opacity:.04}
+  84.5%{opacity:1}
+  89%{opacity:1}
+  91%{opacity:.04}
+  93.5%{opacity:1}
+}
 
 @media (prefers-reduced-motion:reduce){
   .spinnenveld{display:none}
@@ -3265,8 +3276,8 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       ] },
     { id:"magic-leren", naam:"Magic leren spelen", kort:"\u20ac15", fig:"jokerkaart",
       voorWie:"Wie Magic nog niet kent", duur:"1.5 tot 2 uur",
-      plaatsen:"Weet ik nog niet", kost:"\u20ac15 per persoon. Begeleiding, een hapje, een drankje, en twee Jumpstart boosters die je mee naar huis neemt.",
-      uitleg:"Jullie kennen Magic niet? BESCHAMEND. We beginnen vanaf nul met Foundations. Je leert wat een kaart doet en hoe een beurt werkt, en je gaat naar huis met twee Jumpstart boosters. Kijk mij eens een goede gastheer zijn.",
+      plaatsen:"Weet ik nog niet", kost:"\u20ac15 per persoon. Begeleiding, een hapje, een drankje en twee Jumpstart boosters die je mee naar huis neemt.",
+      uitleg:"Jullie kennen Magic niet? BESCHAMEND. We beginnen vanaf nul met Foundations. Je leert wat een kaart doet en hoe een beurt werkt. Je gaat naar huis met twee Jumpstart boosters. Kijk mij eens een goede gastheer zijn.",
       vragen:[
         {id:"ervaring", label:"Speelde je al ooit een kaartspel?", opties:["Nooit","Wel andere, zoals Pokémon","Magic al eens gezien"]},
         {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]}
@@ -3282,7 +3293,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     { id:"atmosfear", naam:"Atmosfear", kort:"gratis", fig:"zandloper",
       voorWie:"Jong en oud", duur:"Ongeveer 1 uur",
       plaatsen:"Weet ik nog niet", kost:"Niets. Gratis.",
-      uitleg:"Dat ben ik. Op de band. Ik roep, ik tel af, en ik verban je naar HET ZWARTE GAT als je te traag bent. Donker, luid, en niet voor bange harten.",
+      uitleg:"Dat ben ik. Op de band. Ik roep, ik tel af en ik verban je naar HET ZWARTE GAT als je te traag bent. Donker, luid en niet voor bange harten.",
       vragen:[
         {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]},
         {id:"schrik", label:"Kan je tegen donker, geschreeuw en plotse geluiden?", opties:["Ja","Liever wat zachter","Ik kijk liever toe"]}
@@ -3376,7 +3387,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         }
       }
 
-      /* de balk komt zodra de affiche weg is, en gaat weg zodra je bij het formulier bent */
+      /* de balk komt zodra de affiche weg is en gaat weg zodra je bij het formulier bent */
       var bijVak = maat.vakHoog > 0 &&
         (maat.vakTop - y) < hoog * .55 && (maat.vakTop + maat.vakHoog - y) > hoog * .3;
       topbalk.classList.toggle("aan", heroOnder < 60 && !bijVak);
@@ -3549,7 +3560,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         '<ellipse cx="45" cy="56" rx="6" ry="8.5" fill="rgba(178,92,255,.13)" ' +
           'transform="rotate(-18 45 56)"/>' +
         /* en twee oogjes, anders is ze op zwart helemaal niet te zien */
-        '<g fill="rgba(178,92,255,.5)">' +
+        '<g class="ogen" fill="rgba(178,92,255,.5)">' +
           '<circle cx="46.6" cy="38" r="1.6"/><circle cx="53.4" cy="38" r="1.6"/>' +
         '</g>' +
       '</svg>';
@@ -3633,7 +3644,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       })();
     }
 
-    /* aan een draad naar beneden, en dan omhoog of eraf en weglopen */
+    /* aan een draad naar beneden en dan omhoog of eraf en weglopen */
     function val(klaar){
       var px = tussen(.15, .85) * B(), diep = tussen(.2, .5) * Hg();
       spring(px, -170);
@@ -3644,8 +3655,10 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         beest.style.setProperty("--soep", "cubic-bezier(.3,1.45,.5,1)");
         beest.style.setProperty("--dur", "640ms");
         void beest.offsetWidth;
+        beest.classList.add("loopt");
         plaats(px, diep);
         setTimeout(function(){
+          beest.classList.remove("loopt");
           beest.classList.add("bengelt");
           setTimeout(function(){
             beest.classList.remove("bengelt");
@@ -3655,8 +3668,10 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
               beest.style.setProperty("--soep", "cubic-bezier(.4,0,.9,.5)");
               beest.style.setProperty("--dur", "430ms");
               void beest.offsetWidth;
+              beest.classList.add("loopt");
               plaats(px, Hg() * tussen(.7, .93));
               setTimeout(function(){
+                beest.classList.remove("loopt");
                 var u = randpunt();
                 ga(u[0], u[1], tussen(480, 780), "cubic-bezier(.3,0,.7,1)", function(){
                   beest.classList.remove("aan");
@@ -3668,8 +3683,10 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
               beest.style.setProperty("--soep", "cubic-bezier(.5,0,.9,.55)");
               beest.style.setProperty("--dur", "540ms");
               void beest.offsetWidth;
+              beest.classList.add("loopt");
               plaats(px, -170);
               setTimeout(function(){
+                beest.classList.remove("loopt");
                 beest.classList.remove("aan");
                 beest.classList.remove("draad");
                 klaar();
@@ -3696,6 +3713,8 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       bezigNu = true;
       var maat = Math.round(Math.min(tussen(96, 175), B() * .36));
       beest.style.setProperty("--sp", maat + "px");
+      /* elke keer een ander moment om te knipperen, anders wordt het een klok */
+      beest.style.setProperty("--knip", "-" + tussen(0, 4.6).toFixed(2) + "s");
       (Math.random() < .35 ? val : zwerf)(function(){ bezigNu = false; });
     }
 
@@ -3837,7 +3856,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     {nr:"04", kop:"Zonder mijn lijst", lead:"De spellenkast staat de hele avond open.",
      tekst:"Daarnaast draait er een tombola met prijzen van mijn partners. Daar moet je niets voor doen en niets voor invullen. Binnenkomen volstaat."},
     {nr:"05", kop:"Eten en drinken", lead:"Er komt eten en er komt drank.",
-     tekst:"Wat precies weet ik nog niet. Ik moet ook nog dingen beslissen, en ik heb alle tijd. Jullie niet."}
+     tekst:"Wat precies weet ik nog niet. Ik moet ook nog dingen beslissen en ik heb alle tijd. Jullie niet."}
   ];
   var KANTEN = ["-6deg","5deg","-4deg","7deg","-5deg"];
 
@@ -3894,8 +3913,8 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
 
           '<div class="hero-actie">' +
             '<a class="knop knop-groot" href="#inschrijven">Schrijf je in</a>' +
-            '<p class="hero-fijn">Inschrijven is enkel nodig voor D&amp;D, Magic en Atmosfear.<br>' +
-            'Binnenkomen kan altijd, zonder iets.</p>' +
+            '<p class="hero-fijn">Inschrijven hoeft alleen voor D&amp;D, Magic en Atmosfear.<br>' +
+            'Wil je gewoon een spelletje spelen, kom dan zomaar binnen.</p>' +
           '</div>' +
 
         '</div>' +
@@ -3911,7 +3930,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
           '<p class="boe-tekst op" style="--i:1">' + woorden(
             'Was je geschrokken??? Ik gooi de deuren van de kerk in de Minnestraat weer open ' +
             'voor *een avond bordspellen in het donker*. Jullie spelen wat jullie willen, jullie ' +
-            'eten en drinken van mijn tafel, en misschien wint een van jullie iets afschuwelijk ' +
+            'eten en drinken van mijn tafel en misschien wint een van jullie iets afschuwelijk ' +
             'moois in mijn tombola.') + '</p>' +
           '<span class="verder-pijl" aria-hidden="true"></span>' +
         '</div>' +
@@ -3923,10 +3942,10 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         '<div class="wrap">' +
           '<h2 class="op kop" style="--i:0">Tik. Tak. <em>Lijkwormpje.</em></h2>' +
           '<p class="kopfijn op" style="--i:1">Zolang blijft mijn deur dicht. Ik tel hardop mee, ' +
-          'dag en nacht, en ik word er niet vrolijker op.</p>' +
+          'dag en nacht en ik word er niet vrolijker op.</p>' +
           '<ol class="klok op" id="aftel" style="--i:2">' + klokdelen + '</ol>' +
           '<p class="klokvoet op" style="--i:3">Zaterdag 7 november, klokslag zes. Daarna staat ze ' +
-          'open tot ongeveer middernacht, en dan gooi ik ze weer toe. Met jullie er nog in, als het ' +
+          'open tot ongeveer middernacht en dan gooi ik ze weer toe. Met jullie er nog in, als het ' +
           'aan mij ligt.</p>' +
         '</div>' +
       '</section>' +
@@ -4330,7 +4349,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
 
         '<h2 class="op" style="--i:7">Blijf op de hoogte</h2>' +
         '<p class="op" style="--i:8">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
-        'Facebook-event: de uren, de toelage, en wat ik verder nog voor jullie in petto heb.</p>' +
+        'Facebook-event: de uren, de toelage en wat ik verder nog voor jullie in petto heb.</p>' +
         '<p class="op" style="--i:9"><a class="dank-fb" href="' + FB_URL + '">' + FB +
         ' Volg het event op Facebook</a></p>' +
         '<p class="op" style="--i:10">Nog iets te vragen? ' +

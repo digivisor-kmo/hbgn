@@ -409,7 +409,7 @@ select option{background:#0B0512;color:var(--wit)}
 /* ================================================================
    SFEER EN SCROLLBELEVING
    De pagina is één donkere nacht. Elke band heeft een eigen foto
-   die trager beweegt dan de tekst, en vloeit met een lange verloop
+   die trager beweegt dan de tekst en vloeit met een lange verloop
    in de volgende. Geen harde scheidingen, geen losse tekeningen.
    ================================================================ */
 :root{ --breed:76rem; --lees:46rem; }
@@ -1073,49 +1073,54 @@ footer a:hover{color:var(--groen-op)}
 
 /* ================================================================
    DE SPIN
-   Kruipt af en toe over het scherm, of laat zich aan een draad
-   naar beneden vallen. Ligt boven alles behalve het wachtscherm.
+   Staat vast aan het scherm, niet aan de pagina, dus scrollen doet
+   haar niets. Ze wordt door JavaScript van punt naar punt gestuurd,
+   met een overgang per stap, zodat ze echt lijkt rond te lopen.
    ================================================================ */
 .spinnenveld{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden;
   contain:strict}
-.spin{position:absolute;left:0;top:0;width:var(--sp,64px);opacity:0}
-.spin.kruipt,.spin.valt{opacity:1}
-.spin.kruipt{animation:spin-kruip var(--dur,3s) linear forwards}
-.spin.valt{animation:spin-val var(--dur,2.8s) cubic-bezier(.4,0,.25,1) forwards}
-.spin-lijf{transform:rotate(var(--r,0deg));transform-origin:50% 50%}
-/* een zwarte spin op een zwarte pagina zie je niet, dus krijgt ze een dun
-   randlichtje mee en een schaduw die de pagina eronder verduistert */
-.spin svg{display:block;width:100%;height:auto;
-  filter:drop-shadow(0 0 1px rgba(222,214,236,.6))
-         drop-shadow(0 0 2.5px rgba(222,214,236,.34))
-         drop-shadow(0 .4rem .9rem rgba(0,0,0,.95))}
+.spin{position:absolute;left:0;top:0;width:var(--sp,110px);
+  margin-left:calc(var(--sp,110px) / -2);margin-top:calc(var(--sp,110px) / -2);
+  opacity:0;transform:translate3d(var(--x,0px),var(--y,0px),0);
+  transition:transform var(--dur,600ms) var(--soep,linear),opacity .22s linear;
+  will-change:transform}
+.spin.aan{opacity:1}
+/* het lijf draait naar de kant waar ze naartoe gaat */
+.spin-lijf{transform:rotate(var(--r,0deg));transition:transform .2s ease-out}
+
+/* Ze mag niet oplichten. Ze slikt licht op: een brede zwarte waas die de
+   pagina onder haar verduistert, één haardun randje zodat de vorm nog leest,
+   en een heel flauwe paarse walm die je eerder voelt dan ziet. */
+.spin svg{display:block;width:100%;height:auto;transform-origin:50% 10%;
+  filter:drop-shadow(0 0 1px rgba(214,205,225,.42))
+         drop-shadow(0 0 12px rgba(0,0,0,.92))
+         drop-shadow(0 0 34px rgba(146,56,230,.12))}
 
 /* het draadje hangt van de bovenrand tot aan de spin */
-.spin-draad{position:absolute;left:50%;bottom:calc(100% - .35rem);width:1px;height:220vh;
-  background:linear-gradient(180deg,rgba(214,205,225,.05),rgba(214,205,225,.28));
-  display:none}
-.spin.valt .spin-draad{display:block}
+.spin-draad{position:absolute;left:50%;bottom:50%;width:1px;height:320vh;display:none;
+  background:linear-gradient(180deg,rgba(214,205,225,.04),rgba(214,205,225,.3))}
+.spin.draad .spin-draad{display:block}
+.spin.bengelt svg{animation:bengel 2.3s ease-in-out infinite}
+@keyframes bengel{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
 
-@keyframes spin-kruip{
-  from{transform:translate3d(var(--x0),var(--y0),0)}
-  to  {transform:translate3d(var(--x1),var(--y1),0)}
-}
-/* vallen, even doorveren, blijven bengelen, en dan snel weer omhoog */
-@keyframes spin-val{
-  0%  {transform:translate3d(var(--x0),-26vh,0)}
-  20% {transform:translate3d(var(--x0),var(--y1),0)}
-  27% {transform:translate3d(var(--x0),calc(var(--y1) - 2.4vh),0)}
-  34% {transform:translate3d(var(--x0),var(--y1),0)}
-  70% {transform:translate3d(var(--x0),calc(var(--y1) - .6vh),0)}
-  100%{transform:translate3d(var(--x0),-26vh,0)}
-}
-
-/* de poten krabbelen, de ene helft tegen de andere in */
+/* de poten krabbelen alleen als ze zich verplaatst, de ene helft tegen de
+   andere in. Staat ze stil, dan staat ze ook echt doodstil. */
 .poot-a,.poot-b{transform-box:fill-box;transform-origin:50% 42%}
-.poot-a{animation:krabbel-a .26s ease-in-out infinite}
-.poot-b{animation:krabbel-b .26s ease-in-out infinite}
-@keyframes krabbel-a{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-@keyframes krabbel-b{0%,100%{transform:rotate(5deg)} 50%{transform:rotate(-5deg)}}
+.spin.loopt .poot-a{animation:krabbel-a .19s ease-in-out infinite}
+.spin.loopt .poot-b{animation:krabbel-b .19s ease-in-out infinite}
+@keyframes krabbel-a{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes krabbel-b{0%,100%{transform:rotate(6deg)} 50%{transform:rotate(-6deg)}}
+
+/* stilstaan doet ze niet zomaar: ze kijkt en af en toe knippert ze */
+.spin.aan:not(.loopt) .ogen{animation:knipper 4.6s ease-in-out var(--knip,0s) infinite}
+@keyframes knipper{
+  0%,80%,100%{opacity:1}
+  82%{opacity:.04}
+  84.5%{opacity:1}
+  89%{opacity:1}
+  91%{opacity:.04}
+  93.5%{opacity:1}
+}
 
 @media (prefers-reduced-motion:reduce){
   .spinnenveld{display:none}
@@ -1217,7 +1222,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           alleen als ze dat zelf willen</li>
           <li>welk <strong>spelletje</strong> je kiest en met <strong>hoeveel personen</strong> je komt</li>
           <li>je antwoorden op de <strong>bijvragen</strong> van dat spelletje: je leeftijdscategorie,
-          hoeveel ervaring je hebt, en waar je zin in hebt</li>
+          hoeveel ervaring je hebt en waar je zin in hebt</li>
           <li>het <strong>tijdstip</strong> van je inschrijving en een intern kenmerk</li>
         </ul>
         <p>Meer niet. Geen adres, geen telefoonnummer, geen geboortedatum.</p>
@@ -1225,12 +1230,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <section class="jblok">
         <h2>Waarom ik dat vraag</h2>
-        <p>Om de avond te kunnen organiseren, en om niets anders.</p>
+        <p>Om de avond te kunnen organiseren en om niets anders.</p>
         <ul>
           <li><strong>Je naam en het aantal personen</strong> gebruik ik om de tafels in te delen en
           om te weten hoeveel plaatsen er nog vrij zijn.</li>
           <li><strong>Je e-mailadres</strong> gebruik ik om je het startuur en de praktische
-          informatie door te sturen, en om je te verwittigen als er iets wijzigt. Je krijgt geen
+          informatie door te sturen en om je te verwittigen als er iets wijzigt. Je krijgt geen
           nieuwsbrief en geen reclame.</li>
           <li><strong>Je ervaring en je voorkeuren</strong> gebruiken de spelbegeleiders om de groep
           goed samen te stellen en om je een personage of een uitleg te geven die past.</li>
@@ -1260,7 +1265,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <section class="jblok">
         <h2>Wie het te zien krijgt</h2>
-        <p>De drie organisatoren, en de spelbegeleider van het spelletje waarvoor jij je inschrijft.
+        <p>De drie organisatoren en de spelbegeleider van het spelletje waarvoor jij je inschrijft.
         Die laatste ziet alleen wat hij nodig heeft om zijn tafel voor te bereiden.</p>
       </section>
 
@@ -1275,7 +1280,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p>Deze website zet <strong>geen cookies</strong> en houdt niets bij in je browser. Er staat
         wel een meetsysteem klaar (Google Tag Manager), maar daar zit op dit moment niets in dat
         gegevens verzamelt. Komt dat er ooit wel in, dan verschijnt er eerst een venster dat je
-        toestemming vraagt, en wordt deze pagina aangepast.</p>
+        toestemming vraagt en wordt deze pagina aangepast.</p>
       </section>
 
       <section class="jblok">
