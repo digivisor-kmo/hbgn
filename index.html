@@ -973,15 +973,51 @@ footer a:hover{color:var(--groen-op)}
   .hero-fijn{margin-top:1.1rem}
 }
 
-/* ---- het kenmerk op de bedanktpagina ---- */
-.kenmerk{margin:0 0 2rem;padding:1.1rem 1.3rem;border:1px dashed var(--paars);
-  background:rgba(146,56,230,.08);
-  font-family:"Archivo Black",Arial,sans-serif;font-size:.66rem;letter-spacing:.2em;
-  text-transform:uppercase;color:var(--grijs)}
-.kenmerk b{display:block;margin:.5rem 0 .4rem;font-size:clamp(1.1rem,3.5vw,1.5rem);
-  letter-spacing:.06em;color:var(--groen-op);font-variant-numeric:tabular-nums}
-.kenmerk span{display:block;font-family:Archivo,Arial,sans-serif;font-size:.8rem;
-  letter-spacing:0;text-transform:none;color:var(--grijs);line-height:1.6}
+
+/* ================================================================
+   HET WACHTSCHERM
+   De zandloper draait terwijl de Poortwachter je naam opschrijft.
+   ================================================================ */
+.wachten{position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  background:rgba(4,2,8,.92);backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .25s ease,visibility .25s}
+.wachten.aan{opacity:1;visibility:visible;pointer-events:auto}
+.wachten-in{text-align:center;padding:2rem;max-width:22rem}
+
+.wachten-glas{width:clamp(3.4rem,12vw,4.6rem);margin:0 auto;color:var(--groen);
+  filter:drop-shadow(0 0 1.6rem rgba(74,184,101,.55));
+  animation:keer 2.4s cubic-bezier(.7,0,.3,1) infinite}
+.wachten-glas svg{width:100%;height:auto;fill:currentColor;display:block}
+@keyframes keer{
+  0%,62%{transform:rotate(0deg)}
+  78%,100%{transform:rotate(180deg)}
+}
+
+.wachten-tekst{margin:clamp(1.4rem,4vw,2rem) 0 0;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:clamp(.78rem,2.6vw,.92rem);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--wit);line-height:1.6}
+.wachten-tekst i{display:inline-block;width:.42em;font-style:normal;
+  animation:stip 1.2s steps(1) infinite}
+.wachten-tekst i::before{content:"."}
+.wachten-tekst i:nth-child(2){animation-delay:.2s}
+.wachten-tekst i:nth-child(3){animation-delay:.4s}
+@keyframes stip{0%,60%{opacity:0}61%,100%{opacity:1}}
+
+/* een dunne balk die aangeeft dat er iets loopt */
+.wachten-in::after{content:"";display:block;width:min(14rem,60vw);height:2px;
+  margin:clamp(1.2rem,3vw,1.8rem) auto 0;background:rgba(146,56,230,.3);
+  position:relative;overflow:hidden}
+.wachten.aan .wachten-in::after{
+  background:linear-gradient(90deg,rgba(146,56,230,.25) 0%,var(--groen) 50%,rgba(146,56,230,.25) 100%);
+  background-size:220% 100%;animation:schuifbalk 1.4s ease-in-out infinite}
+@keyframes schuifbalk{0%{background-position:120% 0}100%{background-position:-20% 0}}
+
+@media (prefers-reduced-motion:reduce){
+  .wachten-glas{animation:none}
+  .wachten-tekst i{animation:none}
+  .wachten.aan .wachten-in::after{animation:none;background:var(--groen)}
+}
 
 /* ================================================================
    SNELHEID
@@ -3088,6 +3124,15 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
 </button>
 
+<div class="wachten" id="wachten" role="status" aria-live="polite" aria-label="Bezig met noteren">
+  <div class="wachten-in">
+    <div class="wachten-glas" aria-hidden="true">
+      <svg viewBox="0 0 1344.005556 1799.811795" focusable="false"><use href="#s-zandloper"/></svg>
+    </div>
+    <p class="wachten-tekst">Ik noteer je naam<i></i><i></i><i></i></p>
+  </div>
+</div>
+
 <div id="app"></div>
 
 <dialog id="infovenster">
@@ -3885,18 +3930,24 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
   }
 
   /* ---------- de inschrijving naar de server sturen ---------- */
-  var kenmerk = "";
+  var wachtvlak = document.getElementById("wachten");
+  var bezig = false;
+
+  function toonWacht(aan){
+    wachtvlak.classList.toggle("aan", !!aan);
+    document.documentElement.style.overflow = aan ? "hidden" : "";
+  }
 
   function verzend(knop, terugknop){
-    var a = vind(boeking.act);
-    var bezig = false;
     if(bezig) return;
     bezig = true;
 
+    var a = vind(boeking.act);
     knop.disabled = true;
     terugknop.disabled = true;
     var oudeTekst = knop.textContent;
     knop.textContent = "Ik noteer je...";
+    toonWacht(true);
 
     var val = document.getElementById("gastenboek");
 
@@ -3921,10 +3972,11 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
                      .catch(function(){ return {status:r.status, body:{}}; });
     }).then(function(uit){
       if(uit.body && uit.body.ok){
-        kenmerk = uit.body.kenmerk || "";
+        toonWacht(false);
         location.hash = "#/bedankt";
         return;
       }
+      toonWacht(false);
       knop.disabled = false; terugknop.disabled = false; knop.textContent = oudeTekst;
       bezig = false;
       var f = uit.body && uit.body.fout;
@@ -3937,6 +3989,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
                  "Blijft het misgaan, mail me dan, ik bijt niet. Meestal.");
       }
     }).catch(function(){
+      toonWacht(false);
       knop.disabled = false; terugknop.disabled = false; knop.textContent = oudeTekst;
       bezig = false;
       toonFout("Ik krijg geen verbinding. Kijk je internet na en probeer opnieuw.");
@@ -3970,33 +4023,30 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
           : '<div class="dank-bevestiging op" style="--i:1"><strong>Genoteerd</strong>' +
             'Ontsnappen kan niet meer.</div>') +
 
-        (kenmerk ? '<p class="kenmerk op" style="--i:2">Jouw kenmerk<b>' + esc(kenmerk) +
-          '</b><span>Hou dat bij. Dan weet ik meteen over wie het gaat.</span></p>' : '') +
-
-        '<h2 class="op" style="--i:3">Wat er nu gebeurt</h2>' +
+        '<h2 class="op" style="--i:2">Wat er nu gebeurt</h2>' +
         '<ol class="dank-stappen">' +
-          '<li class="op" style="--i:4">Je staat op mijn lijst' +
+          '<li class="op" style="--i:3">Je staat op mijn lijst' +
             (eerste && eerste.mail ? ", genoteerd bij " + esc(eerste.mail) : "") +
             '. Daar stuur ik alles naartoe, dus kijk af en toe in je spam. Daar woon ik graag.</li>' +
-          '<li class="op" style="--i:5">Zodra ik het uur van je spelletje en de toelage beslist heb, ' +
+          '<li class="op" style="--i:4">Zodra ik het uur van je spelletje en de toelage beslist heb, ' +
           'krijg je bericht van mij.</li>' +
-          '<li class="op" style="--i:6">Kan je toch niet komen? Mail het me, dan geef ik je plaats ' +
+          '<li class="op" style="--i:5">Kan je toch niet komen? Mail het me, dan geef ik je plaats ' +
           'aan iemand die wel durft. Zwijgen is erger dan afzeggen.</li>' +
         '</ol>' +
-        '<p class="dank-lach op" style="--i:7">HHAHAHAHAAHAHAHAAAAA!!!!</p>' +
+        '<p class="dank-lach op" style="--i:6">HHAHAHAHAAHAHAHAAAAA!!!!</p>' +
 
-        '<h2 class="op" style="--i:8">Blijf op de hoogte</h2>' +
-        '<p class="op" style="--i:9">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
+        '<h2 class="op" style="--i:7">Blijf op de hoogte</h2>' +
+        '<p class="op" style="--i:8">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
         'Facebook-event: de uren, de toelage, en wat ik verder nog voor jullie in petto heb.</p>' +
-        '<p class="op" style="--i:10"><a class="dank-fb" href="' + FB_URL + '">' + FB +
+        '<p class="op" style="--i:9"><a class="dank-fb" href="' + FB_URL + '">' + FB +
         ' Volg het event op Facebook</a></p>' +
-        '<p class="op" style="--i:11">Nog iets te vragen? ' +
+        '<p class="op" style="--i:10">Nog iets te vragen? ' +
         '<a href="' + MAIL + '">Mail de Poortwachter</a></p>' +
 
         '<p><a class="dank-terug" href="#/">Terug naar het begin</a></p>' +
       '</div></section></main>';
 
-    boeking = null; stap = 1; deelnemerIx = 0; kenmerk = "";
+    boeking = null; stap = 1; deelnemerIx = 0;
     if(klok){ clearInterval(klok); klok = null; }
     meet();
     blanko(app);
