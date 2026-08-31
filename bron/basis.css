@@ -1,0 +1,176 @@
+
+/* ================================================================
+   STAP 2: de hero. De liggende illustratie over de volle breedte,
+   het echte woordmerk, 7/11 en GRATIS INKOM als vector.
+   De rest van de pagina blijft zoals in stap 1.
+   ================================================================ */
+:root{
+  --zwart:#000000;
+  --paneel:#0B0512;
+  --paars:#9238E6; --paars-op:#B25CFF; --paars-diep:#3A1160;
+  --groen:#4AB865; --groen-op:#6FE68F;
+  --wit:#FFFFFF; --zacht:#C6BAD4; --grijs:#9583A8;
+
+  --t--1:.82rem;
+  --t-0:clamp(1rem,.96rem + .2vw,1.08rem);
+  --t-1:clamp(1.1rem,1.02rem + .4vw,1.25rem);
+  --t-2:clamp(1.45rem,1.2rem + 1.2vw,2rem);
+
+  --ruimte:clamp(2.5rem,6vw,4rem);
+  --kolom:40rem;
+  --marge:clamp(1.25rem,4vw,2rem);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;background:var(--zwart);color:var(--zacht);
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:var(--t-0);line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+.blad{max-width:var(--kolom);margin-inline:auto;padding:0 var(--marge) 5rem}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+
+/* ================= HERO ================= */
+.hero{position:relative;isolation:isolate;overflow:hidden;
+  min-height:min(94svh,56rem);display:grid;align-items:center;
+  padding:clamp(2rem,5vh,4rem) 0;
+  border-bottom:1px solid var(--paars-diep)}
+
+/* de illustratie, met een sluier die net onder de typografie het donkerst is */
+.hero-beeld{position:absolute;inset:0;z-index:-2;
+  background-image:var(--img-lig);background-size:cover;background-position:50% 44%}
+.hero-beeld::after{content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(78% 62% at 50% 46%,rgba(0,0,0,.74),rgba(0,0,0,.28) 62%,transparent 78%),
+    linear-gradient(180deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.1) 26%,rgba(0,0,0,.55) 74%,var(--zwart) 100%)}
+@media (max-width:700px){ .hero-beeld{background-position:14% 45%} }
+
+/* dun kader, zoals de rand van een affiche */
+.hero::before{content:"";position:absolute;inset:clamp(.7rem,1.8vw,1.5rem);z-index:1;
+  border:1px solid rgba(146,56,230,.42);pointer-events:none}
+
+.hero-in{position:relative;z-index:2;width:100%;max-width:66rem;margin-inline:auto;
+  padding-inline:clamp(1.6rem,5vw,3.5rem);
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,2.6rem) 1rem;
+  align-items:center;justify-items:center}
+
+/* de twee bijschriften bovenaan, links en rechts uitgelijnd */
+.meta{grid-row:1;margin:0;align-self:start;justify-self:stretch;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:clamp(.6rem,1.5vw,.74rem);
+  letter-spacing:.2em;text-transform:uppercase;line-height:1.9;color:var(--wit);
+  text-shadow:0 .1em .7em rgba(0,0,0,.95)}
+.meta span{display:block;color:var(--zacht);font-family:Archivo,Arial,sans-serif;
+  font-weight:600;letter-spacing:.14em}
+.meta-links{text-align:left}
+.meta-rechts{text-align:right}
+
+/* het woordmerk met de twee plakkers eroverheen */
+.merk-vlak{grid-row:2;grid-column:1 / -1;position:relative;
+  width:min(100%,62svh);padding-bottom:clamp(1.4rem,5vw,3rem)}
+.woordmerk{margin:0;
+  filter:drop-shadow(0 .09em 0 rgba(0,0,0,.95)) drop-shadow(0 .3em 1.6rem rgba(0,0,0,.75))}
+.woordmerk svg{width:100%;height:auto}
+
+.plakker{position:absolute;z-index:2;
+  filter:drop-shadow(.16em .16em 0 rgba(0,0,0,.9)) drop-shadow(0 .2em .9rem rgba(0,0,0,.6))}
+.plakker svg{width:100%;height:auto}
+.plakker-datum{left:-2%;bottom:-1%;width:clamp(5rem,17%,9rem);transform:rotate(-5deg)}
+.plakker-gratis{right:-2%;bottom:-2%;width:clamp(7rem,24%,12.5rem);transform:rotate(6deg)}
+
+/* de actie onderaan */
+.hero-actie{grid-row:3;grid-column:1 / -1;text-align:center;margin-top:clamp(.4rem,2vw,1.2rem)}
+.hero-fijn{margin:1.5rem 0 0;font-size:clamp(.7rem,1.6vw,.8rem);line-height:1.6;
+  color:var(--zacht);letter-spacing:.02em;text-shadow:0 .1em .7em rgba(0,0,0,.95)}
+
+@media (max-width:640px){
+  .hero-in{grid-template-columns:1fr;gap:clamp(1.2rem,4vw,2rem)}
+  .meta{grid-row:auto;justify-self:start;text-align:left}
+  .meta-rechts{text-align:left}
+  .merk-vlak{grid-row:auto;grid-column:auto;width:100%;padding-bottom:2.2rem}
+  .hero-actie{grid-row:auto;grid-column:auto;text-align:left}
+  .plakker-datum{left:0;bottom:-2%;width:5rem}
+  .plakker-gratis{right:0;bottom:-4%;width:8rem}
+  .hero{min-height:min(88svh,52rem)}
+}
+
+/* ================= knoppen ================= */
+.knop,button{font:inherit;cursor:pointer;transition:background .14s ease,box-shadow .14s ease,transform .14s ease;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:var(--t--1);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+  display:inline-block;padding:.9em 1.3em;border:1px solid var(--paars-diep);
+  background:none;color:var(--wit)}
+.knop{background:var(--groen);border-color:var(--groen);color:var(--zwart)}
+.knop:hover{background:var(--groen-op);border-color:var(--groen-op);color:var(--zwart)}
+
+/* de inschrijfknop is de enige actie in de hero: die mag schreeuwen */
+.knop-groot{font-size:clamp(1.45rem,4.6vw,2.4rem);padding:.72em 1.35em;letter-spacing:.01em;
+  border:0;transform:rotate(-1.6deg);
+  box-shadow:.5rem .5rem 0 var(--paars),0 1.4rem 3rem rgba(0,0,0,.65)}
+.knop-groot:hover,.knop-groot:focus-visible{
+  box-shadow:.78rem .78rem 0 var(--paars-op),0 1.6rem 3.6rem rgba(0,0,0,.75);
+  transform:rotate(-1.6deg) translate(-.18rem,-.18rem)}
+.knop-groot:active{box-shadow:.24rem .24rem 0 var(--paars);
+  transform:rotate(-1.6deg) translate(.18rem,.18rem)}
+@media (max-width:640px){
+  .knop-groot{display:block;width:100%;text-align:center;padding:.78em .6em}
+}
+button:hover{border-color:var(--paars-op);color:var(--paars-op)}
+button[type="submit"]{background:var(--groen);border-color:var(--groen);color:var(--zwart)}
+button[type="submit"]:hover{background:var(--groen-op);border-color:var(--groen-op);color:var(--zwart)}
+button.info,button[data-info]{padding:0;width:1.6em;height:1.6em;line-height:1;
+  border-radius:50%;font-size:var(--t--1);flex:none;align-self:center}
+:focus-visible{outline:2px solid var(--groen-op);outline-offset:2px}
+
+/* ================= typografie ================= */
+h1{margin:0}
+h2{margin:0 0 .9rem;font-family:"Archivo Black",Arial,sans-serif;font-weight:400;
+  font-size:var(--t-2);line-height:1.1;color:var(--groen);text-transform:uppercase;text-wrap:balance}
+p{margin:0 0 1rem}
+strong{color:var(--wit);font-weight:700}
+a{color:var(--paars-op);text-underline-offset:3px}
+a:hover{color:var(--groen-op)}
+
+dl{margin:0}
+dt{margin-top:1.1rem;font-family:"Archivo Black",Arial,sans-serif;font-size:var(--t--1);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--groen)}
+dt:first-child{margin-top:0}
+dd{margin:.2rem 0 0}
+hr{border:0;border-top:1px solid var(--paars-diep);margin:var(--ruimte) 0}
+
+/* ================= formulier ================= */
+fieldset{margin:0 0 1.3rem;border:1px solid var(--paars-diep);padding:1rem 1.1rem}
+legend{padding:0 .4rem;font-family:"Archivo Black",Arial,sans-serif;font-size:var(--t--1);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--groen)}
+label{display:block;margin:.9rem 0 .3rem;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:var(--t--1);letter-spacing:.07em;text-transform:uppercase;color:var(--groen)}
+input,select,textarea{font:inherit;width:100%;padding:.6em .7em;
+  color:var(--wit);background:var(--paneel);border:1px solid var(--paars-diep)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--paars-op)}
+select option{background:var(--paneel);color:var(--wit)}
+.keuze{margin:.15rem 0;display:flex;align-items:baseline;gap:.55rem}
+.keuze input{width:auto;flex:none}
+.keuze label{display:inline;margin:0;font-family:Archivo,Arial,sans-serif;font-size:var(--t-0);
+  letter-spacing:0;text-transform:none;color:var(--wit)}
+.voortgang{color:var(--grijs);font-size:var(--t--1);line-height:1.55}
+
+dialog{max-width:32rem;width:calc(100% - 2rem);background:var(--paneel);color:var(--zacht);
+  border:1px solid var(--paars);padding:1.5rem}
+dialog::backdrop{background:rgba(0,0,0,.8)}
+dialog h2{color:var(--wit)}
+
+.partners ul{list-style:none;padding:0;margin:1.2rem 0;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(7rem,1fr));gap:.6rem}
+.partners li{border:1px solid var(--paars-diep);color:var(--grijs);font-size:var(--t--1);
+  display:grid;place-items:center;aspect-ratio:3/2}
+
+footer p{font-size:var(--t--1);color:var(--grijs)}
+footer p:first-child{font-family:"Archivo Black",Arial,sans-serif;font-size:var(--t-1);
+  color:var(--groen);text-transform:uppercase;line-height:1.2}
+
+.let-op{border:1px dashed var(--paars-diep);padding:.7rem .9rem;
+  margin:var(--marge) auto;max-width:var(--kolom);font-size:var(--t--1);color:var(--grijs)}
+
+/* de bedanktpagina heeft geen hero: geef ze wat lucht bovenaan */
+.blad-alleen{padding-top:var(--ruimte)}
+.blad-alleen h1{font-family:"Archivo Black",Arial,sans-serif;font-weight:400;
+  font-size:clamp(2rem,1.5rem + 2.4vw,3.2rem);line-height:1.02;color:var(--wit);
+  text-transform:uppercase;margin:0 0 .6rem}
+

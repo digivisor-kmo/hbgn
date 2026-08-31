@@ -1,0 +1,180 @@
+
+/* ================================================================
+   DE BLOKKEN: regelkaarten, keuzekaarten, velden, chips, ticket.
+   ================================================================ */
+
+/* ---- Mijn regels als opgeplakte briefjes ---- */
+.regelmuur{display:grid;gap:clamp(.9rem,2vw,1.4rem);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr))}
+@media (min-width:64rem){
+  .regelmuur{grid-template-columns:repeat(6,1fr)}
+  .regelkaart:nth-child(1){grid-column:span 2}
+  .regelkaart:nth-child(2){grid-column:span 4}
+  .regelkaart:nth-child(3){grid-column:span 2}
+  .regelkaart:nth-child(4){grid-column:span 2}
+  .regelkaart:nth-child(5){grid-column:span 2}
+}
+.regelkaart{position:relative;padding:clamp(1.3rem,2.4vw,1.9rem);
+  border:1px solid var(--paars-diep);background:rgba(11,5,18,.82);
+  transition:transform .25s cubic-bezier(.2,1.1,.35,1),border-color .25s ease,background .25s ease}
+.regelkaart::before{content:"";position:absolute;top:-.55rem;left:1.5rem;width:3.6rem;height:1.1rem;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);transform:rotate(-4deg);
+  transition:background .25s ease,border-color .25s ease}
+.regelkaart:hover{transform:translateY(-.45rem) rotate(-.5deg);border-color:var(--groen);
+  background:rgba(74,184,101,.08)}
+.regelkaart:hover::before{background:rgba(74,184,101,.38);border-color:var(--groen-op)}
+.regelkaart h3{margin:0 0 .7rem;font-family:"Archivo Black",Arial,sans-serif;font-size:.78rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--groen)}
+.regelkaart p{margin:0;color:var(--zacht);line-height:1.68}
+.regelkaart strong{color:var(--wit)}
+
+/* ---- algemene formulierdelen ---- */
+.veldkop{margin:0 0 .8rem;font-family:"Archivo Black",Arial,sans-serif;font-size:.74rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--groen)}
+.fijn{margin:.6rem 0 0;font-size:.82rem;line-height:1.6;color:var(--grijs)}
+.fijn-boven{margin:-.3rem 0 .8rem}
+.fijn b{color:var(--zacht)}
+fieldset.naakt{border:0;padding:0;margin:0 0 2rem}
+.vzw{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+
+/* ---- keuzekaarten met een figuur uit de tekening ---- */
+.spellijst{display:grid;gap:.8rem}
+@media (min-width:44rem){ .spellijst{grid-template-columns:1fr 1fr} }
+.spelkeuze{position:relative}
+.spelkaart{display:block;margin:0;cursor:pointer;position:relative;overflow:hidden;
+  min-height:10rem;
+  font-family:Archivo,Arial,sans-serif;text-transform:none;letter-spacing:0;color:var(--zacht);
+  border:1px solid var(--paars-diep);background:rgba(11,5,18,.78);
+  transition:border-color .22s ease,background .22s ease,transform .22s cubic-bezier(.2,1.1,.35,1)}
+.spelkaart:hover{border-color:var(--paars);background:rgba(146,56,230,.14);
+  transform:translateY(-.3rem)}
+.spelkeuze.aan .spelkaart{border-color:var(--groen);background:rgba(74,184,101,.1);
+  box-shadow:.3rem .3rem 0 rgba(74,184,101,.24)}
+.spelkaart input{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.spelfiguur{position:absolute;right:-1rem;top:50%;translate:0 -50%;width:6.5rem;
+  color:var(--paars);opacity:.11;pointer-events:none;
+  transition:opacity .3s ease,color .3s ease,transform .4s cubic-bezier(.2,1.1,.35,1)}
+.spelfiguur svg{width:100%;height:auto;fill:currentColor;display:block}
+.spelkaart:hover .spelfiguur{opacity:.2;transform:rotate(-6deg) scale(1.05)}
+.spelkeuze.aan .spelfiguur{color:var(--groen);opacity:.26}
+.spelnaam{display:block;position:relative;z-index:1;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:1.15rem;line-height:1.15;
+  color:var(--wit);text-transform:uppercase;margin-bottom:.55rem}
+.spelkeuze.aan .spelnaam{color:var(--groen-op)}
+/* de prijs is na de naam het belangrijkste op de kaart, dus die mag gelezen worden */
+.spelprijs{display:inline-block;position:relative;z-index:1;
+  font-family:"Archivo Black",Arial,sans-serif;
+  font-size:clamp(.92rem,2.6vw,1.05rem);letter-spacing:.02em;line-height:1;
+  text-transform:uppercase;padding:.34em .6em;
+  background:var(--paars-op);color:var(--zwart);
+  transform:rotate(-1.5deg);box-shadow:.16rem .16rem 0 rgba(0,0,0,.55)}
+.spelprijs.gratis{background:var(--groen);color:var(--zwart);
+  font-size:clamp(.7rem,2vw,.8rem);letter-spacing:.12em;padding:.45em .7em}
+.spelkeuze.aan .spelprijs{background:var(--groen-op)}
+.spelkeuze.aan .spelprijs.gratis{background:var(--groen-op)}
+.spelduur{display:block;position:relative;z-index:1;margin-top:.65rem;
+  font-size:.8rem;color:var(--grijs);line-height:1.5;max-width:15rem}
+.spelkaart input:focus-visible ~ .spelnaam{outline:2px solid var(--groen-op);outline-offset:4px}
+
+/* ---- gekozen spel bovenaan stap 2 ---- */
+.gekozen{margin:0 0 .4rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;
+  color:var(--zacht)}
+.gekozen strong{color:var(--wit)}
+.teller{margin:0 0 1.8rem;font-family:"Archivo Black",Arial,sans-serif;font-size:.7rem;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--grijs);font-variant-numeric:tabular-nums}
+
+/* ---- velden ---- */
+.veld{display:grid;gap:.45rem;margin:0 0 1.8rem}
+.veld label{margin:0;display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.74rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--groen)}
+.veld label em{font-style:normal;font-family:Archivo,Arial,sans-serif;font-weight:600;
+  font-size:.66rem;letter-spacing:.08em;padding:.15em .45em}
+.vereist{background:var(--paars);color:var(--wit)}
+.optioneel{border:1px solid var(--paars-diep);color:var(--grijs)}
+input,select,textarea{font:inherit;width:100%;padding:.8em .9em;
+  color:var(--wit);background:rgba(11,5,18,.7);
+  border:1px solid var(--paars-diep);border-bottom-width:2px;
+  transition:border-color .18s ease,background .18s ease}
+input:hover,select:hover{border-color:var(--paars)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--groen-op);
+  background:rgba(74,184,101,.07)}
+select option{background:#0B0512;color:var(--wit)}
+
+/* ---- antwoorden als chips ---- */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{margin:0;position:relative;font-family:Archivo,Arial,sans-serif;
+  text-transform:none;letter-spacing:0;color:var(--zacht)}
+.chip input{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.chip span{display:block;cursor:pointer;padding:.6em 1em;
+  border:1px solid var(--paars-diep);background:rgba(11,5,18,.7);color:var(--zacht);
+  font-size:.9rem;line-height:1.3;
+  transition:border-color .16s ease,background .16s ease,color .16s ease,transform .16s ease}
+.chip span:hover{border-color:var(--paars);color:var(--wit);transform:translateY(-2px)}
+.chip input:checked + span{background:var(--groen);border-color:var(--groen);color:var(--zwart);
+  font-weight:700;transform:rotate(-1deg)}
+.chip input:focus-visible + span{outline:2px solid var(--groen-op);outline-offset:3px}
+
+/* ---- foutmelding ---- */
+.fout{display:none;margin:0 0 1.3rem;padding:.85rem 1.1rem;
+  border-left:3px solid var(--paars-op);background:rgba(146,56,230,.18);
+  color:var(--wit);font-size:.9rem;line-height:1.5}
+.fout.aan{display:block;animation:schud .3s steps(2) 2}
+@keyframes schud{0%{transform:translateX(0)}50%{transform:translateX(-5px)}100%{transform:translateX(0)}}
+
+/* ---- acties onderaan een stap ---- */
+.acties{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;margin:0}
+.acties button{border:1px solid var(--paars-diep);background:none;color:var(--zacht);
+  padding:.9em 1.3em;font-family:"Archivo Black",Arial,sans-serif;font-size:.76rem;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .16s ease}
+.acties button:hover{border-color:var(--paars-op);color:var(--wit)}
+.acties button.hoofd{background:var(--groen);border-color:var(--groen);color:var(--zwart);
+  padding:1em 1.8em;font-size:.9rem;transform:rotate(-1deg);
+  box-shadow:.32rem .32rem 0 var(--paars)}
+.acties button.hoofd:hover{background:var(--groen-op);border-color:var(--groen-op);color:var(--zwart);
+  box-shadow:.48rem .48rem 0 var(--paars-op);transform:rotate(-1deg) translate(-.1rem,-.1rem)}
+.acties button.hoofd:active{box-shadow:.16rem .16rem 0 var(--paars);
+  transform:rotate(-1deg) translate(.1rem,.1rem)}
+
+/* ---- het overzicht als ticket ---- */
+.ticket{border:1px solid var(--paars);background:rgba(11,5,18,.88);
+  padding:1.7rem 1.8rem;margin:0 0 1.8rem;position:relative;overflow:hidden}
+.ticket::before,.ticket::after{content:"";position:absolute;width:1.2rem;height:1.2rem;
+  background:var(--zwart);border-radius:50%;top:50%;translate:0 -50%;z-index:2}
+.ticket::before{left:-.65rem}
+.ticket::after{right:-.65rem}
+.ticket-fig{position:absolute;right:-2rem;bottom:-2.5rem;width:11rem;color:var(--paars);
+  opacity:.1;pointer-events:none}
+.ticket-fig svg{width:100%;height:auto;fill:currentColor;display:block}
+.ticket > *:not(.ticket-fig){position:relative;z-index:1}
+.ticket-kop{margin:0 0 1.2rem;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:clamp(1.4rem,3.5vw,2rem);line-height:1.05;text-transform:uppercase;color:var(--groen)}
+.ticket-feiten{display:grid;grid-template-columns:auto 1fr;gap:.3rem 1.4rem;margin:0 0 1.4rem;
+  padding-bottom:1.4rem;border-bottom:1px dashed var(--paars-diep)}
+.ticket-feiten dt{margin:0;font-family:"Archivo Black",Arial,sans-serif;font-size:.66rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--grijs);line-height:1.9}
+.ticket-feiten dd{margin:0;color:var(--wit);font-weight:600}
+.ticket-lijst{list-style:none;margin:0;padding:0;display:grid;gap:1.2rem}
+.ticket-lijst > li{padding-top:1.2rem;border-top:1px dashed var(--paars-diep)}
+.ticket-lijst > li:first-child{padding-top:0;border-top:0}
+.ticket-naam{margin:0 0 .6rem;font-family:"Archivo Black",Arial,sans-serif;font-size:1.05rem;
+  text-transform:uppercase;color:var(--wit);line-height:1.25}
+.ticket-naam span{display:block;font-family:Archivo,Arial,sans-serif;font-weight:400;
+  font-size:.82rem;text-transform:none;color:var(--grijs)}
+.ticket-antw{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;margin:0;font-size:.85rem}
+.ticket-antw dt{margin:0;color:var(--grijs);line-height:1.7}
+.ticket-antw dd{margin:0;color:var(--zacht);text-align:right}
+
+/* ---- chips met een regeltje uitleg eronder ---- */
+.chips-groot{display:grid;grid-template-columns:1fr;gap:.6rem}
+@media (min-width:34rem){ .chips-groot{grid-template-columns:1fr 1fr} }
+.chips-groot .chip span{padding:.85em 1em;height:100%}
+.chips-groot .chip span{font-family:"Archivo Black",Arial,sans-serif;font-size:.86rem;
+  letter-spacing:.02em;color:var(--wit);text-transform:uppercase;line-height:1.2}
+.chips-groot .chip em{display:block;margin-top:.4rem;font-style:normal;
+  font-family:Archivo,Arial,sans-serif;font-weight:400;font-size:.8rem;letter-spacing:0;
+  text-transform:none;line-height:1.45;color:var(--grijs)}
+.chips-groot .chip span:hover{transform:none;border-color:var(--paars)}
+.chips-groot .chip span:hover em{color:var(--zacht)}
+.chips-groot .chip input:checked + span{transform:none;color:var(--zwart)}
+.chips-groot .chip input:checked + span em{color:rgba(0,0,0,.72)}

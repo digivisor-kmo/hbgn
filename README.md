@@ -1,25 +1,33 @@
 # hbgn.be
 
-De landingspagina van Halloween Boardgame Night, zaterdag 7 november 2026,
-Kerk Minnestraat, Lebbeke.
+De site van Halloween Boardgame Night, vierde editie. Zaterdag 7 november 2026,
+Kerk Minnestraat in Lebbeke, van 18:00 tot ongeveer 24:00. Gratis inkom.
 
-## Wat zit hier
+Live op **https://hbgn.be**.
 
-| bestand | wat |
-|---|---|
-| `index.html` | de volledige pagina: opmaak, teksten en gedrag zitten er allemaal in |
-| `assets/` | de vier foto's en het sfeergeluid |
-| `og.jpg` | de afbeelding die Facebook en WhatsApp tonen bij een gedeelde link |
-| `favicon.svg` | het icoontje in de browsertab |
-| `robots.txt`, `sitemap.xml` | voor zoekmachines |
-| `vercel.json` | caching- en beveiligingsregels |
+## Aan de slag
 
-## Publiceren
+```sh
+git clone https://github.com/digivisor-kmo/hbgn.git
+cd hbgn
+sh bron/maak.sh                 # bouwt index.html en privacy.html uit bron/
+node bron/test/server.mjs       # http://127.0.0.1:8100
+```
 
-Er valt niets te bouwen. Alles in deze map is het publicatieresultaat.
-Op Vercel: framework preset `Other`, build command leeg, output directory `.`.
+Publiceren is een push naar `main`. Vercel doet de rest.
 
-## Stand van zaken
+Wil je aan de site werken, lees dan eerst **[CLAUDE.md](CLAUDE.md)**. Daar staat hoe
+alles in elkaar zit, hoe het formulier werkt, welke schrijfregels gelden en welke
+valkuilen er al een keer toegeslagen hebben.
 
-Het inschrijfformulier werkt nog niet. Je kan alle stappen doorlopen en de
-bedanktpagina zien, maar er wordt niets bewaard en er vertrekt geen mail.
+## Wat staat waar
+
+De bewerkbare bestanden staan in `bron/`. Alles in de hoofdmap is gegenereerd of
+statisch en wordt door Vercel gepubliceerd. `index.html` en `privacy.html` bewerk je
+nooit met de hand.
+
+## Geen geheimen
+
+Deze repository is publiek. Het wachtwoord van de Google Sheet, het adres van het
+Apps Script en het spreadsheet-ID staan hier niet in. Die leven in de instellingen
+van Vercel en in het script zelf.

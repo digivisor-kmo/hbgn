@@ -1,0 +1,720 @@
+
+/* ================================================================
+   SFEER EN SCROLLBELEVING
+   De pagina is één donkere nacht. Elke band heeft een eigen foto
+   die trager beweegt dan de tekst en vloeit met een lange verloop
+   in de volgende. Geen harde scheidingen, geen losse tekeningen.
+   ================================================================ */
+:root{ --breed:76rem; --lees:46rem; }
+::selection{background:var(--groen);color:var(--zwart)}
+
+html{scroll-behavior:smooth}
+main{position:relative;z-index:1}
+.blad{max-width:none;margin:0;padding:0}
+.wrap{max-width:var(--breed);margin-inline:auto;
+  padding-inline:clamp(1.2rem,4vw,3rem);position:relative;z-index:2}
+
+/* ---- de band: het bouwblok van de hele pagina ---- */
+.band{position:relative;isolation:isolate;overflow:clip;
+  padding-block:clamp(4.5rem,12vw,9rem)}
+.band-foto{position:absolute;inset:-14% 0;z-index:-2;
+  background-size:cover;background-position:50% 50%;
+  transform:translate3d(0,var(--y,0px),0);will-change:transform}
+.band-foto::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4)}
+/* de sluier ligt stil terwijl de foto beweegt, zo lopen de banden in elkaar over */
+.band-sluier{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,
+    var(--zwart) 0%,rgba(0,0,0,.92) 9%,rgba(0,0,0,.5) 34%,
+    rgba(0,0,0,.58) 62%,rgba(0,0,0,.95) 91%,var(--zwart) 100%)}
+.band-maan .band-foto{background-image:var(--img-maan);background-position:50% 28%}
+.band-mist .band-foto{background-image:var(--img-mist);background-position:50% 42%}
+.band-botten .band-foto{background-image:var(--img-botten);background-position:50% 55%}
+.band-leeg{background:
+  radial-gradient(120% 70% at 50% 0%,rgba(146,56,230,.12),transparent 60%),var(--zwart)}
+.band-klok{background:
+  radial-gradient(70% 55% at 50% 46%,rgba(74,184,101,.09),transparent 70%),
+  radial-gradient(120% 80% at 50% 0%,rgba(146,56,230,.1),transparent 62%),var(--zwart)}
+.band-klok .wrap{text-align:center}
+.band-klok h2,.band-klok .kopfijn{text-align:left}
+
+/* een trage sliert damp onderaan elke band */
+.damp{position:absolute;inset:auto -12% -12% -12%;height:62%;z-index:-1;pointer-events:none;opacity:.6;
+  background:
+    radial-gradient(58% 100% at 18% 100%,rgba(146,56,230,.2),transparent 72%),
+    radial-gradient(48% 92% at 68% 100%,rgba(74,184,101,.1),transparent 72%),
+    radial-gradient(40% 80% at 92% 100%,rgba(146,56,230,.14),transparent 72%);
+  animation:damp 34s ease-in-out infinite alternate}
+@keyframes damp{from{transform:translate3d(-5%,0,0) scaleY(1)}
+                to{transform:translate3d(5%,0,0) scaleY(1.12)}}
+
+/* ---- korrel, vignet en bliksem over alles heen ---- */
+.korrel{position:fixed;inset:-50%;pointer-events:none;z-index:40;opacity:.11;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:korrel 5s steps(5) infinite}
+@keyframes korrel{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}
+  60%{transform:translate(-2%,-2%)}80%{transform:translate(3%,1%)}100%{transform:translate(0,0)}}
+.vignet{position:fixed;inset:0;pointer-events:none;z-index:39;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 46%,rgba(0,0,0,.55) 100%)}
+.bliksem{position:fixed;inset:0;pointer-events:none;z-index:41;opacity:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(178,92,255,.2) 45%,transparent)}
+.bliksem.flits{animation:flits .8s linear}
+@keyframes flits{0%{opacity:0}4%{opacity:.75}9%{opacity:.03}15%{opacity:.55}22%{opacity:.02}
+  31%{opacity:.34}44%{opacity:0}100%{opacity:0}}
+
+/* ---- de voortgangslijn bovenaan ---- */
+.voortgang{position:fixed;top:0;left:0;right:0;height:3px;z-index:45;pointer-events:none;
+  background:rgba(58,17,96,.5)}
+.voortgang i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(var(--sp,0));
+  background:linear-gradient(90deg,var(--paars),var(--groen-op))}
+
+/* ---- geluidsknop ---- */
+.geluid{position:fixed;right:clamp(.9rem,2vw,1.6rem);bottom:clamp(.9rem,2vw,1.6rem);z-index:46;
+  width:2.9rem;height:2.9rem;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--paars);background:rgba(11,5,18,.82);color:var(--paars-op);
+  backdrop-filter:blur(6px);cursor:pointer;padding:0;
+  transition:border-color .2s ease,color .2s ease,background .2s ease,transform .2s ease}
+.geluid:hover{border-color:var(--groen);color:var(--groen-op);transform:scale(1.08)}
+.geluid.aan{border-color:var(--groen);color:var(--zwart);background:var(--groen)}
+.geluid svg{width:1.15rem;height:1.15rem;fill:currentColor}
+
+/* ---- opplakken bij het scrollen ---- */
+@keyframes plakop{
+  0%{opacity:0;transform:translateY(-22px) rotate(var(--kant,-5deg)) scale(1.1)}
+  55%{opacity:1;transform:translateY(4px) rotate(calc(var(--kant,-5deg) * -.25)) scale(.985)}
+  78%{transform:translateY(-2px) rotate(calc(var(--kant,-5deg) * .12)) scale(1.005)}
+  100%{opacity:1;transform:none}
+}
+@keyframes stijgop{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.op{opacity:0}
+.op.in{animation:stijgop .7s cubic-bezier(.16,.84,.3,1) both;animation-delay:calc(var(--i,0) * 85ms)}
+.op.plak.in{animation:plakop .62s cubic-bezier(.2,1.25,.35,1) both;
+  animation-delay:calc(var(--i,0) * 85ms)}
+
+/* ================= BOE ================= */
+.boe-sectie{text-align:center;padding-block:clamp(5rem,15vw,11rem) clamp(3rem,8vw,6rem)}
+.boe-woord{margin:0;font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:clamp(4.5rem,21vw,16rem);line-height:.82;color:var(--groen);
+  letter-spacing:.02em;text-shadow:.035em .035em 0 var(--paars),0 0 7rem rgba(74,184,101,.4)}
+.boe-woord.in{animation:boeknal .75s cubic-bezier(.2,1.7,.35,1) both,
+  boebeef .09s steps(2) .75s 5}
+@keyframes boeknal{
+  0%{opacity:0;transform:scale(.3) rotate(-12deg)}
+  58%{opacity:1;transform:scale(1.09) rotate(3deg)}
+  100%{opacity:1;transform:scale(1) rotate(-2deg)}
+}
+@keyframes boebeef{
+  0%{transform:scale(1) rotate(-2deg) translate(0,0)}
+  50%{transform:scale(1.012) rotate(-1deg) translate(-8px,5px)}
+  100%{transform:scale(1) rotate(-2deg) translate(0,0)}
+}
+.boe-tekst{max-width:var(--lees);margin:clamp(1.8rem,5vw,3rem) auto 0;
+  font-size:clamp(1.05rem,1.9vw,1.32rem);line-height:1.66;color:var(--zacht)}
+.boe-tekst strong{color:var(--wit)}
+.boe-tekst w{display:inline-block;opacity:0;filter:blur(6px);transform:translateY(.5em)}
+.boe-tekst.in w{animation:woordop .5s ease-out forwards;
+  animation-delay:calc(.15s + var(--w) * 32ms)}
+@keyframes woordop{to{opacity:1;filter:blur(0);transform:none}}
+
+/* een pijl die zegt dat er meer is */
+.verder-pijl{display:block;margin:clamp(2.5rem,7vw,4.5rem) auto 0;width:1.4rem;height:2.4rem;
+  border:1px solid var(--paars);border-radius:1rem;position:relative;opacity:.7}
+.verder-pijl::after{content:"";position:absolute;left:50%;top:.45rem;translate:-50% 0;
+  width:.22rem;height:.5rem;border-radius:1px;background:var(--groen);
+  animation:zak 1.8s ease-in-out infinite}
+@keyframes zak{0%{transform:translateY(0);opacity:0}30%{opacity:1}100%{transform:translateY(.85rem);opacity:0}}
+
+/* ================= koppen ================= */
+h2{margin:0 0 clamp(1.6rem,3.5vw,2.6rem);font-family:"Archivo Black",Arial,sans-serif;
+  font-weight:400;font-size:clamp(1.8rem,5vw,3.2rem);line-height:.98;color:var(--wit);
+  text-transform:uppercase;letter-spacing:-.01em;text-wrap:balance;position:relative;
+  padding-left:clamp(1rem,2vw,1.6rem);text-shadow:0 .08em 1.4rem rgba(0,0,0,.9)}
+h2::before{content:"";position:absolute;left:0;top:.08em;bottom:.08em;width:.28rem;
+  background:var(--groen);box-shadow:0 0 1.4rem rgba(74,184,101,.6)}
+h2 em{font-style:normal;color:var(--groen)}
+.kopfijn{margin:-.8rem 0 clamp(1.8rem,4vw,2.6rem) clamp(1rem,2vw,1.6rem);
+  max-width:var(--lees);color:var(--zacht)}
+
+/* ================= de klok ================= */
+.klok{position:relative;margin:0;padding:0;list-style:none;
+  display:flex;align-items:flex-start;justify-content:center;gap:clamp(.2rem,1.2vw,1.1rem);
+  flex-wrap:nowrap}
+.klok li{text-align:center;min-width:0}
+.klok li.punt{align-self:flex-start;font-family:"Archivo Black",Arial,sans-serif;
+  color:var(--groen);opacity:.5;line-height:.92;padding-top:.02em;
+  font-size:clamp(2rem,8.5vw,5.6rem);
+  text-shadow:0 0 .4em rgba(74,184,101,.6);
+  animation:knipper 1s steps(2,jump-none) infinite}
+@keyframes knipper{0%,49%{opacity:.55}50%,100%{opacity:.12}}
+.cijfer{display:block;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:clamp(2.2rem,9.5vw,6.4rem);line-height:.92;color:var(--wit);
+  font-variant-numeric:tabular-nums;letter-spacing:-.03em;
+  text-shadow:0 0 .05em rgba(255,255,255,.5),0 0 .4em rgba(74,184,101,.55),
+              0 0 1.2em rgba(74,184,101,.35),.035em .035em 0 var(--paars);
+  animation:tl 7s linear infinite}
+/* een stervende buis: onregelmatig knipperen */
+@keyframes tl{
+  0%,17%,19%,21%,55%,57%,100%{opacity:1}
+  18%,20%{opacity:.34}
+  56%{opacity:.55}
+  82%{opacity:.86}
+}
+.klok li:nth-child(3) .cijfer{animation-delay:-2.3s}
+.klok li:nth-child(5) .cijfer{animation-delay:-4.1s}
+.klok li:nth-child(7) .cijfer{animation-delay:-5.6s}
+.eenheid{display:block;margin-top:.7rem;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:clamp(.5rem,1.3vw,.66rem);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--groen);opacity:.8}
+.klok li[data-t="s"] .cijfer{color:var(--groen-op);
+  text-shadow:0 0 .05em rgba(111,230,143,.6),0 0 .5em rgba(74,184,101,.7),
+              0 0 1.4em rgba(74,184,101,.45)}
+.klok li.tik .cijfer{animation:tik .55s ease-out}
+@keyframes tik{0%{transform:scale(1.07);filter:brightness(1.9)}100%{transform:scale(1);filter:none}}
+.klokvoet{margin:clamp(1.6rem,4vw,2.6rem) auto 0;color:var(--zacht);font-size:.95rem;
+  max-width:var(--lees);text-align:center}
+
+/* ================= het formulier ================= */
+.inschrijfraster{display:grid;gap:clamp(1.6rem,4vw,3.5rem)}
+@media (min-width:64rem){
+  .inschrijfraster{grid-template-columns:17rem minmax(0,1fr);align-items:start}
+  .stapzij{position:sticky;top:clamp(1.5rem,4vh,3rem)}
+}
+.stapvlak{max-width:var(--lees)}
+.stapbalk{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;
+  margin:0 0 1.6rem;padding:0}
+.stapbalk li{display:grid;gap:.5rem;padding-top:.7rem;border-top:4px solid var(--paars-diep);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.68rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--grijs);
+  transition:color .3s ease,border-color .3s ease}
+.stapbalk li.af{border-top-color:var(--groen);color:var(--groen)}
+.stapbalk li.nu{border-top-color:var(--groen-op);color:var(--wit)}
+.stapnr{font-variant-numeric:tabular-nums;opacity:.55}
+.stapbalk li.nu .stapnr,.stapbalk li.af .stapnr{opacity:1}
+@media (min-width:64rem){
+  .stapbalk{grid-template-columns:1fr;gap:0;margin-bottom:1.8rem}
+  .stapbalk li{grid-template-columns:1fr;align-items:center;gap:.9rem;
+    padding:.9rem 0;border-top:0;position:relative;padding-left:2.9rem}
+  .stapbalk li::before{content:"";position:absolute;left:.82rem;top:0;bottom:0;width:1px;
+    background:var(--paars-diep)}
+  .stapbalk li:first-child::before{top:50%}
+  .stapbalk li:last-child::before{bottom:50%}
+  .stapbalk li.af::before,.stapbalk li.nu::before{background:var(--groen)}
+  .stapbalk .stapnr{position:absolute;left:0;top:50%;translate:0 -50%;
+    width:1.65rem;height:1.65rem;display:grid;place-items:center;border-radius:50%;
+    border:1px solid var(--paars-diep);background:var(--zwart);font-size:.7rem;opacity:1;
+    transition:border-color .3s ease,background .3s ease,color .3s ease}
+  .stapbalk li.af .stapnr{border-color:var(--groen);color:var(--groen)}
+  .stapbalk li.nu .stapnr{border-color:var(--groen-op);background:var(--groen);color:var(--zwart)}
+  .stapnaam{font-size:.74rem}
+}
+.zij-fijn{margin:0;font-size:.82rem;line-height:1.65;color:var(--grijs);
+  border-left:2px solid var(--paars-diep);padding-left:.9rem}
+.zij-fijn b{color:var(--zacht);font-weight:600}
+@keyframes stapin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.stapvlak{animation:stapin .4s cubic-bezier(.2,.9,.3,1) both}
+
+/* ---- de infoknop bij een spelletje: rustig, tot je hem nodig hebt ---- */
+.spelkaart{padding:1.2rem 1.3rem 3.6rem}
+.infoknop{position:absolute;left:1.3rem;bottom:1.1rem;z-index:3;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:.45rem;padding:.42em .7em;
+  border:1px solid rgba(146,56,230,.42);background:none;color:var(--grijs);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;opacity:.72;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,
+             opacity .18s ease,transform .18s ease}
+.infoknop .teken{display:grid;place-items:center;width:1rem;height:1rem;border-radius:50%;
+  border:1px solid currentColor;font-size:.58rem;line-height:1;flex:none;
+  transition:background .18s ease,color .18s ease,border-color .18s ease}
+.spelkeuze:hover .infoknop{opacity:1;color:var(--zacht);border-color:var(--paars)}
+.infoknop:hover,.infoknop:focus-visible{opacity:1;background:var(--groen);border-color:var(--groen);
+  color:var(--zwart);transform:translateY(-.1rem)}
+.infoknop:hover .teken,.infoknop:focus-visible .teken{background:var(--zwart);color:var(--groen-op);
+  border-color:var(--zwart)}
+.gekozen .infoknop{position:static;opacity:1}
+
+/* ---- het venster ---- */
+dialog{max-width:34rem;width:calc(100% - 2rem);background:#0B0512;color:var(--zacht);
+  border:1px solid var(--paars);padding:0;box-shadow:0 2rem 5rem rgba(0,0,0,.85);overflow:hidden}
+dialog::backdrop{background:rgba(0,0,0,.88);backdrop-filter:blur(3px)}
+dialog[open]{animation:vensterop .28s cubic-bezier(.2,1.1,.35,1) both}
+@keyframes vensterop{from{opacity:0;transform:translateY(1.2rem) scale(.97)}to{opacity:1;transform:none}}
+#infoinhoud{position:relative;padding:1.7rem 1.7rem .6rem}
+.venstersluit{position:absolute;right:.6rem;top:.6rem;z-index:4;
+  width:2.2rem;height:2.2rem;padding:0;display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--paars-diep);background:rgba(0,0,0,.5);color:var(--zacht);
+  font-family:Archivo,Arial,sans-serif;font-size:1.35rem;line-height:1;cursor:pointer;
+  transition:border-color .18s ease,color .18s ease,background .18s ease,transform .18s ease}
+.venstersluit:hover{border-color:var(--groen);color:var(--groen-op);background:rgba(74,184,101,.12);
+  transform:rotate(90deg)}
+dialog h2{position:relative;z-index:1;padding-left:0;margin:0 2.4rem .9rem 0;
+  font-size:clamp(1.3rem,3.4vw,1.9rem);color:var(--wit);text-shadow:none}
+dialog h2::before{display:none}
+#infoinhoud p{position:relative;z-index:1}
+dialog dl{display:grid;grid-template-columns:auto 1fr;gap:.25rem 1.2rem;margin:1.3rem 0 0;
+  padding-top:1.2rem;border-top:1px dashed var(--paars-diep)}
+dialog dt{margin:0;font-family:"Archivo Black",Arial,sans-serif;font-size:.66rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--groen);line-height:1.9}
+dialog dd{margin:0;color:var(--wit);text-align:right}
+dialog > p{margin:0;padding:1rem 1.7rem 1.7rem;text-align:right}
+#infosluit{border:1px solid var(--paars-diep);background:none;color:var(--zacht);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.72rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:.75em 1.2em;cursor:pointer}
+#infosluit:hover{border-color:var(--groen);color:var(--groen-op)}
+
+/* ================= contact: één groen vlak dat de nacht openbreekt ================= */
+.groenvlak{position:relative;background:var(--groen);color:var(--zwart);
+  padding:clamp(2rem,5vw,3.6rem) clamp(1.6rem,4vw,3.4rem);
+  transform:rotate(-1.1deg);box-shadow:1rem 1rem 0 var(--paars),0 2rem 5rem rgba(0,0,0,.7);
+  display:grid;gap:1.6rem;align-items:center;overflow:hidden}
+@media (min-width:52rem){ .groenvlak{grid-template-columns:1fr auto} }
+.groenvlak::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E")}
+.groenvlak > *{position:relative;z-index:1}
+.groenvlak p.groenvlak-kop{margin:0 0 .9rem;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:clamp(1.6rem,4.5vw,2.9rem);line-height:.98;color:var(--zwart);
+  text-transform:uppercase;letter-spacing:-.01em;text-wrap:balance}
+.groenvlak p{margin:0;color:rgba(0,0,0,.82);line-height:1.6;max-width:36rem;
+  font-size:clamp(1rem,1.7vw,1.12rem)}
+.groenvlak p strong{color:var(--zwart)}
+.knop-zwart{display:inline-block;background:var(--zwart);color:var(--groen-op);
+  border:0;padding:1em 1.6em;text-decoration:none;white-space:nowrap;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.92rem;letter-spacing:.06em;
+  text-transform:uppercase;box-shadow:.4rem .4rem 0 rgba(0,0,0,.28);
+  transition:transform .18s ease,box-shadow .18s ease,color .18s ease}
+.knop-zwart:hover{color:var(--wit);transform:translate(-.12rem,-.12rem);
+  box-shadow:.6rem .6rem 0 rgba(0,0,0,.34)}
+.knop-zwart:active{transform:translate(.12rem,.12rem);box-shadow:.2rem .2rem 0 rgba(0,0,0,.28)}
+
+/* ================= partners ================= */
+/* drie vlakken die samen de volle breedte van de inhoud innemen */
+.partnerrij{list-style:none;padding:0;margin:0;display:grid;
+  gap:clamp(.9rem,2vw,1.6rem);
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr))}
+.partnerrij li{position:relative;border:1px dashed rgba(146,56,230,.45);
+  background:rgba(11,5,18,.6);aspect-ratio:5/2;overflow:hidden;
+  display:grid;place-content:center;gap:.6rem;text-align:center;padding:1rem;
+  transition:border-color .25s ease,background .25s ease,transform .25s ease}
+@media (max-width:640px){
+  .partnerrij li{aspect-ratio:16/5}
+}
+.partnerrij li:hover{border-color:var(--groen);background:rgba(74,184,101,.08);
+  transform:translateY(-.3rem) rotate(-1deg)}
+.vraagteken{font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:clamp(2.6rem,6vw,3.8rem);line-height:.9;color:var(--paars);
+  text-shadow:0 0 1.6rem rgba(146,56,230,.5);
+  transition:color .25s ease,text-shadow .25s ease}
+.partnerrij li:hover .vraagteken{color:var(--groen);text-shadow:0 0 2rem rgba(74,184,101,.7)}
+.partnernaam{font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grijs)}
+.partner-onder{margin:1.3rem 0 0;font-size:.85rem;color:var(--grijs)}
+.partner-onder a{color:var(--paars-op)}
+
+/* ================= de voet: een kerkhofje ================= */
+footer{position:relative;overflow:hidden;border-top:0;margin-top:0;
+  padding-block:clamp(4rem,10vw,7rem) clamp(2.5rem,6vw,4rem);
+  background:
+    radial-gradient(70% 60% at 50% 8%,rgba(146,56,230,.16),transparent 62%),
+    linear-gradient(180deg,var(--zwart) 0%,#0a0512 55%,#050209 100%)}
+/* de grond waarop de steen staat */
+.grond{position:absolute;left:-5%;right:-5%;bottom:0;height:42%;pointer-events:none;
+  background:
+    radial-gradient(60% 100% at 50% 100%,rgba(146,56,230,.16),transparent 72%),
+    linear-gradient(180deg,transparent 0%,rgba(58,17,96,.28) 62%,rgba(58,17,96,.5) 100%);
+  animation:damp 40s ease-in-out infinite alternate}
+.voet{text-align:center;position:relative;z-index:2}
+
+.grafsteen{position:relative;width:min(100%,22rem);margin:0 auto clamp(2.6rem,6vw,4rem);
+  padding:clamp(2.4rem,5.5vw,3.2rem) clamp(1.4rem,3vw,2rem) clamp(1.8rem,4vw,2.4rem);
+  background:linear-gradient(168deg,#2a1840 0%,#1b1029 46%,#100a1a 100%);
+  border:1px solid rgba(146,56,230,.3);border-radius:12rem 12rem .3rem .3rem;
+  box-shadow:inset 0 .6rem 3rem rgba(0,0,0,.8),inset .12rem 0 0 rgba(255,255,255,.05),
+             0 1.8rem 4rem rgba(0,0,0,.75);
+  transform:rotate(-1.4deg);
+  transition:transform .5s cubic-bezier(.2,1.05,.35,1),box-shadow .5s ease}
+.grafsteen:hover{transform:rotate(1.1deg) translateY(-.5rem);
+  box-shadow:inset 0 .6rem 3rem rgba(0,0,0,.8),0 2.2rem 5rem rgba(74,184,101,.2)}
+/* scheur in de steen */
+.grafsteen::before{content:"";position:absolute;left:22%;top:14%;width:1px;height:26%;
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.7),transparent);
+  transform:rotate(9deg)}
+/* de schaduw op de grond */
+.grafsteen::after{content:"";position:absolute;left:50%;bottom:-1.3rem;translate:-50% 0;
+  width:78%;height:1.8rem;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(146,56,230,.3),transparent 76%)}
+
+.grafkruis{display:block;font-size:1.4rem;line-height:1;color:var(--paars);opacity:.5;
+  margin-bottom:1rem}
+.grafboven{display:block;font-family:"Archivo Black",Arial,sans-serif;font-size:.62rem;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--grijs);opacity:.7;
+  margin-bottom:.9rem}
+.grafkop{display:block;font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:clamp(2.1rem,6vw,3.1rem);line-height:1.02;letter-spacing:.02em;
+  color:#0c0616;text-shadow:0 1px 0 rgba(198,186,212,.34),0 -1px 0 rgba(0,0,0,.85)}
+.grafjaar{display:block;margin-top:1rem;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--paars-op);opacity:.75}
+.grafregel{margin:1.3rem 0 0;padding-top:1.1rem;border-top:1px solid rgba(146,56,230,.2);
+  font-size:.82rem;line-height:1.65;color:var(--zacht);font-style:italic}
+
+.handtekening{margin:0 0 clamp(1.8rem,4vw,2.6rem);
+  font-family:Creepster,"Archivo Black",Impact,sans-serif;text-transform:none;
+  font-size:clamp(1.2rem,3vw,1.6rem);line-height:1.3;letter-spacing:.02em;color:var(--grijs)}
+.handtekening .naam{display:block;margin-top:.2rem;
+  font-size:clamp(2.4rem,8vw,4.6rem);color:var(--groen);line-height:1.04;
+  text-shadow:.02em .02em 0 var(--paars),0 0 2.5rem rgba(74,184,101,.5);
+  animation:naamgloed 5.5s ease-in-out infinite}
+@keyframes naamgloed{
+  0%,100%{text-shadow:.02em .02em 0 var(--paars),0 0 2.2rem rgba(74,184,101,.42)}
+  46%{text-shadow:.02em .02em 0 var(--paars),0 0 4rem rgba(74,184,101,.8)}
+  49%{text-shadow:.02em .02em 0 var(--paars),0 0 .6rem rgba(74,184,101,.2)}
+  52%{text-shadow:.02em .02em 0 var(--paars),0 0 3.4rem rgba(74,184,101,.7)}
+}
+
+.voet-fb{margin:0 0 clamp(1.6rem,4vw,2.4rem)}
+.voet-fb a{display:inline-flex;align-items:center;gap:.6rem;
+  border:1px solid rgba(146,56,230,.5);background:rgba(11,5,18,.6);padding:.85em 1.3em;
+  color:var(--wit);text-decoration:none;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.74rem;letter-spacing:.1em;
+  text-transform:uppercase;transition:all .2s ease}
+.voet-fb a:hover{border-color:var(--groen);background:rgba(74,184,101,.12);color:var(--groen-op)}
+
+.voet-klein{max-width:34rem;margin:0 auto;padding-top:clamp(1.6rem,4vw,2.2rem);
+  border-top:1px solid rgba(146,56,230,.22)}
+footer p,footer p:first-child{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
+  color:var(--grijs);font-size:.82rem;line-height:1.75;margin:0;text-transform:none;
+  letter-spacing:0}
+footer .handtekening,footer p.handtekening{font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:clamp(1.2rem,3vw,1.6rem);color:var(--grijs)}
+footer a{color:var(--paars-op)}
+footer a:hover{color:var(--groen-op)}
+
+/* een gefluister dat je zelf moet vinden */
+.fluister{margin:clamp(1.8rem,4vw,2.6rem) 0 0;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.34em;
+  text-transform:uppercase;color:rgba(146,56,230,.45);cursor:default;
+  transition:color .3s ease}
+.fluister:hover{color:var(--paars)}
+.fluister span{display:block;margin-top:.7rem;
+  font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:1.15rem;letter-spacing:.04em;text-transform:none;color:transparent;
+  transition:color .6s ease,text-shadow .6s ease}
+.fluister:hover span{color:var(--groen);text-shadow:0 0 1.6rem rgba(74,184,101,.6)}
+
+.let-op{border:1px dashed var(--paars-diep);padding:.8rem 1rem;
+  margin:2rem auto;max-width:var(--breed);font-size:.8rem;color:var(--grijs);
+  position:relative;z-index:2}
+
+/* ================= bedanktpagina ================= */
+.dank{max-width:52rem}
+.dank-kop{margin:0 0 1.5rem;font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-weight:400;font-size:clamp(2.6rem,9vw,5.5rem);line-height:.94;color:var(--groen);
+  text-transform:none;letter-spacing:.01em;padding:0;
+  text-shadow:.03em .03em 0 var(--paars),0 0 4rem rgba(74,184,101,.4)}
+.dank-kop::before{display:none}
+.dank h2{font-size:clamp(1.3rem,3.4vw,1.9rem);margin-top:clamp(2rem,5vw,3rem)}
+.dank-bevestiging{border:1px solid var(--groen);background:rgba(74,184,101,.09);
+  padding:1.4rem 1.6rem;margin:0 0 2rem;box-shadow:.35rem .35rem 0 rgba(74,184,101,.2)}
+.dank-bevestiging strong{display:block;font-family:"Archivo Black",Arial,sans-serif;
+  font-size:1.15rem;text-transform:uppercase;color:var(--wit);margin-bottom:.4rem}
+.dank-stappen{list-style:none;counter-reset:d;margin:0;padding:0;display:grid;gap:1rem}
+.dank-stappen li{counter-increment:d;position:relative;padding-left:2.6rem;color:var(--zacht);
+  line-height:1.65}
+.dank-stappen li::before{content:counter(d);position:absolute;left:0;top:.05em;
+  width:1.7rem;height:1.7rem;display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--paars);color:var(--paars-op);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.72rem}
+.dank-lach{margin:2rem 0 0;font-family:Creepster,"Archivo Black",Impact,sans-serif;
+  font-size:clamp(1.6rem,5vw,2.6rem);color:var(--paars-op);line-height:1.1;letter-spacing:.02em}
+.dank-fb{display:inline-flex;align-items:center;gap:.6rem;margin:0 0 1rem;
+  border:1px solid var(--paars);background:rgba(146,56,230,.12);padding:.9em 1.3em;
+  color:var(--wit);text-decoration:none;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.8rem;letter-spacing:.08em;
+  text-transform:uppercase;transition:all .18s ease}
+.dank-fb:hover{border-color:var(--groen);background:rgba(74,184,101,.12);color:var(--groen-op)}
+.dank-terug{display:inline-block;margin-top:1.5rem;font-size:.85rem}
+
+/* ---- velden niet breder dan nodig ---- */
+.veld input[type="text"],.veld input[type="email"]{max-width:30rem}
+.veld-smal select{max-width:16rem}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .op,.boe-tekst w{opacity:1!important;filter:none!important;transform:none!important}
+  .band-foto{transform:none!important}
+  html{scroll-behavior:auto}
+}
+.kop-later{margin-top:clamp(4.5rem,11vw,8rem)}
+
+/* de hero wijkt terug terwijl je hem verlaat */
+.hero-beeld{will-change:transform}
+.hero-in{will-change:transform,opacity}
+
+/* ---- het licht dat je meedraagt ---- */
+.toorts{position:fixed;inset:0;pointer-events:none;z-index:38;mix-blend-mode:screen;opacity:0;
+  transition:opacity .6s ease;
+  background:radial-gradient(20rem 20rem at var(--mx,50%) var(--my,50%),
+    rgba(146,56,230,.16),rgba(74,184,101,.06) 42%,transparent 68%)}
+.toorts.aan{opacity:1}
+
+/* ---- vonken die traag opstijgen ---- */
+.vonken{position:fixed;inset:0;pointer-events:none;z-index:37;overflow:hidden;opacity:.7}
+.vonken i{position:absolute;bottom:-4vh;width:3px;height:3px;border-radius:50%;
+  background:var(--groen);box-shadow:0 0 .5rem rgba(74,184,101,.9);
+  animation:vonk linear infinite}
+.vonken i:nth-child(even){background:var(--paars-op);
+  box-shadow:0 0 .5rem rgba(178,92,255,.9);width:2px;height:2px}
+@keyframes vonk{
+  0%{transform:translate3d(0,0,0);opacity:0}
+  12%{opacity:.9}
+  70%{opacity:.55}
+  100%{transform:translate3d(var(--dx,2vw),-108vh,0);opacity:0}
+}
+
+/* ---- de koppen flikkeren aan ---- */
+.kop.in{animation:kopaan .9s steps(1) both}
+@keyframes kopaan{
+  0%{opacity:0}8%{opacity:1}12%{opacity:.1}18%{opacity:1}24%{opacity:.25}
+  30%{opacity:1}36%{opacity:.6}42%,100%{opacity:1}
+}
+.kop::before{animation:staafgloed 3.4s ease-in-out infinite}
+@keyframes staafgloed{
+  0%,100%{box-shadow:0 0 1.2rem rgba(74,184,101,.5)}
+  50%{box-shadow:0 0 2.2rem rgba(74,184,101,.85)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .toorts,.vonken{display:none}
+  .kop.in{animation:none}
+}
+
+/* ---- de hero donkerder, zodat het lampje en de bliksem tellen ---- */
+.hero-beeld::after{background:
+  radial-gradient(72% 58% at 50% 46%,rgba(0,0,0,.8),rgba(0,0,0,.55) 62%,rgba(0,0,0,.42) 80%),
+  linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.5) 26%,rgba(0,0,0,.72) 74%,var(--zwart) 100%)!important}
+.hero{background:var(--zwart)}
+
+/* ---- het logo van LAB, klein en centraal ---- */
+.lab{position:absolute;top:clamp(1.4rem,3.4vw,2.6rem);left:50%;translate:-50% 0;z-index:4;
+  width:clamp(3rem,5.5vw,4.3rem);transition:none;
+  filter:drop-shadow(0 .2em .8rem rgba(0,0,0,.9))}
+.lab svg{width:100%;height:auto}
+@media (max-width:640px){ .lab{width:2.8rem;top:.9rem} }
+
+/* ---- de regelkaarten: meer om naar te kijken ---- */
+.regelkaart{padding-top:clamp(1.6rem,3vw,2.2rem)}
+.regelnr{position:absolute;right:clamp(1rem,2vw,1.4rem);top:clamp(1rem,2vw,1.3rem);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.78rem;letter-spacing:.14em;
+  color:var(--paars);opacity:.5;font-variant-numeric:tabular-nums;
+  transition:color .25s ease,opacity .25s ease}
+.regelkaart:hover .regelnr{color:var(--groen);opacity:.9}
+.regelkaart h3{margin:0 0 .8rem;padding-bottom:.7rem;position:relative;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.72rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--groen)}
+.regelkaart h3::after{content:"";position:absolute;left:0;bottom:0;width:2.2rem;height:1px;
+  background:var(--paars);transition:width .35s cubic-bezier(.2,1,.35,1),background .25s ease}
+.regelkaart:hover h3::after{width:100%;background:var(--groen)}
+.regellead{margin:0 0 .6rem;font-family:"Archivo Black",Arial,sans-serif;font-weight:400;
+  font-size:clamp(1.05rem,1.9vw,1.35rem);line-height:1.2;color:var(--wit);
+  text-transform:uppercase;letter-spacing:-.005em;text-wrap:balance}
+.regeltekst{margin:0;color:var(--zacht);line-height:1.68;font-size:.94rem}
+.regelkaart strong{color:var(--groen-op);font-weight:700}
+.stempel{display:inline-block;margin-top:1.1rem;padding:.42em .8em;
+  border:1px dashed rgba(146,56,230,.6);transform:rotate(-2deg);
+  font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--paars-op);
+  transition:border-color .25s ease,color .25s ease,transform .25s ease}
+.regelkaart:hover .stempel{border-color:var(--groen);color:var(--groen-op);transform:rotate(1deg)}
+
+/* ---- het groene vlak: een schim die meekijkt, netjes binnen het kader ---- */
+.groenvlak{overflow:hidden}
+.groenvlak .schim{position:absolute;right:-2%;bottom:-14%;width:min(15rem,34%);z-index:0;
+  color:#000;opacity:.07;pointer-events:none;
+  transition:opacity .5s ease,transform .6s cubic-bezier(.2,1,.35,1)}
+.groenvlak .schim svg{width:100%;height:auto;fill:currentColor;display:block}
+.groenvlak:hover .schim{opacity:.13;transform:translateY(-.5rem) rotate(-2deg)}
+.groenvlak p.groenvlak-kop{position:relative}
+.groenvlak p.groenvlak-kop::after{content:"";position:absolute;left:0;bottom:-.35rem;
+  width:3.4rem;height:3px;background:var(--zwart);opacity:.5}
+
+/* ---- de balk bovenaan, na de affiche ---- */
+.topbalk{position:fixed;top:0;left:0;right:0;z-index:43;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.55rem clamp(.8rem,3vw,1.6rem) .55rem clamp(1rem,3vw,2rem);
+  background:rgba(6,3,11,.82);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(146,56,230,.28);
+  transform:translateY(-104%);opacity:0;pointer-events:none;
+  transition:transform .38s cubic-bezier(.2,.9,.3,1),opacity .3s ease}
+.topbalk.aan{transform:translateY(0);opacity:1;pointer-events:auto}
+.topbalk-feit{font-family:"Archivo Black",Arial,sans-serif;font-size:.62rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grijs);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.topbalk-knop{flex:none;background:var(--groen);color:var(--zwart);text-decoration:none;
+  padding:.72em 1.25em;font-family:"Archivo Black",Arial,sans-serif;font-size:.74rem;
+  letter-spacing:.08em;text-transform:uppercase;
+  box-shadow:.22rem .22rem 0 var(--paars);
+  transition:background .16s ease,box-shadow .16s ease,transform .16s ease}
+.topbalk-knop:hover{background:var(--groen-op);color:var(--zwart);
+  box-shadow:.34rem .34rem 0 var(--paars-op);transform:translate(-.06rem,-.06rem)}
+@media (max-width:34rem){ .topbalk-feit{display:none} .topbalk{justify-content:flex-end} }
+.voortgang{top:0}
+
+/* ================================================================
+   DE AFFICHE OP EEN TELEFOON
+   Het logo krijgt een eigen strook, de plakkers gaan onder het
+   woordmerk staan in plaats van eroverheen.
+   ================================================================ */
+@media (max-width:700px){
+  .hero-in{padding-top:clamp(3.2rem,12.5vw,4.6rem);
+    padding-inline:clamp(1.3rem,6vw,2.2rem);gap:clamp(1rem,3.5vw,1.6rem)}
+  .lab{top:clamp(.9rem,3.5vw,1.5rem);width:clamp(2.8rem,11vw,3.4rem)}
+  .meta{font-size:clamp(.6rem,3vw,.72rem);line-height:1.75}
+  .merk-vlak{padding-bottom:clamp(4.4rem,17vw,6rem)}
+  .plakker-datum{left:0;bottom:0;width:clamp(4.4rem,18vw,6rem);transform:rotate(-4deg)}
+  .plakker-gratis{right:0;bottom:0;width:clamp(6.6rem,27vw,9rem);transform:rotate(5deg)}
+  .hero-actie{margin-top:clamp(1rem,4vw,1.8rem)}
+  .hero-fijn{margin-top:1.1rem}
+}
+
+
+/* ================================================================
+   HET WACHTSCHERM
+   De zandloper draait terwijl de Poortwachter je naam opschrijft.
+   ================================================================ */
+.wachten{position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  background:rgba(4,2,8,.92);backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .25s ease,visibility .25s}
+.wachten.aan{opacity:1;visibility:visible;pointer-events:auto}
+.wachten-in{text-align:center;padding:2rem;max-width:22rem}
+
+.wachten-glas{width:clamp(3.4rem,12vw,4.6rem);margin:0 auto;color:var(--groen);
+  filter:drop-shadow(0 0 1.6rem rgba(74,184,101,.55));
+  animation:keer 2.4s cubic-bezier(.7,0,.3,1) infinite}
+.wachten-glas svg{width:100%;height:auto;fill:currentColor;display:block}
+@keyframes keer{
+  0%,62%{transform:rotate(0deg)}
+  78%,100%{transform:rotate(180deg)}
+}
+
+.wachten-tekst{margin:clamp(1.4rem,4vw,2rem) 0 0;
+  font-family:"Archivo Black",Arial,sans-serif;font-size:clamp(.78rem,2.6vw,.92rem);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--wit);line-height:1.6}
+.wachten-tekst i{display:inline-block;width:.42em;font-style:normal;
+  animation:stip 1.2s steps(1) infinite}
+.wachten-tekst i::before{content:"."}
+.wachten-tekst i:nth-child(2){animation-delay:.2s}
+.wachten-tekst i:nth-child(3){animation-delay:.4s}
+@keyframes stip{0%,60%{opacity:0}61%,100%{opacity:1}}
+
+/* een dunne balk die aangeeft dat er iets loopt */
+.wachten-in::after{content:"";display:block;width:min(14rem,60vw);height:2px;
+  margin:clamp(1.2rem,3vw,1.8rem) auto 0;background:rgba(146,56,230,.3);
+  position:relative;overflow:hidden}
+.wachten.aan .wachten-in::after{
+  background:linear-gradient(90deg,rgba(146,56,230,.25) 0%,var(--groen) 50%,rgba(146,56,230,.25) 100%);
+  background-size:220% 100%;animation:schuifbalk 1.4s ease-in-out infinite}
+@keyframes schuifbalk{0%{background-position:120% 0}100%{background-position:-20% 0}}
+
+@media (prefers-reduced-motion:reduce){
+  .wachten-glas{animation:none}
+  .wachten-tekst i{animation:none}
+  .wachten.aan .wachten-in::after{animation:none;background:var(--groen)}
+}
+
+/* ================================================================
+   DE PRIVACYPAGINA
+   Rustig leesbaar, wel in dezelfde nacht.
+   ================================================================ */
+.juridisch{padding-block:clamp(2rem,6vw,4rem)}
+/* de kop blijft op leesbreedte, de rest mag de volle breedte gebruiken */
+.juridisch-kop{max-width:var(--lees);margin-bottom:clamp(2.4rem,5vw,3.4rem)}
+/* twee kolommen die zichzelf uitbalanceren, één kolom op een smal scherm */
+.juridisch-blokken{columns:29rem 2;column-gap:clamp(2.4rem,5vw,4.5rem)}
+.jblok{break-inside:avoid;margin-bottom:clamp(1.8rem,3.5vw,2.8rem)}
+.jblok > :last-child{margin-bottom:0}
+.juridisch h1{margin:0 0 clamp(1.4rem,4vw,2rem);
+  font-family:Creepster,"Archivo Black",Impact,sans-serif;font-weight:400;
+  font-size:clamp(2.2rem,7vw,4rem);line-height:1;color:var(--groen);
+  text-transform:none;letter-spacing:.01em;
+  text-shadow:.03em .03em 0 var(--paars),0 0 3rem rgba(74,184,101,.4)}
+.juridisch h2{margin:clamp(2.2rem,5vw,3rem) 0 .9rem;
+  font-size:clamp(1.1rem,2.6vw,1.4rem);padding-left:.9rem;text-shadow:none}
+.juridisch .jblok h2{margin-top:0}
+.juridisch h2::before{width:.22rem;box-shadow:none}
+.juridisch p{margin:0 0 1rem;color:var(--zacht);line-height:1.72}
+.juridisch strong{color:var(--wit)}
+.juridisch a:not(.knop){color:var(--groen-op);text-decoration:underline;text-underline-offset:3px}
+.juridisch a:not(.knop):hover{color:var(--wit)}
+.juridisch ul{margin:0 0 1.2rem;padding-left:1.2rem;color:var(--zacht);line-height:1.72}
+.juridisch li{margin-bottom:.5rem}
+.juridisch li::marker{color:var(--paars)}
+.inleiding-groot{font-size:clamp(1.02rem,2vw,1.18rem);color:var(--zacht)!important;
+  border-left:2px solid var(--paars);padding-left:1rem}
+.datum{font-family:"Archivo Black",Arial,sans-serif;font-size:.64rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--grijs)!important;margin-bottom:0!important}
+/* de knop blijft precies dezelfde als op de startpagina */
+.juridisch .knop{margin:.4rem 0 .8rem}
+.terug-boven,.terug-onder{font-family:"Archivo Black",Arial,sans-serif;font-size:.68rem;
+  letter-spacing:.14em;text-transform:uppercase}
+.terug-boven{margin-bottom:clamp(1.6rem,4vw,2.4rem)!important}
+.terug-onder{margin-top:clamp(2.4rem,6vw,3.5rem)!important;
+  padding-top:clamp(1.6rem,4vw,2.2rem);border-top:1px solid var(--paars-diep)}
+
+/* het kleine linkje onderaan de startpagina */
+.voet-recht{margin-top:1.1rem!important;font-size:.76rem}
+.voet-recht a{color:var(--grijs);text-decoration:underline;text-underline-offset:3px}
+.voet-recht a:hover{color:var(--groen-op)}
+
+/* ================================================================
+   DE SPIN
+   Staat vast aan het scherm, niet aan de pagina, dus scrollen doet
+   haar niets. Ze wordt door JavaScript van punt naar punt gestuurd,
+   met een overgang per stap, zodat ze echt lijkt rond te lopen.
+   ================================================================ */
+.spinnenveld{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden;
+  contain:strict}
+.spin{position:absolute;left:0;top:0;width:var(--sp,110px);
+  margin-left:calc(var(--sp,110px) / -2);margin-top:calc(var(--sp,110px) / -2);
+  opacity:0;transform:translate3d(var(--x,0px),var(--y,0px),0);
+  transition:transform var(--dur,600ms) var(--soep,linear),opacity .22s linear;
+  will-change:transform}
+.spin.aan{opacity:1}
+/* het lijf draait naar de kant waar ze naartoe gaat */
+.spin-lijf{transform:rotate(var(--r,0deg));transition:transform .2s ease-out}
+
+/* Ze mag niet oplichten. Ze slikt licht op: een brede zwarte waas die de
+   pagina onder haar verduistert, één haardun randje zodat de vorm nog leest,
+   en een heel flauwe paarse walm die je eerder voelt dan ziet. */
+.spin svg{display:block;width:100%;height:auto;transform-origin:50% 10%;
+  filter:drop-shadow(0 0 1px rgba(214,205,225,.42))
+         drop-shadow(0 0 12px rgba(0,0,0,.92))
+         drop-shadow(0 0 34px rgba(146,56,230,.12))}
+
+/* het draadje hangt van de bovenrand tot aan de spin */
+.spin-draad{position:absolute;left:50%;bottom:50%;width:1px;height:320vh;display:none;
+  background:linear-gradient(180deg,rgba(214,205,225,.04),rgba(214,205,225,.3))}
+.spin.draad .spin-draad{display:block}
+.spin.bengelt svg{animation:bengel 2.3s ease-in-out infinite}
+@keyframes bengel{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+
+/* de poten krabbelen alleen als ze zich verplaatst, de ene helft tegen de
+   andere in. Staat ze stil, dan staat ze ook echt doodstil. */
+.poot-a,.poot-b{transform-box:fill-box;transform-origin:50% 42%}
+.spin.loopt .poot-a{animation:krabbel-a .19s ease-in-out infinite}
+.spin.loopt .poot-b{animation:krabbel-b .19s ease-in-out infinite}
+@keyframes krabbel-a{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes krabbel-b{0%,100%{transform:rotate(6deg)} 50%{transform:rotate(-6deg)}}
+
+/* stilstaan doet ze niet zomaar: ze kijkt en af en toe knippert ze */
+.spin.aan:not(.loopt) .ogen{animation:knipper 4.6s ease-in-out var(--knip,0s) infinite}
+@keyframes knipper{
+  0%,80%,100%{opacity:1}
+  82%{opacity:.04}
+  84.5%{opacity:1}
+  89%{opacity:1}
+  91%{opacity:.04}
+  93.5%{opacity:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .spinnenveld{display:none}
+}

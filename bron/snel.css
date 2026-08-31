@@ -1,0 +1,52 @@
+
+/* ================================================================
+   SNELHEID
+   Wat op een telefoon duur is, gaat eruit of gaat uit. De sfeer
+   blijft, maar niets betaalt nog per beeldje wat het ook één keer
+   kan betalen.
+   ================================================================ */
+
+/* ---- korrel: geen mengmodus en geen beweging op kleine schermen ---- */
+@media (max-width:900px){
+  .korrel{position:fixed;inset:0;mix-blend-mode:normal;opacity:.07;animation:none}
+  .damp{animation:none}
+  .vignet{background:radial-gradient(130% 95% at 50% 45%,transparent 52%,rgba(0,0,0,.5) 100%)}
+  .topbalk{backdrop-filter:none;background:rgba(6,3,11,.95)}
+  .geluid{backdrop-filter:none;background:rgba(6,3,11,.92)}
+  dialog::backdrop{backdrop-filter:none;background:rgba(0,0,0,.93)}
+  /* een gloed van 7rem uitrekenen over letters van 100px is duur voor niets */
+  .boe-woord{text-shadow:.035em .035em 0 var(--paars),0 0 2rem rgba(74,184,101,.45)}
+  .cijfer{text-shadow:0 0 .3em rgba(74,184,101,.6),.035em .035em 0 var(--paars)}
+  .klok li[data-t="s"] .cijfer{text-shadow:0 0 .35em rgba(74,184,101,.75)}
+  /* box-shadow animeren betekent elk beeldje opnieuw tekenen */
+  .kop::before{animation:none;box-shadow:0 0 1.6rem rgba(74,184,101,.6)}
+  .handtekening .naam{animation:none;
+    text-shadow:.02em .02em 0 var(--paars),0 0 2.4rem rgba(74,184,101,.5)}
+}
+
+/* ---- de foto's schuiven alleen mee waar dat gratis is ---- */
+@media (max-width:900px){
+  .band-foto{will-change:auto;transform:none}
+}
+
+/* ---- letters: de val van de eigen bestanden ---- */
+body{font-family:Archivo,"Helvetica Neue",Arial,sans-serif}
+
+/* ---- minder lagen die permanent wakker blijven ---- */
+.hero-beeld,.hero-in{will-change:auto}
+.hero.beweegt .hero-beeld,.hero.beweegt .hero-in{will-change:transform}
+
+/* ---- niets van dit alles voor wie beweging uitzet ---- */
+@media (prefers-reduced-motion:reduce){
+  .korrel,.damp,.vonken,.toorts{animation:none!important}
+}
+
+/* ---- Creepster is een sierletter en staat onder de vouw: die mag wachten ---- */
+html:not(.laat) .boe-woord,
+html:not(.laat) .grafkop,
+html:not(.laat) .handtekening,
+html:not(.laat) .handtekening .naam,
+html:not(.laat) .vraagteken,
+html:not(.laat) .dank-kop,
+html:not(.laat) .dank-lach,
+html:not(.laat) .fluister span{font-family:"Archivo Black",Impact,sans-serif}

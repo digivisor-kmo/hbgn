@@ -1,0 +1,1164 @@
+%%DEFS%%
+
+<div class="voortgang" aria-hidden="true"><i></i></div>
+<div class="vignet" aria-hidden="true"></div>
+<div class="korrel" aria-hidden="true"></div>
+<div class="bliksem" id="bliksem" aria-hidden="true"></div>
+<div class="toorts" id="toorts" aria-hidden="true"></div>
+<div class="vonken" id="vonken" aria-hidden="true"></div>
+
+<div class="topbalk" id="topbalk">
+  <span class="topbalk-feit">Za 7 nov 2026 &middot; Kerk Minnestraat, Lebbeke</span>
+  <a class="topbalk-knop" href="#inschrijven">Schrijf je in</a>
+</div>
+
+<button type="button" class="geluid" id="geluid" aria-pressed="false" aria-label="Zet de sfeer aan">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+</button>
+
+<div class="wachten" id="wachten" role="status" aria-live="polite" aria-label="Bezig met noteren">
+  <div class="wachten-in">
+    <div class="wachten-glas" aria-hidden="true">
+      <svg viewBox="%%VB:zandloper%%" focusable="false"><use href="#s-zandloper"/></svg>
+    </div>
+    <p class="wachten-tekst">Ik noteer je naam<i></i><i></i><i></i></p>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<dialog id="infovenster">
+  <button type="button" class="venstersluit" id="infokruis" aria-label="Venster sluiten">&times;</button>
+  <div id="infoinhoud"></div>
+  <p><button type="button" id="infosluit">Sluiten</button></p>
+</dialog>
+
+<script>
+(function(){
+  "use strict";
+
+  var ACTIVITEITEN = [
+    { id:"dnd", naam:"D&D initiatie", kort:"\u20ac5", fig:"dobbelsteen",
+      voorWie:"Wie het nog nooit speelde", duur:"3 tot 3.5 uur",
+      plaatsen:"5 à 6 per tafel", kost:"\u20ac5 per persoon. Begeleiding, een hapje en een drankje inbegrepen.",
+      uitleg:"Nog nooit gespeeld, lijkwormpje? PERFECT. Je krijgt een personage in je klamme handjes geduwd en een spelleider die je aan het handje meeneemt. Je hoeft niets te kennen en niets mee te brengen. Je gaat waarschijnlijk dood. Dat hoort zo.",
+      vragen:[
+        {id:"ervaring", label:"Heb je al eens D&D gespeeld?", opties:[
+          "Nooit, ik weet niet eens hoe die dobbelstenen werken",
+          "Ik heb het zien spelen, op Critical Role of in Stranger Things",
+          "Ik heb het één of twee keer gedaan",
+          "Al wat meer dan dat"]},
+        {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]},
+        {id:"held", label:"Wat voor held wil je zijn?",
+         hint:"Mijn spelleiders leggen een personage voor je klaar. Kies waar je zin in hebt, kennen hoef je er niets van.",
+         groot:true, opties:[
+          {t:"De frontliner", u:"Vooraan staan, zwaard zwaaien en klappen opvangen"},
+          {t:"De magiër",     u:"Van een veilige afstand spreuken naar de vijand gooien"},
+          {t:"De sluwe",      u:"Sluipen, sloten kraken, vallen ontmantelen, raak schieten"},
+          {t:"De hoeder",     u:"Je vrienden oplappen, versterken en overeind houden"}]}
+      ] },
+    { id:"magic-leren", naam:"Magic leren spelen", kort:"\u20ac15", fig:"jokerkaart",
+      voorWie:"Wie Magic nog niet kent", duur:"1.5 tot 2 uur",
+      plaatsen:"Weet ik nog niet", kost:"\u20ac15 per persoon. Begeleiding, een hapje, een drankje en twee Jumpstart boosters die je mee naar huis neemt.",
+      uitleg:"Jullie kennen Magic niet? BESCHAMEND. We beginnen vanaf nul met Foundations. Je leert wat een kaart doet en hoe een beurt werkt. Je gaat naar huis met twee Jumpstart boosters. Kijk mij eens een goede gastheer zijn.",
+      vragen:[
+        {id:"ervaring", label:"Speelde je al ooit een kaartspel?", opties:["Nooit","Wel andere, zoals Pokémon","Magic al eens gezien"]},
+        {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]}
+      ] },
+    { id:"magic-draft", naam:"Magic draft", kort:"\u20ac20", fig:"schedel",
+      voorWie:"Wie Magic al kan spelen", duur:"2.5 tot 3 uur",
+      plaatsen:"8 of 16", kost:"\u20ac20 per persoon. Drie boosters die je zelf opent en houdt, plus een hapje en een drankje.",
+      uitleg:"Hier leg ik niets uit. Je opent drie boosters, je bouwt een deck en je verplettert de rest van je pod. Alles wat je opent is van jou. Of zij verpletteren jou. Mij maakt het niets uit. Ken je Magic nog niet, neem dan Magic leren spelen.",
+      vragen:[
+        {id:"ervaring", label:"Hoeveel keer heb je al gedraft?", opties:["Eerste keer","Een paar keer","Ik draft regelmatig"]},
+        {id:"blijven", label:"De draft duurt 2.5 tot 3 uur. Kan je tot het einde blijven?", opties:["Ja","Ik moet vroeger weg"]}
+      ] },
+    { id:"atmosfear", naam:"Atmosfear", kort:"gratis", fig:"zandloper",
+      voorWie:"Jong en oud", duur:"Ongeveer 1 uur",
+      plaatsen:"Weet ik nog niet", kost:"Niets. Gratis.",
+      uitleg:"Dat ben ik. Op de band. Ik roep, ik tel af en ik verban je naar HET ZWARTE GAT als je te traag bent. Donker, luid en niet voor bange harten.",
+      vragen:[
+        {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]},
+        {id:"schrik", label:"Kan je tegen donker, geschreeuw en plotse geluiden?", opties:["Ja","Liever wat zachter","Ik kijk liever toe"]}
+      ] }
+  ];
+
+  var FB = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" ' +
+    'style="vertical-align:-4px"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
+
+  var VB = {
+    wordmerk:"%%VB:wordmerk%%", datum:"%%VB:datum%%", gratis:"%%VB:gratis%%",
+    dobbelsteen:"%%VB:dobbelsteen%%", jokerkaart:"%%VB:jokerkaart%%",
+    schedel:"%%VB:schedel%%", zandloper:"%%VB:zandloper%%"
+  };
+  var FB_URL = "https://www.facebook.com/events/1445920600735035/";
+  var MAIL = "mailto:depoortwachter666@gmail.com";
+  var AVOND = new Date("2026-11-07T18:00:00+01:00");
+
+  function fig(naam){
+    return '<svg viewBox="' + VB[naam] + '" aria-hidden="true" focusable="false">' +
+      '<use href="#s-' + naam + '"/></svg>';
+  }
+
+  var app = document.getElementById("app");
+  var venster = document.getElementById("infovenster");
+  var bliksem = document.getElementById("bliksem");
+  var vulling = document.querySelector(".voortgang i");
+  var boeking = null, stap = 1, deelnemerIx = 0, laatsteInfoKnop = null;
+  var klok = null, waarnemer = null, boeGezien = false;
+  var fotos = [], loopt = false;
+
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function vind(id){ return ACTIVITEITEN.filter(function(a){ return a.id === id; })[0] || null; }
+
+  var stil = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ============================================================
+     BEWEGING: één rAF-lus voor de voortgang, de parallax en het rail
+     ============================================================ */
+  var hero = null, heroBeeld = null, heroIn = null, vak = null;
+  var topbalk = document.getElementById("topbalk");
+  var klein = window.matchMedia("(max-width: 900px)");
+
+  /* alles wat de browser moet uitrekenen, rekenen we één keer uit en onthouden we.
+     Tijdens het scrollen wordt er alleen nog geschreven, nooit meer gemeten. */
+  var maat = {pagina:0, heroTop:0, heroHoog:1, vakTop:0, vakHoog:0, banden:[]};
+
+  function meet(){
+    fotos = [].slice.call(document.querySelectorAll(".band-foto"));
+    hero = document.querySelector(".hero");
+    heroBeeld = document.querySelector(".hero-beeld");
+    heroIn = document.querySelector(".hero-in");
+    vak = document.getElementById("inschrijven");
+
+    var y = window.scrollY || window.pageYOffset;
+    maat.pagina = document.documentElement.scrollHeight;
+    if(hero){
+      var r = hero.getBoundingClientRect();
+      maat.heroTop = r.top + y; maat.heroHoog = Math.max(1, r.height);
+    }
+    if(vak){
+      var v = vak.getBoundingClientRect();
+      maat.vakTop = v.top + y; maat.vakHoog = v.height;
+    }
+    maat.banden = klein.matches ? [] : fotos.map(function(f){
+      var b = f.parentNode.getBoundingClientRect();
+      return {el:f, top:b.top + y, h:b.height};
+    });
+    schuif();
+  }
+
+  function schuif(){
+    var y = window.scrollY || window.pageYOffset;
+    var hoog = window.innerHeight;
+    var totaal = maat.pagina - hoog;
+    if(vulling) vulling.style.setProperty("--sp", totaal > 0 ? Math.min(1, y / totaal) : 0);
+
+    if(hero){
+      var heroOnder = maat.heroTop + maat.heroHoog - y;
+      if(!stil && heroBeeld){
+        if(heroOnder > 0){
+          var q = Math.min(1, Math.max(0, (y - maat.heroTop) / maat.heroHoog));
+          hero.classList.add("beweegt");
+          heroBeeld.style.transform = "translate3d(0," + (q * 16).toFixed(2) + "%,0) scale(" +
+            (1 + q * .1).toFixed(3) + ")";
+          heroIn.style.transform = "translate3d(0," + (-q * 60).toFixed(0) + "px,0)";
+          heroIn.style.opacity = Math.max(0, 1 - q * 1.35).toFixed(2);
+        } else if(hero.classList.contains("beweegt")){
+          hero.classList.remove("beweegt");
+        }
+      }
+
+      /* de balk komt zodra de affiche weg is en gaat weg zodra je bij het formulier bent */
+      var bijVak = maat.vakHoog > 0 &&
+        (maat.vakTop - y) < hoog * .55 && (maat.vakTop + maat.vakHoog - y) > hoog * .3;
+      topbalk.classList.toggle("aan", heroOnder < 60 && !bijVak);
+    }
+
+    for(var i = 0; i < maat.banden.length; i++){
+      var b = maat.banden[i], top = b.top - y;
+      if(top + b.h < -200 || top > hoog + 200) continue;
+      var p = (hoog - top) / (hoog + b.h);
+      b.el.style.setProperty("--y", ((p - .5) * b.h * .22).toFixed(1) + "px");
+    }
+
+    loopt = false;
+  }
+
+  function opScroll(){
+    if(loopt) return;
+    loopt = true;
+    requestAnimationFrame(schuif);
+  }
+  window.addEventListener("scroll", opScroll, {passive:true});
+  var maatKlok = null;
+  window.addEventListener("resize", function(){
+    clearTimeout(maatKlok);
+    maatKlok = setTimeout(meet, 180);
+  }, {passive:true});
+
+  /* het licht dat de muis meedraagt, alleen waar er een muis is */
+  var toorts = document.getElementById("toorts");
+  if(!stil && window.matchMedia("(hover: hover) and (pointer: fine)").matches){
+    var mx = 0, my = 0, wacht = false;
+    window.addEventListener("pointermove", function(e){
+      mx = e.clientX; my = e.clientY;
+      if(wacht) return;
+      wacht = true;
+      requestAnimationFrame(function(){
+        toorts.style.setProperty("--mx", mx + "px");
+        toorts.style.setProperty("--my", my + "px");
+        toorts.classList.add("aan");
+        wacht = false;
+      });
+    }, {passive:true});
+  }
+
+  /* traag opstijgende vonken */
+  (function vonken(){
+    if(stil) return;
+    var vak = document.getElementById("vonken"), uit = "";
+    var hoeveel = window.innerWidth < 700 ? 7 : 16;
+    for(var i = 0; i < hoeveel; i++){
+      var duur = 16 + Math.random() * 20;
+      uit += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;' +
+        'animation-duration:' + duur.toFixed(1) + 's;' +
+        'animation-delay:-' + (Math.random() * duur).toFixed(1) + 's;' +
+        '--dx:' + (Math.random() * 10 - 5).toFixed(1) + 'vw"></i>';
+    }
+    vak.innerHTML = uit;
+  })();
+  /* ---------- alles wat .op draagt komt binnen bij het scrollen ---------- */
+  function wekOp(wortel){
+    var dingen = (wortel || document).querySelectorAll(".op:not(.in)");
+    if(stil || !("IntersectionObserver" in window)){
+      [].forEach.call(dingen, function(el){ el.classList.add("in"); });
+      return;
+    }
+    if(!waarnemer){
+      waarnemer = new IntersectionObserver(function(rijen){
+        rijen.forEach(function(r){
+          if(!r.isIntersecting) return;
+          r.target.classList.add("in");
+          waarnemer.unobserve(r.target);
+          if(r.target.classList.contains("boe-woord")){ boeGezien = true; flits(); }
+        });
+      }, {rootMargin:"0px 0px -14% 0px", threshold:.12});
+    }
+    [].forEach.call(dingen, function(el){ waarnemer.observe(el); });
+  }
+
+  /* externe links openen in een nieuw venster, zodat niemand de pagina kwijtraakt */
+  function blanko(wortel){
+    [].forEach.call((wortel || document).querySelectorAll("a[href]"), function(a){
+      var h = a.getAttribute("href") || "";
+      if(/^https?:/i.test(h) && a.hostname && a.hostname !== location.hostname){
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+    });
+  }
+
+  function flits(){
+    if(stil) return;
+    bliksem.classList.remove("flits");
+    void bliksem.offsetWidth;
+    bliksem.classList.add("flits");
+  }
+  /* af en toe onweer, maar pas nadat BOE geweest is en niet zo vaak dat het stoort */
+  function onweer(){
+    setTimeout(function(){
+      if(boeGezien && !document.hidden && !stil) flits();
+      onweer();
+    }, 24000 + Math.random() * 28000);
+  }
+
+  /* ---------- de sierletter pas ophalen als het dringende werk gedaan is ---------- */
+  (function sierletter(){
+    function aan(){ document.documentElement.classList.add("laat"); }
+    if(document.readyState === "complete"){ setTimeout(aan, 1); }
+    else window.addEventListener("load", function(){
+      (window.requestIdleCallback || function(c){ setTimeout(c, 300); })(aan, {timeout:1800});
+    });
+  })();
+
+  /* ---------- de zware tekeningen pas inhangen als er tijd over is ---------- */
+  (function figuren(){
+    var bron = document.getElementById("fig-defs");
+    if(!bron) return;
+    function hang(){
+      if(!bron.textContent) return;
+      var svg = document.querySelector("svg.defs");
+      if(!svg) return;
+      var los = document.createElement("div");
+      los.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><defs>' +
+        bron.textContent + '</defs></svg>';
+      var defs = svg.querySelector("defs");
+      var nieuwe = los.firstChild.firstChild.childNodes;
+      while(nieuwe.length) defs.appendChild(nieuwe[0]);
+      bron.textContent = "";
+      /* verwijzingen die al op de pagina stonden opnieuw laten opzoeken */
+      [].forEach.call(document.querySelectorAll('use[href^="#s-"]'), function(u){
+        var h = u.getAttribute("href");
+        u.removeAttribute("href");
+        u.setAttribute("href", h);
+      });
+    }
+    (window.requestIdleCallback || function(c){ setTimeout(c, 200); })(hang, {timeout:1500});
+  })();
+
+  /* ---------- de spin ----------
+     Ze hangt aan het scherm en niet aan de pagina, dus scrollen schudt haar
+     er niet af. Ze wandelt in stappen rond, blijft af en toe staan, verdwijnt
+     langs een rand en duikt later ergens anders weer op. Soms komt ze in de
+     plaats daarvan aan een draad naar beneden. */
+  (function spin(){
+    if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    var POTEN =
+      /* de achterste vier */
+      '<g class="poot-b">' +
+        '<path d="M41,46 Q16,52 8,61"/><path d="M41,51 Q22,67 15,79"/>' +
+        '<path d="M59,46 Q84,52 92,61"/><path d="M59,51 Q78,67 85,79"/>' +
+      '</g>' +
+      /* de voorste vier */
+      '<g class="poot-a">' +
+        '<path d="M41,36 Q19,17 8,21"/><path d="M41,41 Q15,34 5,40"/>' +
+        '<path d="M59,36 Q81,17 92,21"/><path d="M59,41 Q85,34 95,40"/>' +
+      '</g>';
+
+    var TEKENING =
+      '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
+        '<g fill="none" stroke="#07030d" stroke-width="3.4" stroke-linecap="round">' + POTEN + '</g>' +
+        '<g fill="#07030d">' +
+          '<ellipse cx="50" cy="63" rx="15.5" ry="19"/>' +
+          '<ellipse cx="50" cy="41" rx="10" ry="11"/>' +
+          '<path d="M45,32 q-2,-5 -4,-7" stroke="#07030d" stroke-width="2.6" ' +
+            'stroke-linecap="round" fill="none"/>' +
+          '<path d="M55,32 q2,-5 4,-7" stroke="#07030d" stroke-width="2.6" ' +
+            'stroke-linecap="round" fill="none"/>' +
+        '</g>' +
+        /* een streepje maanlicht op het achterlijf, zodat ze bol lijkt */
+        '<ellipse cx="45" cy="56" rx="6" ry="8.5" fill="rgba(178,92,255,.13)" ' +
+          'transform="rotate(-18 45 56)"/>' +
+        /* en twee oogjes, anders is ze op zwart helemaal niet te zien */
+        '<g class="ogen" fill="rgba(178,92,255,.5)">' +
+          '<circle cx="46.6" cy="38" r="1.6"/><circle cx="53.4" cy="38" r="1.6"/>' +
+        '</g>' +
+      '</svg>';
+
+    var veld = document.createElement("div");
+    veld.className = "spinnenveld";
+    veld.setAttribute("aria-hidden", "true");
+    veld.innerHTML = '<div class="spin"><span class="spin-draad"></span>' +
+                     '<div class="spin-lijf">' + TEKENING + '</div></div>';
+    document.body.appendChild(veld);
+    var beest = veld.firstChild;
+
+    var x = 0, y = 0, bezigNu = false;
+    function B(){ return window.innerWidth  || 1200; }
+    function Hg(){ return window.innerHeight || 800; }
+    function tussen(a, b){ return a + Math.random() * (b - a); }
+
+    function plaats(nx, ny){
+      x = nx; y = ny;
+      beest.style.setProperty("--x", Math.round(nx) + "px");
+      beest.style.setProperty("--y", Math.round(ny) + "px");
+    }
+    function richt(g){ beest.style.setProperty("--r", g.toFixed(1) + "deg"); }
+    /* zonder animatie ergens neerzetten */
+    function spring(nx, ny){
+      beest.style.setProperty("--dur", "0ms");
+      void beest.offsetWidth;
+      plaats(nx, ny);
+      void beest.offsetWidth;
+    }
+    /* eerst draaien naar waar ze heen wil, dan pas lopen */
+    function ga(nx, ny, tempo, soep, na){
+      var dx = nx - x, dy = ny - y;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      var ms = Math.max(220, d / tempo * 1000);
+      richt(Math.atan2(dy, dx) * 180 / Math.PI + 90);
+      setTimeout(function(){
+        beest.style.setProperty("--soep", soep || "linear");
+        beest.style.setProperty("--dur", Math.round(ms) + "ms");
+        void beest.offsetWidth;
+        beest.classList.add("loopt");
+        plaats(nx, ny);
+        setTimeout(function(){
+          beest.classList.remove("loopt");
+          if(na) na();
+        }, ms + 40);
+      }, 190);
+    }
+
+    /* een punt net buiten beeld, om binnen te komen of te verdwijnen */
+    function randpunt(){
+      var m = 150, k = Math.floor(Math.random() * 4);
+      if(k === 0) return [tussen(.1, .9) * B(), -m];
+      if(k === 1) return [B() + m, tussen(.1, .9) * Hg()];
+      if(k === 2) return [tussen(.1, .9) * B(), Hg() + m];
+      return [-m, tussen(.1, .9) * Hg()];
+    }
+    function binnenpunt(){ return [tussen(.07, .93) * B(), tussen(.09, .9) * Hg()]; }
+
+    /* rondwandelen: binnenkomen, een paar keer van hoek veranderen, weg */
+    function zwerf(klaar){
+      var p = randpunt();
+      spring(p[0], p[1]);
+      beest.classList.add("aan");
+      var stappen = 2 + Math.floor(Math.random() * 4);
+      (function volgende(){
+        if(stappen-- <= 0){
+          var u = randpunt();
+          ga(u[0], u[1], tussen(500, 850), "cubic-bezier(.3,0,.7,1)", function(){
+            beest.classList.remove("aan");
+            klaar();
+          });
+          return;
+        }
+        var t = binnenpunt();
+        /* soms slentert ze, soms schiet ze plots vooruit */
+        var tempo = Math.random() < .35 ? tussen(430, 720) : tussen(140, 330);
+        ga(t[0], t[1], tempo, "cubic-bezier(.35,0,.65,1)", function(){
+          setTimeout(volgende, tussen(120, 1400));
+        });
+      })();
+    }
+
+    /* aan een draad naar beneden en dan omhoog of eraf en weglopen */
+    function val(klaar){
+      var px = tussen(.15, .85) * B(), diep = tussen(.2, .5) * Hg();
+      spring(px, -170);
+      richt(tussen(-6, 6));
+      beest.classList.add("aan");
+      beest.classList.add("draad");
+      setTimeout(function(){
+        beest.style.setProperty("--soep", "cubic-bezier(.3,1.45,.5,1)");
+        beest.style.setProperty("--dur", "640ms");
+        void beest.offsetWidth;
+        beest.classList.add("loopt");
+        plaats(px, diep);
+        setTimeout(function(){
+          beest.classList.remove("loopt");
+          beest.classList.add("bengelt");
+          setTimeout(function(){
+            beest.classList.remove("bengelt");
+            if(Math.random() < .5){
+              /* ze laat los, valt op de pagina en gaat er lopend vandoor */
+              beest.classList.remove("draad");
+              beest.style.setProperty("--soep", "cubic-bezier(.4,0,.9,.5)");
+              beest.style.setProperty("--dur", "430ms");
+              void beest.offsetWidth;
+              beest.classList.add("loopt");
+              plaats(px, Hg() * tussen(.7, .93));
+              setTimeout(function(){
+                beest.classList.remove("loopt");
+                var u = randpunt();
+                ga(u[0], u[1], tussen(480, 780), "cubic-bezier(.3,0,.7,1)", function(){
+                  beest.classList.remove("aan");
+                  klaar();
+                });
+              }, 620);
+            } else {
+              /* of ze trekt zichzelf weer omhoog */
+              beest.style.setProperty("--soep", "cubic-bezier(.5,0,.9,.55)");
+              beest.style.setProperty("--dur", "540ms");
+              void beest.offsetWidth;
+              beest.classList.add("loopt");
+              plaats(px, -170);
+              setTimeout(function(){
+                beest.classList.remove("loopt");
+                beest.classList.remove("aan");
+                beest.classList.remove("draad");
+                klaar();
+              }, 580);
+            }
+          }, tussen(900, 2200));
+        }, 680);
+      }, 60);
+    }
+
+    function bezet(){
+      /* niet storen tijdens een venster, tijdens het verzenden, of als de
+         bezoeker net in het formulier aan het typen is */
+      if(document.querySelector("dialog[open]")) return true;
+      var w = document.getElementById("wachten");
+      if(w && w.classList.contains("aan")) return true;
+      var a = document.activeElement;
+      if(a && /^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)) return true;
+      return false;
+    }
+
+    function toon(){
+      if(bezigNu) return;
+      bezigNu = true;
+      var maat = Math.round(Math.min(tussen(96, 175), B() * .36));
+      beest.style.setProperty("--sp", maat + "px");
+      /* elke keer een ander moment om te knipperen, anders wordt het een klok */
+      beest.style.setProperty("--knip", "-" + tussen(0, 4.6).toFixed(2) + "s");
+      (Math.random() < .35 ? val : zwerf)(function(){ bezigNu = false; });
+    }
+
+    function plan(eerste){
+      setTimeout(function(){
+        if(!document.hidden && !bezet()) toon();
+        plan(false);
+      }, eerste ? tussen(5000, 10000) : tussen(9000, 22000));
+    }
+    plan(true);
+  })();
+
+  /* ---------- de tab roept je terug als je wegkijkt ---------- */
+  var TITELS = [
+    "BOE!!!!",
+    "Waar ga jij naartoe???",
+    function(){
+      var d = Math.max(0, Math.ceil((AVOND - new Date()) / 86400000));
+      return d === 1 ? "Nog \u00e9\u00e9n nacht..." : "Nog " + d + " nachten...";
+    },
+    "Ik zie je nog altijd",
+    "KOM TERUG, LIJKWORMPJE",
+    "Je hebt mijn deur open laten staan",
+    "Ik wacht wel. Ik heb alle tijd."
+  ];
+  var echteTitel = document.title, titelKlok = null, titelIx = 0;
+
+  function wisselTitel(){
+    var t = TITELS[titelIx % TITELS.length];
+    document.title = typeof t === "function" ? t() : t;
+    titelIx++;
+  }
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){
+      titelIx = 0;
+      wisselTitel();
+      titelKlok = setInterval(wisselTitel, 2400);
+    } else {
+      if(titelKlok){ clearInterval(titelKlok); titelKlok = null; }
+      document.title = echteTitel;
+    }
+  });
+
+  /* ---------- de aftelling ---------- */
+  function aftellen(){
+    var vak = document.getElementById("aftel");
+    if(!vak){ if(klok){ clearInterval(klok); klok = null; } return; }
+    var over = Math.max(0, AVOND - new Date());
+    var s = Math.floor(over / 1000);
+    var w = {d:Math.floor(s/86400), u:Math.floor(s%86400/3600), m:Math.floor(s%3600/60), s:s%60};
+    [].forEach.call(vak.querySelectorAll("li[data-t]"), function(li){
+      var t = li.getAttribute("data-t");
+      var n = String(w[t]);
+      var c = li.querySelector(".cijfer");
+      if(t !== "d" && n.length < 2) n = "0" + n;
+      if(c.textContent === n) return;
+      c.textContent = n;
+      if(t === "s" && !stil){
+        li.classList.remove("tik"); void li.offsetWidth; li.classList.add("tik");
+      }
+    });
+  }
+  function startKlok(){
+    if(klok) clearInterval(klok);
+    aftellen();
+    klok = setInterval(aftellen, 1000);
+  }
+
+  /* ---------- sfeergeluid, standaard uit ---------- */
+  var knopGeluid = document.getElementById("geluid"), band = null;
+  knopGeluid.addEventListener("click", function(){
+    if(!band){
+      band = new Audio("%%IMG:sfeer%%");
+      band.loop = true; band.volume = 0;
+    }
+    var aan = knopGeluid.classList.toggle("aan");
+    knopGeluid.setAttribute("aria-pressed", aan ? "true" : "false");
+    knopGeluid.setAttribute("aria-label", aan ? "Zet de sfeer uit" : "Zet de sfeer aan");
+    if(aan){
+      band.play().then(function(){ vervaag(band, .28, 1400); }).catch(function(){});
+    } else {
+      vervaag(band, 0, 500, function(){ band.pause(); });
+    }
+  });
+  function vervaag(a, naar, duur, klaar){
+    var van = a.volume, t0 = performance.now();
+    (function stap(t){
+      var p = Math.min(1, (t - t0) / duur);
+      a.volume = van + (naar - van) * p;
+      if(p < 1) requestAnimationFrame(stap); else if(klaar) klaar();
+    })(t0);
+  }
+
+  /* ---------- informatievenster per activiteit ---------- */
+  function sluitVenster(){ venster.close(); }
+  document.getElementById("infosluit").addEventListener("click", sluitVenster);
+  document.getElementById("infokruis").addEventListener("click", sluitVenster);
+  venster.addEventListener("click", function(e){ if(e.target === venster) sluitVenster(); });
+  venster.addEventListener("close", function(){ if(laatsteInfoKnop) laatsteInfoKnop.focus(); });
+
+  function toonInfo(id, knop){
+    var a = vind(id);
+    if(!a) return;
+    laatsteInfoKnop = knop || null;
+    document.getElementById("infoinhoud").innerHTML =
+      '<h2>' + esc(a.naam) + '</h2>' +
+      '<p>' + esc(a.uitleg) + '</p>' +
+      '<dl>' +
+        '<dt>Voor wie</dt><dd>' + esc(a.voorWie) + '</dd>' +
+        '<dt>Hoe lang</dt><dd>' + esc(a.duur) + '</dd>' +
+        '<dt>Plaatsen</dt><dd>' + esc(a.plaatsen) + '</dd>' +
+        '<dt>Wat het kost</dt><dd>' + esc(a.kost) + '</dd>' +
+      '</dl>';
+    venster.showModal();
+  }
+  function infoKnop(a){
+    return '<button type="button" class="infoknop" data-info="' + a.id + '">' +
+      '<span class="teken" aria-hidden="true">i</span> Wat is dit?' +
+      '<span class="vzw">, uitleg over ' + esc(a.naam) + '</span></button>';
+  }
+  function hangInfo(doel){
+    [].forEach.call(doel.querySelectorAll("button[data-info]"), function(k){
+      k.addEventListener("click", function(){ toonInfo(k.getAttribute("data-info"), k); });
+    });
+  }
+
+  /* ============================================================
+     STARTPAGINA
+     ============================================================ */
+  var REGELS = [
+    {nr:"01", kop:"Voor wie", lead:"Iedereen die durft.",
+     tekst:"Ook wie nog nooit een bordspel heeft aangeraakt, ook wie alleen komt. Kleine lijkwormpjes laat ik binnen, maar dan wel met een volwassene die op hen let."},
+    {nr:"02", kop:"Wanneer op mijn lijst", lead:"Alleen voor mijn vier begeleide spelletjes.",
+     tekst:"Die hebben een begeleider, een startuur en veel te weinig plaatsen. Ze lopen allemaal tegelijk, dus je kiest er <strong>één</strong>. Het uur krijg je van mij per mail, zodra ik het beslist heb.",
+     stempel:"Te laat is niet meer mee"},
+    {nr:"03", kop:"Wat het kost", lead:"Binnenkomen kost je niets.",
+     tekst:"Atmosfear is ook gratis. D&amp;D kost <strong>&euro;5</strong>. Magic leren spelen kost <strong>&euro;15</strong> en je gaat naar huis met twee Jumpstart boosters. De draft kost <strong>&euro;20</strong> voor drie boosters die je zelf opent en houdt. Bij alles zit een hapje, een drankje en een begeleider. Betalen doe je ter plaatse, cash of met je smartphone.",
+     stempel:"Gratis inkom"},
+    {nr:"04", kop:"Zonder mijn lijst", lead:"De spellenkast staat de hele avond open.",
+     tekst:"Daarnaast draait er een tombola met prijzen van mijn partners. Daar moet je niets voor doen en niets voor invullen. Binnenkomen volstaat."},
+    {nr:"05", kop:"Eten en drinken", lead:"Er komt eten en er komt drank.",
+     tekst:"Wat precies weet ik nog niet. Ik moet ook nog dingen beslissen en ik heb alle tijd. Jullie niet."}
+  ];
+  var KANTEN = ["-6deg","5deg","-4deg","7deg","-5deg"];
+
+  /* woord per woord binnenhalen; alles tussen sterretjes wordt vet */
+  function woorden(t){
+    var vet = false;
+    return t.split(" ").map(function(w, i){
+      var start = w.charAt(0) === "*";
+      if(start){ w = w.slice(1); vet = true; }
+      var eind = w.indexOf("*") > -1;
+      if(eind) w = w.replace("*", "");
+      var kern = vet ? "<strong>" + w + "</strong>" : w;
+      if(eind) vet = false;
+      return '<w style="--w:' + i + '">' + kern + '</w>';
+    }).join(" ");
+  }
+
+  function home(){
+    var regelkaarten = REGELS.map(function(r, i){
+      return '<article class="regelkaart op plak" style="--i:' + i + ';--kant:' + KANTEN[i] + '">' +
+        '<span class="regelnr" aria-hidden="true">' + r.nr + '</span>' +
+        '<h3>' + r.kop + '</h3>' +
+        '<p class="regellead">' + r.lead + '</p>' +
+        '<p class="regeltekst">' + r.tekst + '</p>' +
+        (r.stempel ? '<span class="stempel">' + r.stempel + '</span>' : '') +
+      '</article>';
+    }).join("");
+
+    var eenheden = [["d","nachten"],["u","uren"],["m","minuten"],["s","tellen"]];
+    var klokdelen = eenheden.map(function(p, i){
+      return (i ? '<li class="punt" aria-hidden="true">:</li>' : '') +
+        '<li data-t="' + p[0] + '"><span class="cijfer">&mdash;</span>' +
+        '<span class="eenheid">' + p[1] + '</span></li>';
+    }).join("");
+
+    app.innerHTML =
+      '<header class="hero" id="boven" data-hoofdstuk="Start">' +
+        '<div class="hero-beeld" aria-hidden="true"></div>' +
+        '<div class="lab"><svg viewBox="%%VB:logo%%" role="img" '+
+          'aria-label="In samenwerking met Buurtatelier LAB"><use href="#s-logo"/></svg></div>' +
+        '<div class="hero-in">' +
+
+          '<p class="meta meta-links">Kerk Minnestraat<span>Lebbeke</span></p>' +
+          '<p class="meta meta-rechts">Zaterdag 7 november 2026<span>18:00 tot ongeveer 24:00</span></p>' +
+
+          '<div class="merk-vlak">' +
+            '<h1 class="woordmerk"><svg viewBox="' + VB.wordmerk + '" role="img" ' +
+              'aria-label="Halloween Boardgame Night"><use href="#s-wordmerk"/></svg></h1>' +
+            '<div class="plakker plakker-datum"><svg viewBox="' + VB.datum + '" role="img" ' +
+              'aria-label="7 november"><use href="#s-datum"/></svg></div>' +
+            '<div class="plakker plakker-gratis"><svg viewBox="' + VB.gratis + '" role="img" ' +
+              'aria-label="Gratis inkom"><use href="#s-gratis"/></svg></div>' +
+          '</div>' +
+
+          '<div class="hero-actie">' +
+            '<a class="knop knop-groot" href="#inschrijven">Schrijf je in</a>' +
+            '<p class="hero-fijn">Inschrijven hoeft alleen voor D&amp;D, Magic en Atmosfear.<br>' +
+            'Wil je enkel wat spelletjes spelen? Kom dan gewoon langs.</p>' +
+          '</div>' +
+
+        '</div>' +
+      '</header>' +
+
+      '<main>' +
+
+      /* ---------- 1. de schrik ---------- */
+      '<section class="band band-leeg boe-sectie">' +
+        '<div class="damp" aria-hidden="true"></div>' +
+        '<div class="wrap">' +
+          '<p class="boe-woord op" style="--i:0">BOE!!!!</p>' +
+          '<p class="boe-tekst op" style="--i:1">' + woorden(
+            'Was je geschrokken??? Ik gooi de deuren van de kerk in de Minnestraat weer open ' +
+            'voor *een avond bordspellen in het donker*. Jullie spelen wat jullie willen, jullie ' +
+            'eten en drinken van mijn tafel en misschien wint een van jullie iets afschuwelijk ' +
+            'moois in mijn tombola.') + '</p>' +
+          '<span class="verder-pijl" aria-hidden="true"></span>' +
+        '</div>' +
+      '</section>' +
+
+      /* ---------- 2. de tijd ---------- */
+      '<section class="band band-leeg band-klok" id="aftellen" data-hoofdstuk="Aftellen">' +
+        '<div class="damp" aria-hidden="true"></div>' +
+        '<div class="wrap">' +
+          '<h2 class="op kop" style="--i:0">Tik. Tak. <em>Lijkwormpje.</em></h2>' +
+          '<p class="kopfijn op" style="--i:1">Zolang blijft mijn deur dicht. Ik tel hardop mee, ' +
+          'dag en nacht en ik word er niet vrolijker op.</p>' +
+          '<ol class="klok op" id="aftel" style="--i:2">' + klokdelen + '</ol>' +
+          '<p class="klokvoet op" style="--i:3">Zaterdag 7 november, klokslag zes. Daarna staat ze ' +
+          'open tot ongeveer middernacht en dan gooi ik ze weer toe. Met jullie er nog in, als het ' +
+          'aan mij ligt.</p>' +
+        '</div>' +
+      '</section>' +
+
+      /* ---------- 3. de regels ---------- */
+      '<section class="band band-mist" id="regels" data-hoofdstuk="Regels">' +
+        '<div class="band-foto" aria-hidden="true"></div>' +
+        '<div class="band-sluier" aria-hidden="true"></div>' +
+        '<div class="damp" aria-hidden="true"></div>' +
+        '<div class="wrap">' +
+          '<h2 class="op kop" style="--i:0">Mijn <em>regels</em></h2>' +
+          '<p class="kopfijn op" style="--i:1">Lees ze. Ik herhaal ze niet aan de deur.</p>' +
+          '<div class="regelmuur">' + regelkaarten + '</div>' +
+        '</div>' +
+      '</section>' +
+
+      /* ---------- 4. de lijst ---------- */
+      '<section class="band band-leeg" id="inschrijven" data-hoofdstuk="Inschrijven">' +
+        '<div class="wrap">' +
+          '<h2 class="op kop" style="--i:0">Zet je naam op <em>mijn lijst</em></h2>' +
+          '<p class="kopfijn op" style="--i:1">Vier begeleide spelletjes, allemaal tegelijk, veel ' +
+          'te weinig plaatsen. Kies er één en ik noteer je.</p>' +
+          '<div id="formulier"></div>' +
+        '</div>' +
+      '</section>' +
+
+      /* ---------- 5. de rest ---------- */
+      '<section class="band band-botten" id="contact" data-hoofdstuk="Contact">' +
+        '<div class="band-foto" aria-hidden="true"></div>' +
+        '<div class="band-sluier" aria-hidden="true"></div>' +
+        '<div class="damp" aria-hidden="true"></div>' +
+        '<div class="wrap">' +
+          '<div class="groenvlak op" style="--i:0">' +
+            '<div class="schim" aria-hidden="true">' + fig("schedel") + '</div>' +
+            '<div>' +
+              '<p class="groenvlak-kop">Weet je niet wat kiezen?</p>' +
+              '<p>Kom je met een hele bende, twijfel je tussen twee spelletjes, of is er iets dat ' +
+              'ik moet weten om je een fatsoenlijk afschuwelijke avond te bezorgen? ' +
+              '<strong>Schrijf me. Ik antwoord. Meestal.</strong></p>' +
+            '</div>' +
+            '<p><a class="knop-zwart" href="' + MAIL + '">Mail de Poortwachter</a></p>' +
+          '</div>' +
+
+          '<h2 class="op kop kop-later" style="--i:1">Mijn <em>partners</em></h2>' +
+          '<p class="kopfijn op" style="--i:2">Waarschijnlijk drie. Zij leveren de prijzen voor ' +
+          'mijn tombola. Wie het zijn verklap ik nog niet, dat zou de pret bederven.</p>' +
+          '<ul class="partnerrij">' +
+            [1,2,3].map(function(n, i){
+              return '<li class="op" style="--i:' + (i + 3) + '">' +
+                '<span class="vraagteken" aria-hidden="true">?</span>' +
+                '<span class="partnernaam">Nog niet verklapt</span></li>';
+            }).join("") +
+          '</ul>' +
+          '<p class="partner-onder op" style="--i:6">Wil jij een van de drie zijn, of de vierde? ' +
+          '<a href="' + MAIL + '">Laat het weten</a>.</p>' +
+        '</div>' +
+      '</section>' +
+
+      '</main>' +
+
+      '<footer>' +
+        '<div class="grond" aria-hidden="true"></div>' +
+        '<div class="wrap voet">' +
+          '<div class="grafsteen op" style="--i:0">' +
+            '<span class="grafkruis" aria-hidden="true">&#10013;</span>' +
+            '<span class="grafboven">Hier rust</span>' +
+            '<span class="grafkop">Je vrije<br>zaterdag</span>' +
+            '<span class="grafjaar">7 november 2026, 18:00</span>' +
+            '<p class="grafregel">Ze wist waar ze aan begon.<br>Wij hebben haar niets beloofd.</p>' +
+          '</div>' +
+          '<p class="handtekening op" style="--i:1">Onvriendelijke groeten,<br>' +
+            '<span class="naam">De Poortwachter</span></p>' +
+          '<p class="voet-fb op" style="--i:2"><a href="' + FB_URL + '">' + FB +
+            ' Volg het event op Facebook</a></p>' +
+          '<p class="voet-klein op" style="--i:3">Halloween Boardgame Night, vierde editie.<br>' +
+            'Kerk Minnestraat, Lebbeke. Zaterdag 7 november 2026, van 18:00 tot ongeveer 24:00.<br>' +
+            'Ik en mijn handlangers zetten dit op, in samenwerking met Buurtatelier LAB.</p>' +
+          '<p class="voet-recht op" style="--i:4"><a href="/privacy">Wat ik met je gegevens doe</a></p>' +
+          '<p class="fluister">psst<span>er is altijd plaats voor één lijkwormpje meer. maar zeg dat tegen niemand.</span></p>' +
+        '</div>' +
+      '</footer>';
+
+    tekenFormulier();
+    startKlok();
+    meet();
+    blanko(app);
+    wekOp(app);
+  }
+
+  /* ============================================================
+     FORMULIER, in stappen, op deze pagina
+     ============================================================ */
+  var STAPNAMEN = ["Spelletje", "Gegevens", "Nakijken"];
+  var ZIJTEKST = [
+    "Ze lopen allemaal tegelijk, dus je kan er maar aan <b>één</b> meedoen. Twijfel je? Duw op <b>Wat is dit?</b> bij een spelletje.",
+    "Ik wil van elke persoon een naam. Het mailadres van de eerste volstaat, daar stuur ik alles naartoe.",
+    "Nog niets ligt vast. Pas als je op de laatste knop duwt, sta je op mijn lijst."
+  ];
+
+  function balk(n){
+    return '<ol class="stapbalk" aria-label="Stap ' + n + ' van 3">' +
+      STAPNAMEN.map(function(t, i){
+        var st = i + 1 < n ? "af" : (i + 1 === n ? "nu" : "");
+        return '<li class="' + st + '"' + (i + 1 === n ? ' aria-current="step"' : '') + '>' +
+          '<span class="stapnr">' + (i + 1) + '</span>' +
+          '<span class="stapnaam">' + t + '</span></li>';
+      }).join("") + '</ol>';
+  }
+
+  function raster(n, inhoud){
+    return '<div class="inschrijfraster">' +
+      '<aside class="stapzij">' + balk(n) +
+        '<p class="zij-fijn">' + ZIJTEKST[n - 1] + '</p></aside>' +
+      '<div class="stapvlak">' + inhoud + '</div>' +
+    '</div>';
+  }
+
+  function toonFout(t){
+    var f = document.getElementById("fout");
+    if(!f) return;
+    f.classList.remove("aan"); void f.offsetWidth;
+    f.textContent = t; f.classList.add("aan");
+    f.scrollIntoView({block:"nearest", behavior:"smooth"});
+  }
+
+  function tekenFormulier(){
+    var doel = document.getElementById("formulier");
+    if(!doel) return;
+    if(stap === 1) stapKeuze(doel);
+    else if(stap === 2) stapDeelnemer(doel);
+    else if(stap === 3) stapOverzicht(doel);
+    blanko(doel);
+    requestAnimationFrame(meet);
+  }
+
+  function stapKeuze(doel){
+    var opties = ACTIVITEITEN.map(function(a){
+      var aan = boeking && boeking.act === a.id;
+      return '<div class="spelkeuze' + (aan ? " aan" : "") + '">' +
+        '<label class="spelkaart" for="act-' + a.id + '">' +
+          '<input type="radio" name="act" id="act-' + a.id + '" value="' + a.id + '"' +
+            (aan ? " checked" : "") + '>' +
+          '<span class="spelfiguur" aria-hidden="true">' + fig(a.fig) + '</span>' +
+          '<span class="spelnaam">' + esc(a.naam) + '</span>' +
+          '<span class="spelprijs' + (a.kort === "gratis" ? " gratis" : "") + '">' +
+            esc(a.kort) + '</span>' +
+          '<span class="spelduur">' + esc(a.duur) + ' &middot; ' + esc(a.voorWie) + '</span>' +
+        '</label>' + infoKnop(a) +
+      '</div>';
+    }).join("");
+
+    doel.innerHTML = raster(1,
+      '<form id="f" novalidate>' +
+        '<fieldset class="naakt"><legend class="vzw">Welk spelletje kies je?</legend>' +
+          '<p class="veldkop">Welk spelletje kies je?</p>' +
+          '<div class="spellijst">' + opties + '</div>' +
+        '</fieldset>' +
+        '<div class="veld veld-smal"><label for="aantal">Met hoeveel personen kom je?</label>' +
+          '<select id="aantal">' +
+            [1,2,3,4,5].map(function(n){
+              return '<option value="' + n + '"' + (boeking && boeking.aantal === n ? " selected" : "") + '>' +
+                n + (n === 1 ? " persoon" : " personen") + '</option>';
+            }).join("") +
+          '</select>' +
+          '<p class="fijn">Van elke persoon vraag ik daarna een naam.</p></div>' +
+        '<p class="fout" id="fout" role="alert"></p>' +
+        '<p class="acties"><button type="submit" class="hoofd">Verder</button></p>' +
+      '</form>');
+
+    hangInfo(doel);
+    [].forEach.call(doel.querySelectorAll('input[name="act"]'), function(r){
+      r.addEventListener("change", function(){
+        [].forEach.call(doel.querySelectorAll(".spelkeuze"), function(d){ d.classList.remove("aan"); });
+        r.closest(".spelkeuze").classList.add("aan");
+      });
+    });
+
+    document.getElementById("f").addEventListener("submit", function(e){
+      e.preventDefault();
+      var g = doel.querySelector('input[name="act"]:checked');
+      if(!g){ toonFout("KIEZEN. Nu. Welk spelletje kies je?"); return; }
+      var aantal = parseInt(document.getElementById("aantal").value, 10);
+      boeking = {act:g.value, aantal:aantal, mensen:[]};
+      for(var i = 0; i < aantal; i++) boeking.mensen.push({naam:"", mail:"", antw:{}});
+      stap = 2; deelnemerIx = 0; tekenFormulier(); springNaarFormulier();
+    });
+  }
+
+  function stapDeelnemer(doel){
+    var a = vind(boeking.act), p = boeking.mensen[deelnemerIx], eerste = deelnemerIx === 0;
+
+    var vragen = a.vragen.map(function(v){
+      return '<fieldset class="naakt"><legend class="vzw">' + esc(v.label) + '</legend>' +
+        '<p class="veldkop">' + esc(v.label) + '</p>' +
+        (v.hint ? '<p class="fijn fijn-boven">' + esc(v.hint) + '</p>' : "") +
+        '<div class="chips' + (v.groot ? " chips-groot" : "") + '">' +
+        v.opties.map(function(o, i){
+          var tekst = o.t || o, uitleg = o.u || "";
+          var id = "v-" + v.id + "-" + i;
+          return '<label class="chip"><input type="radio" name="' + v.id + '" id="' + id +
+            '" value="' + esc(tekst) + '"' + (p.antw[v.id] === tekst ? " checked" : "") +
+            '><span>' + esc(tekst) +
+            (uitleg ? '<em>' + esc(uitleg) + '</em>' : "") + '</span></label>';
+        }).join("") + '</div></fieldset>';
+    }).join("");
+
+    doel.innerHTML = raster(2,
+      '<p class="gekozen">Je schrijft in voor <strong>' + esc(a.naam) + '</strong>' + infoKnop(a) + '</p>' +
+      '<p class="teller">Persoon ' + (deelnemerIx + 1) + ' van ' + boeking.aantal + '</p>' +
+      '<form id="f" novalidate>' +
+        '<div class="veld"><label for="naam">Naam</label>' +
+        '<input id="naam" type="text" autocomplete="name" value="' + esc(p.naam) + '"></div>' +
+        '<div class="veld"><label for="mail">E-mailadres' +
+          (eerste ? ' <em class="vereist">verplicht</em>' : ' <em class="optioneel">mag leeg</em>') +
+        '</label>' +
+        '<input id="mail" type="email" autocomplete="email" value="' + esc(p.mail) + '">' +
+        '<p class="fijn">' + (eerste
+          ? "Hier stuur ik het uur van je spelletje naartoe zodra ik het beslist heb."
+          : "Alleen invullen als deze persoon zelf bericht wil. Anders mail ik enkel de eerste.")
+        + '</p></div>' +
+        vragen +
+        '<p class="fout" id="fout" role="alert"></p>' +
+        '<p class="acties"><button type="submit" class="hoofd">' +
+          (deelnemerIx + 1 < boeking.aantal ? "Volgende persoon" : "Alles nakijken") +
+        '</button><button type="button" id="terug">Terug</button></p>' +
+      '</form>');
+
+    hangInfo(doel);
+
+    document.getElementById("terug").addEventListener("click", function(){
+      if(deelnemerIx === 0){ stap = 1; } else { deelnemerIx--; }
+      tekenFormulier(); springNaarFormulier();
+    });
+
+    document.getElementById("f").addEventListener("submit", function(e){
+      e.preventDefault();
+      p.naam = document.getElementById("naam").value.trim();
+      p.mail = document.getElementById("mail").value.trim();
+      a.vragen.forEach(function(v){
+        var g = doel.querySelector('input[name="' + v.id + '"]:checked');
+        p.antw[v.id] = g ? g.value : "";
+      });
+      if(!p.naam){ toonFout("ANTWOORD MIJ!!! Hoe heet je?"); document.getElementById("naam").focus(); return; }
+      if(eerste && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(p.mail)){
+        toonFout("Dat mailadres klopt niet. Kijk nog eens goed."); document.getElementById("mail").focus(); return; }
+      if(!eerste && p.mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(p.mail)){
+        toonFout("Dat tweede mailadres klopt niet. Laat het leeg of doe het juist."); return; }
+      var mist = a.vragen.filter(function(v){ return !p.antw[v.id]; });
+      if(mist.length){ toonFout("GEEF ANTWOORD: " + mist[0].label); return; }
+      if(deelnemerIx + 1 < boeking.aantal){ deelnemerIx++; } else { stap = 3; }
+      tekenFormulier(); springNaarFormulier();
+    });
+  }
+
+  function stapOverzicht(doel){
+    var a = vind(boeking.act);
+    var lijst = boeking.mensen.map(function(p){
+      return '<li>' +
+        '<p class="ticket-naam">' + esc(p.naam) +
+          (p.mail ? '<span>' + esc(p.mail) + '</span>' : "") + '</p>' +
+        '<dl class="ticket-antw">' + a.vragen.map(function(v){
+          return '<dt>' + esc(v.label.replace(/\?$/, "")) + '</dt><dd>' + esc(p.antw[v.id]) + '</dd>';
+        }).join("") + '</dl></li>';
+    }).join("");
+
+    doel.innerHTML = raster(3,
+      '<div class="ticket">' +
+        '<div class="ticket-fig" aria-hidden="true">' + fig(a.fig) + '</div>' +
+        '<p class="ticket-kop">' + esc(a.naam) + '</p>' +
+        '<dl class="ticket-feiten">' +
+          '<dt>Wanneer</dt><dd>Za 7 nov 2026, uur volgt</dd>' +
+          '<dt>Waar</dt><dd>Kerk Minnestraat, Lebbeke</dd>' +
+          '<dt>Personen</dt><dd>' + boeking.aantal + '</dd>' +
+          '<dt>Wat het kost</dt><dd>' + esc(a.kost) + '</dd>' +
+        '</dl>' +
+        '<ol class="ticket-lijst">' + lijst + '</ol>' +
+      '</div>' +
+      '<form id="f" novalidate>' +
+        '<p class="vzw"><label for="gastenboek">Laat dit veld leeg</label>' +
+        '<input id="gastenboek" name="gastenboek" type="text" tabindex="-1" autocomplete="off"></p>' +
+        '<p class="fout" id="fout" role="alert"></p>' +
+        '<p class="acties"><button type="submit" class="hoofd">Ja, mijn Poortwachter!</button>' +
+        '<button type="button" id="terug">Terug</button></p>' +
+      '</form>');
+
+    var terugknop = document.getElementById("terug");
+    terugknop.addEventListener("click", function(){
+      stap = 2; deelnemerIx = boeking.aantal - 1; tekenFormulier(); springNaarFormulier();
+    });
+    document.getElementById("f").addEventListener("submit", function(e){
+      e.preventDefault();
+      verzend(e.target.querySelector('button[type="submit"]'), terugknop);
+    });
+  }
+
+  /* ---------- de inschrijving naar de server sturen ---------- */
+  var wachtvlak = document.getElementById("wachten");
+  var bezig = false;
+
+  function toonWacht(aan){
+    wachtvlak.classList.toggle("aan", !!aan);
+    document.documentElement.style.overflow = aan ? "hidden" : "";
+  }
+
+  function verzend(knop, terugknop){
+    if(bezig) return;
+    bezig = true;
+
+    var a = vind(boeking.act);
+    knop.disabled = true;
+    terugknop.disabled = true;
+    var oudeTekst = knop.textContent;
+    knop.textContent = "Ik noteer je...";
+    toonWacht(true);
+
+    var val = document.getElementById("gastenboek");
+
+    fetch("/api/inschrijven", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        spelId: a.id,
+        gastenboek: val ? val.value : "",
+        mensen: boeking.mensen.map(function(p){
+          return {
+            naam: p.naam,
+            email: p.mail,
+            antwoorden: a.vragen.map(function(v){
+              return {vraag: v.label, antwoord: p.antw[v.id] || ""};
+            })
+          };
+        })
+      })
+    }).then(function(r){
+      return r.json().then(function(j){ return {status:r.status, body:j}; })
+                     .catch(function(){ return {status:r.status, body:{}}; });
+    }).then(function(uit){
+      if(uit.body && uit.body.ok){
+        toonWacht(false);
+        location.hash = "#/bedankt";
+        return;
+      }
+      toonWacht(false);
+      knop.disabled = false; terugknop.disabled = false; knop.textContent = oudeTekst;
+      bezig = false;
+      var f = uit.body && uit.body.fout;
+      if(f === "nog niet ingesteld"){
+        toonFout("Mijn lijst ligt nog bij de drukker. Mail me even, dan zet ik je er zelf op.");
+      } else if(f === "mailadres" || f === "tweede mailadres"){
+        toonFout("Dat mailadres klopt niet. Ga een stap terug en kijk nog eens goed.");
+      } else {
+        toonFout("Er ging iets mis bij het noteren. Probeer het nog eens. " +
+                 "Blijft het misgaan, mail me dan, ik bijt niet. Meestal.");
+      }
+    }).catch(function(){
+      toonWacht(false);
+      knop.disabled = false; terugknop.disabled = false; knop.textContent = oudeTekst;
+      bezig = false;
+      toonFout("Ik krijg geen verbinding. Kijk je internet na en probeer opnieuw.");
+    });
+  }
+
+  function springNaarFormulier(){
+    var k = document.getElementById("inschrijven");
+    if(k) k.scrollIntoView();
+  }
+
+  /* ============================================================
+     APARTE BEDANKINGSPAGINA
+     ============================================================ */
+  function bedankt(){
+    var a = boeking ? vind(boeking.act) : null;
+    var eerste = boeking ? boeking.mensen[0] : null;
+
+    app.innerHTML =
+      '<main><section class="band band-botten" data-hoofdstuk="Bedankt">' +
+      '<div class="band-foto" aria-hidden="true"></div>' +
+        '<div class="band-sluier" aria-hidden="true"></div>' +
+      '<div class="damp" aria-hidden="true"></div>' +
+      '<div class="wrap dank">' +
+        '<h1 class="dank-kop op" style="--i:0">Je staat op mijn lijst</h1>' +
+        (a
+          ? '<div class="dank-bevestiging op" style="--i:1">' +
+            '<strong>' + boeking.aantal + ' ' + (boeking.aantal === 1 ? "persoon" : "personen") +
+            ' voor ' + esc(a.naam) + '</strong>' +
+            'Zaterdag 7 november 2026, Kerk Minnestraat, Lebbeke. Ontsnappen kan niet meer.</div>'
+          : '<div class="dank-bevestiging op" style="--i:1"><strong>Genoteerd</strong>' +
+            'Ontsnappen kan niet meer.</div>') +
+
+        '<h2 class="op" style="--i:2">Wat er nu gebeurt</h2>' +
+        '<ol class="dank-stappen">' +
+          '<li class="op" style="--i:3">Je staat op mijn lijst' +
+            (eerste && eerste.mail ? ", genoteerd bij " + esc(eerste.mail) : "") +
+            '. Daar stuur ik alles naartoe, dus kijk af en toe in je spam. Daar woon ik graag.</li>' +
+          '<li class="op" style="--i:4">Zodra ik het uur van je spelletje beslist heb, krijg je ' +
+          'bericht van mij. Betalen doe je ter plaatse, cash of met je smartphone.</li>' +
+          '<li class="op" style="--i:5">Kan je toch niet komen? Mail het me, dan geef ik je plaats ' +
+          'aan iemand die wel durft. Zwijgen is erger dan afzeggen.</li>' +
+        '</ol>' +
+        '<p class="dank-lach op" style="--i:6">HHAHAHAHAAHAHAHAAAAA!!!!</p>' +
+
+        '<h2 class="op" style="--i:7">Blijf op de hoogte</h2>' +
+        '<p class="op" style="--i:8">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
+        'Facebook-event: de uren, de toelage en wat ik verder nog voor jullie in petto heb.</p>' +
+        '<p class="op" style="--i:9"><a class="dank-fb" href="' + FB_URL + '">' + FB +
+        ' Volg het event op Facebook</a></p>' +
+        '<p class="op" style="--i:10">Nog iets te vragen? ' +
+        '<a href="' + MAIL + '">Mail de Poortwachter</a></p>' +
+
+        '<p><a class="dank-terug" href="#/">Terug naar het begin</a></p>' +
+      '</div></section></main>';
+
+    boeking = null; stap = 1; deelnemerIx = 0;
+    if(klok){ clearInterval(klok); klok = null; }
+    meet();
+    blanko(app);
+    wekOp(app);
+  }
+
+  /* ---------- routering: alleen de bedankingspagina is een eigen adres ---------- */
+  function toon(){
+    var h = location.hash.replace(/^#/, "");
+    if(h === "/bedankt"){ window.scrollTo(0, 0); return bedankt(); }
+    home();
+    if(h === "inschrijven") springNaarFormulier(); else window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", toon);
+  toon();
+  onweer();
+})();
+</script>
+
+
