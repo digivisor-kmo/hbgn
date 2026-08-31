@@ -664,6 +664,10 @@ footer a:hover{color:var(--groen-op)}
 .voet-recht a{color:var(--grijs);text-decoration:underline;text-underline-offset:3px}
 .voet-recht a:hover{color:var(--groen-op)}
 
+/* het jaartal, helemaal onderaan */
+.voet-copy{margin-top:clamp(1.8rem,4vw,2.4rem)!important;font-size:.72rem;
+  color:var(--grijs);opacity:.7;letter-spacing:.04em}
+
 /* ================================================================
    DE SPIN
    Staat vast aan het scherm, niet aan de pagina, dus scrollen doet
