@@ -166,6 +166,15 @@ Dingen die al een keer stukgegaan zijn.
 5. **De spin** ligt in een `position:fixed` veld met `pointer-events:none`, op
    z-index 55. Ze mag nooit een klik tegenhouden. Ze houdt zich in tijdens een
    dialoog, tijdens het verzenden en terwijl iemand in een veld typt.
+   Ze reageert wel op de cursor: staat ze stil, dan draait ze jouw kant op, en
+   kom je te dichtbij dan schiet ze het beeld uit. Dat gebeurt met een luisteraar
+   op `window` die de cursor vergelijkt met de positie die de code zelf al
+   bijhoudt. **Zet daar nooit `pointer-events:auto` voor op haar lijf**, dan vangt
+   een bewegend beest van meer dan honderd pixels klikken af boven de knoppen.
+   Meet in die luisteraar ook niets op, want hij loopt bij elke muisbeweging.
+   Alles wat de spin gepland heeft hangt aan de teller `beurt`: schrikt ze, dan
+   telt die door en vervalt de rest vanzelf. Nieuwe vertragingen dus altijd via
+   `later()` en niet via `setTimeout`.
 6. **Voeg geen browseropslag toe** waar de pagina van afhangt. Er zit nu niets in en
    dat houdt de privacypagina eerlijk: die zegt dat de site geen cookies zet.
 7. Google Tag Manager (`GTM-W396B9PH`) staat in de pagina maar de container is leeg.

@@ -3578,10 +3578,18 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     var beest = veld.firstChild;
 
     var x = 0, y = 0, bezigNu = false;
+    /* maat van de spin nu, de beurtteller en of ze midden in een stap zit */
+    var maat = 110, beurt = 0, stapt = false;
     function B(){ return window.innerWidth  || 1200; }
     function Hg(){ return window.innerHeight || 800; }
     function tussen(a, b){ return a + Math.random() * (b - a); }
 
+    /* alles wat in de toekomst gepland staat hangt aan de huidige beurt.
+       Schrikt ze, dan telt de beurt door en doen de oude plannen niets meer. */
+    function later(fn, ms){
+      var b = beurt;
+      return setTimeout(function(){ if(b === beurt) fn(); }, ms);
+    }
     function plaats(nx, ny){
       x = nx; y = ny;
       beest.style.setProperty("--x", Math.round(nx) + "px");
@@ -3597,18 +3605,20 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     }
     /* eerst draaien naar waar ze heen wil, dan pas lopen */
     function ga(nx, ny, tempo, soep, na){
+      stapt = true;
       var dx = nx - x, dy = ny - y;
       var d = Math.sqrt(dx * dx + dy * dy);
       var ms = Math.max(220, d / tempo * 1000);
       richt(Math.atan2(dy, dx) * 180 / Math.PI + 90);
-      setTimeout(function(){
+      later(function(){
         beest.style.setProperty("--soep", soep || "linear");
         beest.style.setProperty("--dur", Math.round(ms) + "ms");
         void beest.offsetWidth;
         beest.classList.add("loopt");
         plaats(nx, ny);
-        setTimeout(function(){
+        later(function(){
           beest.classList.remove("loopt");
+          stapt = false;
           if(na) na();
         }, ms + 40);
       }, 190);
@@ -3643,7 +3653,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         /* soms slentert ze, soms schiet ze plots vooruit */
         var tempo = Math.random() < .35 ? tussen(430, 720) : tussen(140, 330);
         ga(t[0], t[1], tempo, "cubic-bezier(.35,0,.65,1)", function(){
-          setTimeout(volgende, tussen(120, 1400));
+          later(volgende, tussen(120, 1400));
         });
       })();
     }
@@ -3655,16 +3665,16 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
       richt(tussen(-6, 6));
       beest.classList.add("aan");
       beest.classList.add("draad");
-      setTimeout(function(){
+      later(function(){
         beest.style.setProperty("--soep", "cubic-bezier(.3,1.45,.5,1)");
         beest.style.setProperty("--dur", "640ms");
         void beest.offsetWidth;
         beest.classList.add("loopt");
         plaats(px, diep);
-        setTimeout(function(){
+        later(function(){
           beest.classList.remove("loopt");
           beest.classList.add("bengelt");
-          setTimeout(function(){
+          later(function(){
             beest.classList.remove("bengelt");
             if(Math.random() < .5){
               /* ze laat los, valt op de pagina en gaat er lopend vandoor */
@@ -3674,7 +3684,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
               void beest.offsetWidth;
               beest.classList.add("loopt");
               plaats(px, Hg() * tussen(.7, .93));
-              setTimeout(function(){
+              later(function(){
                 beest.classList.remove("loopt");
                 var u = randpunt();
                 ga(u[0], u[1], tussen(480, 780), "cubic-bezier(.3,0,.7,1)", function(){
@@ -3689,7 +3699,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
               void beest.offsetWidth;
               beest.classList.add("loopt");
               plaats(px, -170);
-              setTimeout(function(){
+              later(function(){
                 beest.classList.remove("loopt");
                 beest.classList.remove("aan");
                 beest.classList.remove("draad");
@@ -3700,6 +3710,67 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         }, 680);
       }, 60);
     }
+
+    /* ---- ze merkt de cursor op ----
+       Het spinnenveld blijft pointer-events:none. We luisteren op het venster
+       en vergelijken de cursor met de plek die we zelf al bijhouden, dus ze
+       vangt nooit een klik af en er wordt niets opgemeten. */
+    var muisX = -9999, muisY = -9999, wacht = false, schrikt = false;
+
+    /* te dichtbij: ze schiet langs de kortste weg het beeld uit */
+    function vlucht(){
+      if(schrikt) return;
+      schrikt = true;
+      beurt++;
+      beest.classList.remove("bengelt");
+      var nx = x, ny = y;
+      if(beest.classList.contains("draad")){
+        ny = -170;                       /* hangt ze, dan trekt ze zich omhoog */
+      } else {
+        var lk = x, re = B() - x, bo = y, on = Hg() - y;
+        var m = Math.min(lk, re, bo, on);
+        if(m === lk) nx = -170;
+        else if(m === re) nx = B() + 170;
+        else if(m === bo) ny = -170;
+        else ny = Hg() + 170;
+      }
+      var dx = nx - x, dy = ny - y;
+      var ms = Math.max(200, Math.sqrt(dx * dx + dy * dy) / 1500 * 1000);
+      richt(Math.atan2(dy, dx) * 180 / Math.PI + 90);
+      beest.style.setProperty("--soep", "cubic-bezier(.2,.75,.4,1)");
+      beest.style.setProperty("--dur", Math.round(ms) + "ms");
+      void beest.offsetWidth;
+      beest.classList.add("loopt");
+      plaats(nx, ny);
+      later(function(){
+        beest.classList.remove("loopt");
+        beest.classList.remove("aan");
+        beest.classList.remove("draad");
+        schrikt = false;
+        stapt = false;
+        bezigNu = false;
+      }, ms + 60);
+    }
+
+    function merkOp(){
+      wacht = false;
+      if(schrikt || !beest.classList.contains("aan")) return;
+      var dx = muisX - x, dy = muisY - y;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if(d < maat * .8){ vlucht(); return; }
+      /* staat ze stil, dan draait ze jouw kant op. Aan een draad niet, anders
+         hangt het draadje scheef op haar rug. */
+      if(!stapt && !beest.classList.contains("loopt") &&
+         !beest.classList.contains("draad") && d < maat * 6){
+        richt(Math.atan2(dy, dx) * 180 / Math.PI + 90);
+      }
+    }
+    window.addEventListener("pointermove", function(e){
+      muisX = e.clientX; muisY = e.clientY;
+      if(wacht) return;
+      wacht = true;
+      requestAnimationFrame(merkOp);
+    }, {passive:true});
 
     function bezet(){
       /* niet storen tijdens een venster, tijdens het verzenden, of als de
@@ -3715,7 +3786,9 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     function toon(){
       if(bezigNu) return;
       bezigNu = true;
-      var maat = Math.round(Math.min(tussen(96, 175), B() * .36));
+      maat = Math.round(Math.min(tussen(96, 175), B() * .36));
+      schrikt = false;
+      stapt = false;
       beest.style.setProperty("--sp", maat + "px");
       /* elke keer een ander moment om te knipperen, anders wordt het een klok */
       beest.style.setProperty("--knip", "-" + tussen(0, 4.6).toFixed(2) + "s");
