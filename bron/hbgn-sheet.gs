@@ -5,8 +5,12 @@
  * Tabbladen die vanzelf ontstaan:
  *   Overzicht  aantallen per spel, met formules, dus altijd juist
  *   Alles      elke deelnemer, ruw, in volgorde van binnenkomst. Niet aanpassen.
- *   D&D initiatie / Magic leren spelen / Magic draft / Atmosfear
- *              per spel een leesbaar tabblad met de juiste kolommen
+ *   D&D initiatie / Magic leren spelen / Magic draft / Atmosfear /
+ *   The Unconscious Mind: Nightmares
+ *              per spel een leesbaar tabblad met de juiste kolommen. Komt er een
+ *              spel bij op de site, dan ontstaat dat tabblad hier vanzelf en
+ *              krijgt elke bijvraag vanzelf een eigen kolom. Alleen de teksten
+ *              onderaan in de bevestigingsmail moeten dan mee.
  *
  * Raakt er iets scheef in een speltabblad, dan herstel je het via het menu
  * "HBGN" bovenaan: "Herbouw de speltabbladen uit Alles".
@@ -247,13 +251,14 @@ function stuurBevestiging(naar, spel, mensen, id) {
       '  Kerk Minnestraat, Lebbeke\n' +
       '  De deur gaat open om 18:00 en gaat rond middernacht weer toe.\n\n' +
       'WAT JE NOG VAN MIJ KRIJGT\n' +
-      '  Mijn vier begeleide spelletjes lopen allemaal tegelijk. Zodra ik het\n' +
+      '  Mijn vijf begeleide spelletjes lopen allemaal tegelijk. Zodra ik het\n' +
       '  uur van het jouwe beslist heb, mail ik je opnieuw.\n' +
       '  Wie te laat komt, speelt niet mee. Dat meen ik.\n\n' +
       'WAT HET KOST\n' +
-      '  Atmosfear gratis, D&D 5 euro, Magic leren spelen 15 euro met twee\n' +
-      '  Jumpstart boosters mee naar huis, de draft 20 euro met drie boosters\n' +
-      '  die je zelf opent en houdt. Bij alles zit een hapje en een drankje.\n' +
+      '  Atmosfear gratis, D&D 5 euro, The Unconscious Mind: Nightmares ook\n' +
+      '  5 euro, Magic leren spelen 15 euro met twee Jumpstart boosters mee\n' +
+      '  naar huis, de draft 20 euro met drie boosters die je zelf opent en\n' +
+      '  houdt. Bij alles zit een hapje en een drankje.\n' +
       '  Betalen doe je ter plaatse, cash of met je smartphone.\n' +
       '  Binnenkomen blijft gratis.\n\n' +
       'WAT JE MOET MEEBRENGEN\n' +

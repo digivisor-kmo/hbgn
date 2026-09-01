@@ -117,6 +117,26 @@ potlood → Versie: Nieuwe versie**. Zo blijft het `/exec`-adres hetzelfde. Kies
 "Nieuwe implementatie", dan krijg je een nieuw adres en moet `SHEETS_URL` in Vercel
 mee.
 
+## Een spel toevoegen
+
+De spellen staan in `ACTIVITEITEN` bovenaan `layout4.body.html`. Daar hangt alles
+aan vast: de kaart in het formulier, het infovenster en de bijvragen. Vergeet deze
+vijf plekken niet, want die weten van niets:
+
+1. `api/inschrijven.js`, de lijst `SPELLEN`. Staat het id daar niet in, dan weigert
+   de server de inschrijving.
+2. `bron/web.py`, de lijst `LATER`, als het spel een figuur krijgt die er nog niet
+   in zit. De tekeningen in `bundle.json` die nog vrij zijn: `bot`, `puin`, `ruit`.
+3. De `VB`-lijst in `layout4.body.html`, met `%%VB:naam%%` voor diezelfde figuur.
+4. De teksten die tellen of opsommen: de zin onder de knop in de hero, regel 02 en
+   regel 03 in `REGELS`.
+5. `bron/hbgn-sheet.gs`, alleen de teksten: het aantal spelletjes en het prijzenlijstje
+   in de bevestigingsmail.
+
+De Sheet zelf hoef je niet aan te passen. Die maakt vanzelf een tabblad met de naam
+van het spel en zet voor elke bijvraag vanzelf een kolom klaar. Wijzig je het script,
+dan moet je in Apps Script wel opnieuw implementeren, zie hierboven.
+
 ## Schrijfregels
 
 De hele site staat in de stem van **De Poortwachter**, de figuur van de cassette uit
@@ -194,5 +214,5 @@ eten en te drinken is en wie de drie partners zijn. Die staan nu als "weet ik no
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 
-De prijzen liggen wel vast: Atmosfear gratis, D&D 5 euro, Magic leren spelen 15 euro,
-de draft 20 euro. Betalen gebeurt ter plaatse, cash of met de smartphone.
+De prijzen liggen wel vast: Atmosfear gratis, D&D 5 euro, The Unconscious Mind:
+Nightmares 5 euro, Magic leren spelen 15 euro, de draft 20 euro. Betalen gebeurt ter plaatse, cash of met de smartphone.

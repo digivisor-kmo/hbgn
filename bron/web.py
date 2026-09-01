@@ -16,7 +16,7 @@ SYM, IMG = b['sym'], b['img']
 # wat de affiche nodig heeft staat meteen in de pagina,
 # de decoratieve figuren komen pas als de pagina er staat
 DIRECT = ['wordmerk', 'datum', 'gratis', 'logo']
-LATER  = ['dobbelsteen', 'jokerkaart', 'schedel', 'zandloper']
+LATER  = ['dobbelsteen', 'jokerkaart', 'schedel', 'zandloper', 'meeple']
 GEBRUIKT = DIRECT + LATER
 BEELDEN  = ['lig', 'maan', 'mist', 'botten']
 GELUID   = 'sfeer'
