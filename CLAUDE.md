@@ -157,6 +157,12 @@ Andere parameters, zoals die van de advertenties, blijven onaangeroerd, dus
 `?utm_source=fb&spel=draft` werkt gewoon. Een nieuw spel werkt vanzelf mee, want
 de id's uit `ACTIVITEITEN` worden altijd herkend.
 
+De pagina staat dan meteen op het formulier, zonder te schuiven: `openOpFormulier()`
+zet `scroll-behavior` heel even op auto en zet de plek daarna nog een paar keer
+opnieuw, want de pagina groeit nog terwijl de beelden binnenkomen. Scrolt de bezoeker
+in die eerste seconde zelf, dan stopt dat onmiddellijk. Een gewone `#inschrijven`-link
+binnen de pagina blijft wel schuiven, dat is de knop in de affiche.
+
 Springen doet hij alleen bij binnenkomst. Wie na het inschrijven op "Terug naar het
 begin" klikt, ziet weer de affiche.
 

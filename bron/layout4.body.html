@@ -1216,6 +1216,45 @@
     if(k) k.scrollIntoView();
   }
 
+  /* Meteen op het formulier openen, zonder het schuiven van scroll-behavior.
+     Die staat in de css op smooth, dus zetten we hem heel even op auto. Dat werkt
+     ook in browsers die behavior:"instant" niet kennen. Op html en op body, want
+     bij ons is body de doos die scrollt.
+     De pagina groeit nog terwijl de beelden en de letters binnenkomen, dus zetten
+     we de plek daarna nog een paar keer opnieuw. Roert de bezoeker zelf aan het
+     scherm, dan houden we onmiddellijk op. */
+  function openOpFormulier(){
+    var wortel = document.documentElement, lijf = document.body, geroerd = false;
+
+    function raak(){ geroerd = true; af(); }
+    function af(){
+      window.removeEventListener("wheel", raak);
+      window.removeEventListener("touchstart", raak);
+      window.removeEventListener("keydown", raak);
+    }
+    window.addEventListener("wheel", raak, {passive:true});
+    window.addEventListener("touchstart", raak, {passive:true});
+    window.addEventListener("keydown", raak);
+
+    function zet(){
+      if(geroerd) return;
+      var k = document.getElementById("inschrijven");
+      if(!k) return;
+      var w = wortel.style.scrollBehavior, l = lijf.style.scrollBehavior;
+      wortel.style.scrollBehavior = "auto";
+      lijf.style.scrollBehavior = "auto";
+      k.scrollIntoView();
+      wortel.style.scrollBehavior = w;
+      lijf.style.scrollBehavior = l;
+    }
+
+    zet();
+    requestAnimationFrame(function(){ requestAnimationFrame(zet); });
+    setTimeout(zet, 300);
+    if(document.readyState === "complete") setTimeout(af, 1200);
+    else window.addEventListener("load", function(){ setTimeout(zet, 60); setTimeout(af, 600); });
+  }
+
   /* ============================================================
      APARTE BEDANKINGSPAGINA
      ============================================================ */
@@ -1276,7 +1315,8 @@
     home();
     /* een campagnelink mag zelf naar het formulier springen, ook zonder #inschrijven.
        Alleen bij binnenkomen: wie later terugkeert naar het begin wil het begin zien. */
-    if(h === "inschrijven" || (eersteBezoek && spelUitUrl())) springNaarFormulier();
+    if(eersteBezoek && spelUitUrl()) openOpFormulier();
+    else if(h === "inschrijven") springNaarFormulier();
     else window.scrollTo(0, 0);
     eersteBezoek = false;
   }
