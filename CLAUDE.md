@@ -137,6 +137,29 @@ De Sheet zelf hoef je niet aan te passen. Die maakt vanzelf een tabblad met de n
 van het spel en zet voor elke bijvraag vanzelf een kolom klaar. Wijzig je het script,
 dan moet je in Apps Script wel opnieuw implementeren, zie hierboven.
 
+## Campagnelinks
+
+Voor advertenties per spel: `?spel=<id>` zet dat spel al aan in het formulier en
+springt er meteen naartoe, ook zonder `#inschrijven`.
+
+```
+https://hbgn.be/?spel=dnd
+https://hbgn.be/?spel=magic-leren
+https://hbgn.be/?spel=magic-draft
+https://hbgn.be/?spel=atmosfear
+https://hbgn.be/?spel=unconscious
+```
+
+Hoofdletters, koppeltekens en spaties maken niet uit. Er zijn ook bijnamen, zie
+`BIJNAMEN` in `layout4.body.html`: `magic`, `draft`, `d&d`, `nightmares`. Kent hij
+de waarde niet, dan gebeurt er niets en staat het formulier er gewoon leeg bij.
+Andere parameters, zoals die van de advertenties, blijven onaangeroerd, dus
+`?utm_source=fb&spel=draft` werkt gewoon. Een nieuw spel werkt vanzelf mee, want
+de id's uit `ACTIVITEITEN` worden altijd herkend.
+
+Springen doet hij alleen bij binnenkomst. Wie na het inschrijven op "Terug naar het
+begin" klikt, ziet weer de affiche.
+
 ## Schrijfregels
 
 De hele site staat in de stem van **De Poortwachter**, de figuur van de cassette uit

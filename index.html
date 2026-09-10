@@ -3441,6 +3441,33 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
     return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   function vind(id){ return ACTIVITEITEN.filter(function(a){ return a.id === id; })[0] || null; }
 
+  /* ---------- een spel voorkiezen via de url ----------
+     Voor de campagnes per spel: hbgn.be/?spel=dnd#inschrijven zet dat spel meteen
+     aan in het formulier. De id's uit ACTIVITEITEN werken altijd, daarnaast een
+     paar schrijfwijzen die in een post kunnen opduiken. Hoofdletters, koppeltekens
+     en spaties maken niet uit. Kennen we de waarde niet, dan doen we niets en
+     staat het formulier er gewoon leeg bij. Alle andere parameters, zoals die van
+     de advertenties, laten we met rust. */
+  var BIJNAMEN = {
+    dd:"dnd", dungeons:"dnd", dndinitiatie:"dnd",
+    magic:"magic-leren", leren:"magic-leren", magicleren:"magic-leren",
+    draft:"magic-draft", magicdraft:"magic-draft",
+    unconsciousmind:"unconscious", nightmares:"unconscious",
+    theunconsciousmindnightmares:"unconscious"
+  };
+  function sleutel(t){ return String(t).toLowerCase().replace(/[^a-z0-9]/g, ""); }
+  function spelUitUrl(){
+    var m = /[?&]spel=([^&#]*)/i.exec(location.search);
+    if(!m) return null;
+    var k = "";
+    try { k = sleutel(decodeURIComponent(m[1].replace(/\+/g, " "))); }
+    catch(e){ k = sleutel(m[1]); }
+    if(!k) return null;
+    var raak = null;
+    ACTIVITEITEN.forEach(function(a){ if(sleutel(a.id) === k) raak = a.id; });
+    return raak || (vind(BIJNAMEN[k]) ? BIJNAMEN[k] : null);
+  }
+
   var stil = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ============================================================
@@ -4214,6 +4241,12 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
         '</div>' +
       '</footer>';
 
+    /* komt iemand uit een campagne, dan staat zijn spel al aangevinkt */
+    if(!boeking){
+      var voorkeur = spelUitUrl();
+      if(voorkeur) boeking = {act:voorkeur, aantal:1, mensen:[]};
+    }
+
     tekenFormulier();
     startKlok();
     meet();
@@ -4552,11 +4585,16 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
   }
 
   /* ---------- routering: alleen de bedankingspagina is een eigen adres ---------- */
+  var eersteBezoek = true;
   function toon(){
     var h = location.hash.replace(/^#/, "");
-    if(h === "/bedankt"){ window.scrollTo(0, 0); return bedankt(); }
+    if(h === "/bedankt"){ window.scrollTo(0, 0); eersteBezoek = false; return bedankt(); }
     home();
-    if(h === "inschrijven") springNaarFormulier(); else window.scrollTo(0, 0);
+    /* een campagnelink mag zelf naar het formulier springen, ook zonder #inschrijven.
+       Alleen bij binnenkomen: wie later terugkeert naar het begin wil het begin zien. */
+    if(h === "inschrijven" || (eersteBezoek && spelUitUrl())) springNaarFormulier();
+    else window.scrollTo(0, 0);
+    eersteBezoek = false;
   }
   window.addEventListener("hashchange", toon);
   toon();
