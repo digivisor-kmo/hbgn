@@ -715,6 +715,20 @@ dialog > p{margin:0;padding:1rem 1.7rem 1.7rem;text-align:right}
 .partnerrij li:hover .vraagteken{color:var(--groen);text-shadow:0 0 2rem rgba(74,184,101,.7)}
 .partnernaam{font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--grijs)}
+/* een partner die wel al vastligt: volle rand in plaats van een streepjesrand,
+   en het logo vult de hoogte die het vlak overhoudt */
+.partnerrij li.partner-echt{border-style:solid;border-color:rgba(146,56,230,.55);padding:0}
+/* de link ligt vast in het vlak, anders zou het logo met zijn eigen hoogte
+   de rij uit elkaar duwen en klopt max-height:100% nergens op */
+.partnerrij li.partner-echt a{position:absolute;inset:.7rem;
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(.6rem,1.8vw,1.1rem);text-decoration:none;color:inherit}
+.partnerlogo{max-width:52%;max-height:100%;width:auto;height:auto;display:block;
+  filter:drop-shadow(0 0 1rem rgba(0,0,0,.55))}
+.partner-echt .partnernaam{text-align:left;line-height:1.5}
+.partnerrij li.partner-echt:hover{border-color:var(--groen)}
+.partnerrij li.partner-echt:hover .partnernaam{color:var(--groen-op)}
+
 .partner-onder{margin:1.3rem 0 0;font-size:.85rem;color:var(--grijs)}
 .partner-onder a{color:var(--paars-op)}
 
@@ -3422,6 +3436,7 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
   };
   var FB_URL = "https://www.facebook.com/events/1445920600735035/";
   var MAIL = "mailto:depoortwachter666@gmail.com";
+  var JUMPSKY = "https://jumpsky.be/trampolineparken/jumpsky-aalst-trampolinepark/";
   var AVOND = new Date("2026-11-07T18:00:00+01:00");
 
   function fig(naam){
@@ -4203,10 +4218,17 @@ M5541 17614 c-12 -15 -21 -36 -21 -48 0 -11 0 -500 0 -1086 0 -1022 0 -1066
 
           '<h2 class="op kop kop-later" style="--i:1">Mijn <em>partners</em></h2>' +
           '<p class="kopfijn op" style="--i:2">Waarschijnlijk drie. Zij leveren de prijzen voor ' +
-          'mijn tombola. Wie het zijn verklap ik nog niet, dat zou de pret bederven.</p>' +
+          'mijn tombola. Eentje durft zich al te tonen. De rest houdt zich nog gedeisd.</p>' +
           '<ul class="partnerrij">' +
-            [1,2,3].map(function(n, i){
-              return '<li class="op" style="--i:' + (i + 3) + '">' +
+            '<li class="partner-echt op" style="--i:3">' +
+              '<a href="' + JUMPSKY + '">' +
+                '<img class="partnerlogo" src="/assets/jumpsky.png" width="340" height="320" ' +
+                  'alt="" loading="lazy" decoding="async">' +
+                '<span class="partnernaam">JumpSky Aalst</span>' +
+              '</a>' +
+            '</li>' +
+            [1,2].map(function(n, i){
+              return '<li class="op" style="--i:' + (i + 4) + '">' +
                 '<span class="vraagteken" aria-hidden="true">?</span>' +
                 '<span class="partnernaam">Nog niet verklapt</span></li>';
             }).join("") +

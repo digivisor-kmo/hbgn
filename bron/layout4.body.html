@@ -106,6 +106,7 @@
   };
   var FB_URL = "https://www.facebook.com/events/1445920600735035/";
   var MAIL = "mailto:depoortwachter666@gmail.com";
+  var JUMPSKY = "https://jumpsky.be/trampolineparken/jumpsky-aalst-trampolinepark/";
   var AVOND = new Date("2026-11-07T18:00:00+01:00");
 
   function fig(naam){
@@ -887,10 +888,17 @@
 
           '<h2 class="op kop kop-later" style="--i:1">Mijn <em>partners</em></h2>' +
           '<p class="kopfijn op" style="--i:2">Waarschijnlijk drie. Zij leveren de prijzen voor ' +
-          'mijn tombola. Wie het zijn verklap ik nog niet, dat zou de pret bederven.</p>' +
+          'mijn tombola. Eentje durft zich al te tonen. De rest houdt zich nog gedeisd.</p>' +
           '<ul class="partnerrij">' +
-            [1,2,3].map(function(n, i){
-              return '<li class="op" style="--i:' + (i + 3) + '">' +
+            '<li class="partner-echt op" style="--i:3">' +
+              '<a href="' + JUMPSKY + '">' +
+                '<img class="partnerlogo" src="%%IMG:jumpsky%%" width="340" height="320" ' +
+                  'alt="" loading="lazy" decoding="async">' +
+                '<span class="partnernaam">JumpSky Aalst</span>' +
+              '</a>' +
+            '</li>' +
+            [1,2].map(function(n, i){
+              return '<li class="op" style="--i:' + (i + 4) + '">' +
                 '<span class="vraagteken" aria-hidden="true">?</span>' +
                 '<span class="partnernaam">Nog niet verklapt</span></li>';
             }).join("") +

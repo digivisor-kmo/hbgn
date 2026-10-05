@@ -35,7 +35,7 @@ bron/                 hier werk je (wordt niet gepubliceerd, zie .vercelignore)
   fonts.css           de @font-face-regels
   layout4.body.html   de hele pagina: de teksten, de data en alle JavaScript
   privacy.body.html   de privacypagina, statische HTML met een klein scriptje
-  bundle.json         de SVG-tekeningen en het geluid, 2 MB, niet met de hand aanraken
+  bundle.json         de SVG-tekeningen, het geluid en het partnerlogo, niet met de hand aanraken
   web.py              bouwt index.html en privacy.html
   bouw.py             bouwt de losse versie met alles als data-uri
   maak.sh             plakt de CSS samen en roept web.py aan
@@ -166,6 +166,21 @@ binnen de pagina blijft wel schuiven, dat is de knop in de affiche.
 Springen doet hij alleen bij binnenkomst. Wie na het inschrijven op "Terug naar het
 begin" klikt, ziet weer de affiche.
 
+## Een partnerlogo toevoegen
+
+Het logo van JumpSky zit als data-uri in `bundle.json` onder `img.jumpsky`. Daar
+komen beide bouwwegen aan hetzelfde beeld: `web.py` schrijft het als
+`assets/jumpsky.png` en vult `%%IMG:jumpsky%%` met dat pad, `bouw.py` plakt de
+data-uri rechtstreeks in de losse versie. Zet een nieuw logo er met een scriptje
+bij, niet met de hand, en voeg in `web.py` een regel `schrijf(...)` toe zoals die
+voor het geluid.
+
+Maak het beeld niet groter dan nodig. Het wordt hoogstens rond de 130 px breed
+getoond, dus 340 px is al ruim het dubbele. Het logo hangt in een vlak met
+`aspect-ratio:5/2`: de link ligt daarin met `position:absolute`, anders duwt de
+eigen hoogte van het beeld de hele rij uit elkaar en betekent `max-height:100%`
+niets.
+
 ## Schrijfregels
 
 De hele site staat in de stem van **De Poortwachter**, de figuur van de cassette uit
@@ -239,7 +254,7 @@ Dat bestand hoort **niet** in de repository, het staat in `.gitignore`.
 ## Wat er nog niet beslist is
 
 Starturen per spel, de capaciteit van Atmosfear en van Magic leren spelen, wat er te
-eten en te drinken is en wie de drie partners zijn. Die staan nu als "weet ik nog
+eten en te drinken is en wie de twee overige partners zijn. JumpSky Aalst ligt vast. Die staan nu als "weet ik nog
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 

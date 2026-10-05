@@ -306,6 +306,20 @@ dialog > p{margin:0;padding:1rem 1.7rem 1.7rem;text-align:right}
 .partnerrij li:hover .vraagteken{color:var(--groen);text-shadow:0 0 2rem rgba(74,184,101,.7)}
 .partnernaam{font-family:"Archivo Black",Arial,sans-serif;font-size:.6rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--grijs)}
+/* een partner die wel al vastligt: volle rand in plaats van een streepjesrand,
+   en het logo vult de hoogte die het vlak overhoudt */
+.partnerrij li.partner-echt{border-style:solid;border-color:rgba(146,56,230,.55);padding:0}
+/* de link ligt vast in het vlak, anders zou het logo met zijn eigen hoogte
+   de rij uit elkaar duwen en klopt max-height:100% nergens op */
+.partnerrij li.partner-echt a{position:absolute;inset:.7rem;
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(.6rem,1.8vw,1.1rem);text-decoration:none;color:inherit}
+.partnerlogo{max-width:52%;max-height:100%;width:auto;height:auto;display:block;
+  filter:drop-shadow(0 0 1rem rgba(0,0,0,.55))}
+.partner-echt .partnernaam{text-align:left;line-height:1.5}
+.partnerrij li.partner-echt:hover{border-color:var(--groen)}
+.partnerrij li.partner-echt:hover .partnernaam{color:var(--groen-op)}
+
 .partner-onder{margin:1.3rem 0 0;font-size:.85rem;color:var(--grijs)}
 .partner-onder a{color:var(--paars-op)}
 
