@@ -168,12 +168,16 @@ begin" klikt, ziet weer de affiche.
 
 ## Een partnerlogo toevoegen
 
-Het logo van JumpSky zit als data-uri in `bundle.json` onder `img.jumpsky`. Daar
-komen beide bouwwegen aan hetzelfde beeld: `web.py` schrijft het als
-`assets/jumpsky.png` en vult `%%IMG:jumpsky%%` met dat pad, `bouw.py` plakt de
-data-uri rechtstreeks in de losse versie. Zet een nieuw logo er met een scriptje
-bij, niet met de hand, en voeg in `web.py` een regel `schrijf(...)` toe zoals die
-voor het geluid.
+De partners staan in `PARTNERS` bovenaan `layout4.body.html`: naam, logo, de
+afmetingen van het logo en de link. De drie vakken vullen zich vanzelf aan met een
+vraagteken zolang er minder partners zijn dan `PARTNERVAKKEN`.
+
+Elk logo zit als data-uri in `bundle.json` onder `img.<naam>`. Daar komen beide
+bouwwegen aan hetzelfde beeld: `web.py` schrijft het als `assets/<naam>.png` en
+vult `%%IMG:<naam>%%` met dat pad, `bouw.py` plakt de data-uri rechtstreeks in de
+losse versie. Een nieuw logo zet je er dus op drie plekken bij: in `bundle.json`
+(met een scriptje, niet met de hand), in de lijst `PARTNERS` in `web.py` en in
+`PARTNERS` in `layout4.body.html`.
 
 Maak het beeld niet groter dan nodig. Het wordt hoogstens rond de 130 px breed
 getoond, dus 340 px is al ruim het dubbele. Het logo hangt in een vlak met
@@ -254,7 +258,8 @@ Dat bestand hoort **niet** in de repository, het staat in `.gitignore`.
 ## Wat er nog niet beslist is
 
 Starturen per spel, de capaciteit van Atmosfear en van Magic leren spelen, wat er te
-eten en te drinken is en wie de twee overige partners zijn. JumpSky Aalst ligt vast. Die staan nu als "weet ik nog
+eten en te drinken is en wie de derde partner is. JumpSky Aalst en White Goblin
+Games liggen vast. Die staan nu als "weet ik nog
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 

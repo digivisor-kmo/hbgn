@@ -33,8 +33,10 @@ def schrijf(naam, uri, ext):
 
 paden, totaal = {}, 0
 paden[GELUID], n = schrijf(GELUID, IMG[GELUID], 'mp3'); totaal += n
-# het logo van een partner, als gewoon bestand naast de pagina
-paden['jumpsky'], n = schrijf('jumpsky', IMG['jumpsky'], 'png'); totaal += n
+# de logo's van de partners, als gewone bestanden naast de pagina
+PARTNERS = ['jumpsky', 'whitegoblin']
+for k in PARTNERS:
+    paden[k], n = schrijf(k, IMG[k], 'png'); totaal += n
 
 # de beelden staan al als webp klaar, in drie maten voor drie soorten schermen
 MATEN = {
