@@ -112,7 +112,9 @@
     {naam:"JumpSky Aalst", logo:"%%IMG:jumpsky%%", b:340, h:320,
      url:"https://jumpsky.be/trampolineparken/jumpsky-aalst-trampolinepark/"},
     {naam:"White Goblin Games", logo:"%%IMG:whitegoblin%%", b:300, h:269,
-     url:"https://www.whitegoblingames.com/"}
+     url:"https://www.whitegoblingames.com/"},
+    {naam:"Hintlabyrinth", logo:"%%IMG:hintlabyrinth%%", b:260, h:241,
+     url:"https://www.hintlabyrinth.be/"}
   ];
   var PARTNERVAKKEN = 3;
   var AVOND = new Date("2026-11-07T18:00:00+01:00");
@@ -895,8 +897,8 @@
           '</div>' +
 
           '<h2 class="op kop kop-later" style="--i:1">Mijn <em>partners</em></h2>' +
-          '<p class="kopfijn op" style="--i:2">Waarschijnlijk drie. Zij leveren de prijzen voor ' +
-          'mijn tombola. Twee durven zich al te tonen. De derde houdt zich nog gedeisd.</p>' +
+          '<p class="kopfijn op" style="--i:2">Drie, voorlopig. Zij leveren de prijzen voor ' +
+          'mijn tombola.</p>' +
           '<ul class="partnerrij">' +
             PARTNERS.map(function(p, i){
               return '<li class="partner-echt op" style="--i:' + (i + 3) + '">' +
@@ -912,8 +914,14 @@
                 '<span class="partnernaam">Nog niet verklapt</span></li>';
             }).join("") +
           '</ul>' +
-          '<p class="partner-onder op" style="--i:6">Wil jij een van de drie zijn, of de vierde? ' +
-          '<a href="' + MAIL + '">Laat het weten</a>.</p>' +
+          /* en altijd een strook voor wie nog wil aansluiten. Bewust buiten de lijst:
+             in het raster zou ze een lege kolom openhouden en de vakken smaller maken */
+          '<div class="partner-teaser op" style="--i:' + (Math.max(PARTNERS.length, PARTNERVAKKEN) + 3) + '">' +
+            '<a href="' + MAIL + '">' +
+              '<span class="vraagteken" aria-hidden="true">?</span>' +
+              '<span class="teaser-tekst"><strong>Er is nog een vierde plek.</strong> ' +
+                'Wie durft, meldt zich. Ik bijt niet. Meestal.</span>' +
+            '</a></div>' +
         '</div>' +
       '</section>' +
 

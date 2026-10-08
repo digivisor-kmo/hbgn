@@ -170,7 +170,10 @@ begin" klikt, ziet weer de affiche.
 
 De partners staan in `PARTNERS` bovenaan `layout4.body.html`: naam, logo, de
 afmetingen van het logo en de link. De drie vakken vullen zich vanzelf aan met een
-vraagteken zolang er minder partners zijn dan `PARTNERVAKKEN`.
+vraagteken zolang er minder partners zijn dan `PARTNERVAKKEN`. Daaronder staat altijd
+een strook die om een volgende partner vraagt, met een `mailto:`-link. Die strook
+staat bewust buiten de `ul`: in het raster zou ze over alle kolommen spannen en zo
+een lege kolom openhouden, waardoor de vakken en de logo's smaller worden.
 
 Elk logo zit als data-uri in `bundle.json` onder `img.<naam>`. Daar komen beide
 bouwwegen aan hetzelfde beeld: `web.py` schrijft het als `assets/<naam>.png` en
@@ -258,8 +261,8 @@ Dat bestand hoort **niet** in de repository, het staat in `.gitignore`.
 ## Wat er nog niet beslist is
 
 Starturen per spel, de capaciteit van Atmosfear en van Magic leren spelen, wat er te
-eten en te drinken is en wie de derde partner is. JumpSky Aalst en White Goblin
-Games liggen vast. Die staan nu als "weet ik nog
+eten en te drinken is. De drie partners liggen vast: JumpSky Aalst, White Goblin
+Games en Hintlabyrinth. Een vierde is welkom. Die staan nu als "weet ik nog
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 

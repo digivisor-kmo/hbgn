@@ -34,7 +34,7 @@ def schrijf(naam, uri, ext):
 paden, totaal = {}, 0
 paden[GELUID], n = schrijf(GELUID, IMG[GELUID], 'mp3'); totaal += n
 # de logo's van de partners, als gewone bestanden naast de pagina
-PARTNERS = ['jumpsky', 'whitegoblin']
+PARTNERS = ['jumpsky', 'whitegoblin', 'hintlabyrinth']
 for k in PARTNERS:
     paden[k], n = schrijf(k, IMG[k], 'png'); totaal += n
 
