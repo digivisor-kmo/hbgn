@@ -106,16 +106,25 @@
   };
   var FB_URL = "https://www.facebook.com/events/1445920600735035/";
   var MAIL = "mailto:depoortwachter666@gmail.com";
-  /* de partners die al vastliggen. De rest van de drie vakken vult zich vanzelf
-     met een vraagteken. Een logo komt uit bundle.json, zie CLAUDE.md. */
+  /* de partners die al vastliggen. Zijn het er minder dan PARTNERVAKKEN, dan vult
+     de rest zich vanzelf met een vraagteken. Een logo komt uit bundle.json, zie
+     CLAUDE.md. breed: een woordlogo, dat staat boven de naam in plaats van ernaast.
+     kaart: een logo met een eigen witte achtergrond, dat krijgt afgeronde hoeken. */
   var PARTNERS = [
     {naam:"JumpSky Aalst", logo:"%%IMG:jumpsky%%", b:340, h:320,
      url:"https://jumpsky.be/trampolineparken/jumpsky-aalst-trampolinepark/"},
     {naam:"White Goblin Games", logo:"%%IMG:whitegoblin%%", b:300, h:269,
      url:"https://www.whitegoblingames.com/"},
     {naam:"Hintlabyrinth", logo:"%%IMG:hintlabyrinth%%", b:260, h:241,
-     url:"https://www.hintlabyrinth.be/"}
+     url:"https://www.hintlabyrinth.be/"},
+    {naam:"Hermelijn Aalst", logo:"%%IMG:hermelijn%%", b:230, h:82, breed:true,
+     url:"https://www.hermelijn.be/"},
+    {naam:"Megableu", logo:"%%IMG:megableu%%", b:520, h:146, breed:true, kaart:true,
+     url:"https://megableu.eu/"}
   ];
+  var TELWOORD = ["Geen","E\u00e9n","Twee","Drie","Vier","Vijf","Zes","Zeven","Acht","Negen","Tien"];
+  var RANGWOORD = ["eerste","tweede","derde","vierde","vijfde","zesde","zevende","achtste",
+                   "negende","tiende","elfde"];
   var PARTNERVAKKEN = 3;
   var AVOND = new Date("2026-11-07T18:00:00+01:00");
 
@@ -897,13 +906,15 @@
           '</div>' +
 
           '<h2 class="op kop kop-later" style="--i:1">Mijn <em>partners</em></h2>' +
-          '<p class="kopfijn op" style="--i:2">Drie, voorlopig. Zij leveren de prijzen voor ' +
-          'mijn tombola.</p>' +
+          '<p class="kopfijn op" style="--i:2">' + (TELWOORD[PARTNERS.length] || PARTNERS.length) +
+            ', voorlopig. Zij leveren de prijzen voor mijn tombola.</p>' +
+          '<div class="partnerblok">' +
           '<ul class="partnerrij">' +
             PARTNERS.map(function(p, i){
-              return '<li class="partner-echt op" style="--i:' + (i + 3) + '">' +
+              return '<li class="partner-echt' + (p.breed ? ' breed' : '') + ' op" style="--i:' + (i + 3) + '">' +
                 '<a href="' + p.url + '">' +
-                  '<img class="partnerlogo" src="' + p.logo + '" width="' + p.b + '" height="' + p.h + '" ' +
+                  '<img class="partnerlogo' + (p.kaart ? ' kaart' : '') + '" src="' + p.logo + '" ' +
+                    'width="' + p.b + '" height="' + p.h + '" ' +
                     'alt="" loading="lazy" decoding="async">' +
                   '<span class="partnernaam">' + esc(p.naam) + '</span>' +
                 '</a></li>';
@@ -914,12 +925,14 @@
                 '<span class="partnernaam">Nog niet verklapt</span></li>';
             }).join("") +
           '</ul>' +
+          '</div>' +
           /* en altijd een strook voor wie nog wil aansluiten. Bewust buiten de lijst:
              in het raster zou ze een lege kolom openhouden en de vakken smaller maken */
           '<div class="partner-teaser op" style="--i:' + (Math.max(PARTNERS.length, PARTNERVAKKEN) + 3) + '">' +
             '<a href="' + MAIL + '">' +
               '<span class="vraagteken" aria-hidden="true">?</span>' +
-              '<span class="teaser-tekst"><strong>Er is nog een vierde plek.</strong> ' +
+              '<span class="teaser-tekst"><strong>Er is nog een ' +
+                (RANGWOORD[Math.max(PARTNERS.length, PARTNERVAKKEN)] || "volgende") + ' plek.</strong> ' +
                 'Wie durft, meldt zich. Ik bijt niet. Meestal.</span>' +
             '</a></div>' +
         '</div>' +
