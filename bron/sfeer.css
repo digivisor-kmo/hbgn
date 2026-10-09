@@ -418,7 +418,9 @@ footer{position:relative;overflow:hidden;border-top:0;margin-top:0;
   52%{text-shadow:.02em .02em 0 var(--paars),0 0 3.4rem rgba(74,184,101,.7)}
 }
 
-.voet-fb{margin:0 0 clamp(1.6rem,4vw,2.4rem)}
+/* Facebook en Instagram naast elkaar, op een smal scherm onder elkaar */
+.voet-fb{margin:0 0 clamp(1.6rem,4vw,2.4rem);display:flex;flex-wrap:wrap;
+  justify-content:center;gap:.7rem}
 .voet-fb a{display:inline-flex;align-items:center;gap:.6rem;
   border:1px solid rgba(146,56,230,.5);background:rgba(11,5,18,.6);padding:.85em 1.3em;
   color:var(--wit);text-decoration:none;
@@ -479,6 +481,8 @@ footer a:hover{color:var(--groen-op)}
   font-family:"Archivo Black",Arial,sans-serif;font-size:.8rem;letter-spacing:.08em;
   text-transform:uppercase;transition:all .18s ease}
 .dank-fb:hover{border-color:var(--groen);background:rgba(74,184,101,.12);color:var(--groen-op)}
+.dank-sociaal{display:flex;flex-wrap:wrap;gap:.7rem}
+.dank-sociaal .dank-fb{margin:0}
 .dank-terug{display:inline-block;margin-top:1.5rem;font-size:.85rem}
 
 /* ---- velden niet breder dan nodig ---- */
