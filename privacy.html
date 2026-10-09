@@ -825,7 +825,9 @@ footer{position:relative;overflow:hidden;border-top:0;margin-top:0;
   52%{text-shadow:.02em .02em 0 var(--paars),0 0 3.4rem rgba(74,184,101,.7)}
 }
 
-.voet-fb{margin:0 0 clamp(1.6rem,4vw,2.4rem)}
+/* Facebook en Instagram naast elkaar, op een smal scherm onder elkaar */
+.voet-fb{margin:0 0 clamp(1.6rem,4vw,2.4rem);display:flex;flex-wrap:wrap;
+  justify-content:center;gap:.7rem}
 .voet-fb a{display:inline-flex;align-items:center;gap:.6rem;
   border:1px solid rgba(146,56,230,.5);background:rgba(11,5,18,.6);padding:.85em 1.3em;
   color:var(--wit);text-decoration:none;
@@ -886,6 +888,8 @@ footer a:hover{color:var(--groen-op)}
   font-family:"Archivo Black",Arial,sans-serif;font-size:.8rem;letter-spacing:.08em;
   text-transform:uppercase;transition:all .18s ease}
 .dank-fb:hover{border-color:var(--groen);background:rgba(74,184,101,.12);color:var(--groen-op)}
+.dank-sociaal{display:flex;flex-wrap:wrap;gap:.7rem}
+.dank-sociaal .dank-fb{margin:0}
 .dank-terug{display:inline-block;margin-top:1.5rem;font-size:.85rem}
 
 /* ---- velden niet breder dan nodig ---- */
@@ -1682,7 +1686,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <p class="voet-fb"><a href="https://www.facebook.com/events/1445920600735035/"
       target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24"
       aria-hidden="true" style="vertical-align:-4px"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>
-      Volg het event op Facebook</a></p>
+      Volg het event op Facebook</a><a href="https://www.instagram.com/hbgn.be/"
+      target="_blank" rel="noopener noreferrer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:-4px"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.25" fill="currentColor"/></svg>
+      Volg mij op Instagram</a></p>
     <p class="voet-klein">Halloween Boardgame Night, vierde editie.<br>
     Kerk Minnestraat, Lebbeke. Zaterdag 7 november 2026, van 18:00 tot ongeveer 24:00.<br>
     Ik en mijn handlangers zetten dit op, in samenwerking met Buurtatelier LAB GODS.</p>

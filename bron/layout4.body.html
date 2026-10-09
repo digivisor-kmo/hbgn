@@ -105,6 +105,8 @@
     schedel:"%%VB:schedel%%", zandloper:"%%VB:zandloper%%", meeple:"%%VB:meeple%%"
   };
   var FB_URL = "https://www.facebook.com/events/1445920600735035/";
+  var IG = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:-4px"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.25" fill="currentColor"/></svg>';
+  var IG_URL = "https://www.instagram.com/hbgn.be/";
   var MAIL = "mailto:depoortwachter666@gmail.com";
   /* de partners die al vastliggen. Zijn het er minder dan PARTNERVAKKEN, dan vult
      de rest zich vanzelf met een vraagteken. Een logo komt uit bundle.json, zie
@@ -996,7 +998,8 @@
           '<p class="handtekening op" style="--i:1">Onvriendelijke groeten,<br>' +
             '<span class="naam">De Poortwachter</span></p>' +
           '<p class="voet-fb op" style="--i:2"><a href="' + FB_URL + '">' + FB +
-            ' Volg het event op Facebook</a></p>' +
+            ' Volg het event op Facebook</a><a href="' + IG_URL + '">' + IG +
+            ' Volg mij op Instagram</a></p>' +
           '<p class="voet-klein op" style="--i:3">Halloween Boardgame Night, vierde editie.<br>' +
             'Kerk Minnestraat, Lebbeke. Zaterdag 7 november 2026, van 18:00 tot ongeveer 24:00.<br>' +
             'Ik en mijn handlangers zetten dit op, in samenwerking met Buurtatelier LAB GODS.</p>' +
@@ -1402,9 +1405,11 @@
 
         '<h2 class="op" style="--i:7">Blijf op de hoogte</h2>' +
         '<p class="op" style="--i:8">In de aanloop naar de avond zet ik alles wat ik beslis op mijn ' +
-        'Facebook-event: de uren, de toelage en wat ik verder nog voor jullie in petto heb.</p>' +
-        '<p class="op" style="--i:9"><a class="dank-fb" href="' + FB_URL + '">' + FB +
-        ' Volg het event op Facebook</a></p>' +
+        'Facebook-event en op Instagram: de uren, de toelage en wat ik verder nog voor jullie in ' +
+        'petto heb.</p>' +
+        '<p class="dank-sociaal op" style="--i:9"><a class="dank-fb" href="' + FB_URL + '">' + FB +
+        ' Volg het event op Facebook</a><a class="dank-fb" href="' + IG_URL + '">' + IG +
+        ' Volg mij op Instagram</a></p>' +
         '<p class="op" style="--i:10">Nog iets te vragen? ' +
         '<a href="' + MAIL + '">Mail de Poortwachter</a></p>' +
 
