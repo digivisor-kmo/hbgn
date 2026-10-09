@@ -5,3 +5,4 @@ bron/layout4.tpl.html
 .DS_Store
 # wat de nagebootste Sheet van de testserver bewaart
 ontvangen.json
+bron/v2.tpl.html

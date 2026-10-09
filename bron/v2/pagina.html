@@ -1,0 +1,301 @@
+%%DEFS%%
+
+<!-- de deur en de stenen boog, één keer getekend en twee keer gebruikt -->
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="hout" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#0a0511"/>
+      <stop offset=".6" stop-color="#190b29"/>
+      <stop offset="1" stop-color="#26123b"/>
+    </linearGradient>
+    <linearGradient id="ijzer" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#2a163f"/>
+      <stop offset=".5" stop-color="#0b0612"/>
+      <stop offset="1" stop-color="#05020a"/>
+    </linearGradient>
+    <clipPath id="bladvorm"><path d="M0 1000V330C0 150 160 30 400 0V1000Z"/></clipPath>
+    <symbol id="deurblad" viewBox="0 0 400 1000">
+      <path d="M0 1000V330C0 150 160 30 400 0V1000Z" fill="url(#hout)"/>
+      <g clip-path="url(#bladvorm)">
+        <g stroke="#2c1645" stroke-width="5"><path d="M100 0V1000M200 0V1000M300 0V1000"/></g>
+        <g stroke="#000" stroke-opacity=".5" stroke-width="2"><path d="M106 0V1000M206 0V1000M306 0V1000"/></g>
+        <g fill="url(#ijzer)" stroke="#6a35a3" stroke-width="2">
+          <path d="M-5 228H292L340 252L292 276H-5Z"/>
+          <path d="M-5 538H292L340 562L292 586H-5Z"/>
+          <path d="M-5 838H292L340 862L292 886H-5Z"/>
+        </g>
+        <g fill="#2a1740" stroke="#b25cff" stroke-width="1.5" stroke-opacity=".7">
+          <circle cx="34" cy="252" r="7"/><circle cx="108" cy="252" r="7"/><circle cx="182" cy="252" r="7"/><circle cx="256" cy="252" r="7"/>
+          <circle cx="34" cy="562" r="7"/><circle cx="108" cy="562" r="7"/><circle cx="182" cy="562" r="7"/><circle cx="256" cy="562" r="7"/>
+          <circle cx="34" cy="862" r="7"/><circle cx="108" cy="862" r="7"/><circle cx="182" cy="862" r="7"/><circle cx="256" cy="862" r="7"/>
+        </g>
+      </g>
+      <path d="M0 1000V330C0 150 160 30 400 0V1000Z" fill="none" stroke="#3a1160" stroke-width="7"/>
+      <path d="M396 4V1000" stroke="#b25cff" stroke-opacity=".28" stroke-width="3"/>
+      <g transform="translate(338 618)">
+        <circle r="17" fill="#0a0510" stroke="#9238e6" stroke-width="2.5"/>
+        <circle r="5" fill="#b25cff" fill-opacity=".7"/>
+        <circle cy="42" r="34" fill="none" stroke="#120a1c" stroke-width="12"/>
+        <circle cy="42" r="34" fill="none" stroke="#b25cff" stroke-opacity=".75" stroke-width="5"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="spring" href="#inschrijven">Ga meteen naar het inschrijven</a>
+
+<div class="korrel" aria-hidden="true"></div>
+<div class="vignet" aria-hidden="true"></div>
+<div class="bliksem" id="bliksem" aria-hidden="true"></div>
+<div class="voortgang" aria-hidden="true"><i></i></div>
+
+<header class="balk" id="balk">
+  <a class="balk-merk" href="#boven" aria-label="Terug naar de poort">HBGN<sup>IV</sup></a>
+  <span class="balk-feit">Za 7 nov 2026 &middot; Kerk Minnestraat, Lebbeke</span>
+  <a class="balk-knop" href="#inschrijven">Schrijf je in</a>
+</header>
+
+<nav class="bord" id="bord" aria-label="Hoofdstukken">
+  <ol>
+    <li><a href="#boven" data-vak="0"><span class="bord-vak">0</span><span class="bord-naam">De poort</span></a></li>
+    <li><a href="#boe" data-vak="1"><span class="bord-vak">1</span><span class="bord-naam">Boe</span></a></li>
+    <li><a href="#aftellen" data-vak="2"><span class="bord-vak">2</span><span class="bord-naam">De zandloper</span></a></li>
+    <li><a href="#kaarten" data-vak="3"><span class="bord-vak">3</span><span class="bord-naam">De kaarten</span></a></li>
+    <li><a href="#regels" data-vak="4"><span class="bord-vak">4</span><span class="bord-naam">Mijn wetten</span></a></li>
+    <li><a href="#inschrijven" data-vak="5"><span class="bord-vak">5</span><span class="bord-naam">Het register</span></a></li>
+    <li><a href="#contact" data-vak="6"><span class="bord-vak">6</span><span class="bord-naam">De tombola</span></a></li>
+    <li><a href="#kerkhof" data-vak="7"><span class="bord-vak">7</span><span class="bord-naam">Het kerkhof</span></a></li>
+  </ol>
+  <span class="bord-pion" aria-hidden="true"><svg viewBox="%%VB:meeple%%" focusable="false"><use href="#s-meeple"/></svg></span>
+</nav>
+
+<button type="button" class="geluid" id="geluid" aria-pressed="false" aria-label="Zet de sfeer aan">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>
+</button>
+
+<div class="wachten" id="wachten" role="status" aria-live="polite" aria-label="Bezig met noteren">
+  <div class="wachten-in">
+    <span class="kaars kaars-groot" aria-hidden="true"><i></i></span>
+    <p class="wachten-tekst">Ik schrijf je naam in mijn register<i></i><i></i><i></i></p>
+  </div>
+</div>
+
+<main id="app">
+
+  <!-- ============ VAK 0: DE POORT ============ -->
+  <section class="poort" id="boven" data-vak="0" aria-label="De poort">
+    <div class="poort-scene">
+      <div class="poort-lucht" aria-hidden="true"></div>
+
+      <div class="poort-achter" id="poort-achter">
+        <div class="poort-beeld" aria-hidden="true"></div>
+        <div class="poort-licht" aria-hidden="true"></div>
+        <div class="affiche">
+          <div class="lab"><svg viewBox="%%VB:logo%%" role="img" aria-label="In samenwerking met Buurtatelier LAB GODS"><use href="#s-logo"/></svg></div>
+          <p class="affiche-meta"><span>Kerk Minnestraat, Lebbeke</span><span>Zaterdag 7 november 2026</span></p>
+          <div class="merk">
+            <h1 class="woordmerk"><svg viewBox="%%VB:wordmerk%%" role="img" aria-label="Halloween Boardgame Night"><use href="#s-wordmerk"/></svg></h1>
+            <div class="plakker plakker-datum"><svg viewBox="%%VB:datum%%" role="img" aria-label="7 november"><use href="#s-datum"/></svg></div>
+            <div class="plakker plakker-gratis"><svg viewBox="%%VB:gratis%%" role="img" aria-label="Gratis inkom"><use href="#s-gratis"/></svg></div>
+          </div>
+          <p class="affiche-uur">Van 18:00 tot ongeveer middernacht</p>
+          <p class="affiche-actie"><a class="knop" href="#inschrijven">Schrijf je in</a><a class="knop-lijn" href="#kaarten">Bekijk de spelletjes</a></p>
+          <p class="affiche-fijn">Inschrijven hoeft alleen voor mijn vijf begeleide spelletjes.
+            Wil je enkel wat spelletjes spelen? Kom dan gewoon langs.</p>
+        </div>
+      </div>
+
+      <div class="poort-boog" aria-hidden="true">
+        <svg class="boog" viewBox="-60 -50 920 1100" preserveAspectRatio="none" focusable="false">
+          <path class="boog-steen" d="M0 1050V330C0 150 160 30 400 0C640 30 800 150 800 330V1050"/>
+          <path class="boog-voeg" d="M0 1050V330C0 150 160 30 400 0C640 30 800 150 800 330V1050"/>
+          <path class="boog-rand" d="M-26 1050V330C-26 135 145 5 400 -26C655 5 826 135 826 330V1050"/>
+          <path class="boog-rand" d="M0 1050V330C0 150 160 30 400 0C640 30 800 150 800 330V1050"/>
+          <path class="boog-sluit" d="M372 -38H428L418 34H382Z"/>
+        </svg>
+        <div class="kier"></div>
+        <div class="deur deur-l"><svg viewBox="0 0 400 1000" focusable="false"><use href="#deurblad"/></svg></div>
+        <div class="deur deur-r"><svg viewBox="0 0 400 1000" focusable="false"><use href="#deurblad"/></svg></div>
+      </div>
+
+      <div class="poort-voor">
+        <p class="poort-titel">Halloween Boardgame Night<span>IV</span></p>
+        <p class="poort-sub">De Poortwachter verwacht je. Zaterdag 7 november 2026.</p>
+        <button type="button" class="klop" id="klop">Klop aan</button>
+        <p class="poort-wenk" aria-hidden="true">of scroll<span></span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VAK 1: BOE ============ -->
+  <section class="boe" id="boe" data-vak="1" aria-labelledby="boe-kop">
+    <div class="boe-plak">
+      <p class="vak-label" aria-hidden="true">Vak 1</p>
+      <p class="boe-woord" id="boe-kop">BOE!!!!</p>
+      <p class="boe-tekst" id="boe-tekst">Was je geschrokken??? Ik gooi de deuren van de kerk in de Minnestraat weer
+        open voor *een avond bordspellen in het donker*. Jullie spelen wat jullie willen, jullie eten en drinken
+        van mijn tafel en misschien wint een van jullie iets *afschuwelijk moois* in mijn tombola.</p>
+    </div>
+  </section>
+
+  <!-- ============ VAK 2: DE ZANDLOPER ============ -->
+  <section class="tijd" id="aftellen" data-vak="2" aria-labelledby="tijd-kop">
+    <div class="wrap tijd-raster">
+      <div class="loper-vak">
+        <button type="button" class="loper" id="loper" aria-label="Draai de zandloper om">
+          <svg class="loper-hout" viewBox="0 0 220 380" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="glas" x1="0" x2="1">
+                <stop offset="0" stop-color="#b25cff" stop-opacity=".22"/>
+                <stop offset=".35" stop-color="#fff" stop-opacity=".06"/>
+                <stop offset="1" stop-color="#b25cff" stop-opacity=".14"/>
+              </linearGradient>
+            </defs>
+            <path class="loper-glas" d="M50 40C50 120 102 150 106 190C102 230 50 260 50 340H170C170 260 118 230 114 190C118 150 170 120 170 40Z"/>
+            <rect class="loper-plank" x="18" y="14" width="184" height="28" rx="7"/>
+            <rect class="loper-plank" x="18" y="338" width="184" height="28" rx="7"/>
+            <rect class="loper-paal" x="26" y="40" width="11" height="300" rx="4"/>
+            <rect class="loper-paal" x="183" y="40" width="11" height="300" rx="4"/>
+            <path class="loper-glans" d="M64 56C66 110 92 140 98 172"/>
+          </svg>
+          <canvas class="loper-zand" id="zand" aria-hidden="true"></canvas>
+        </button>
+        <p class="loper-zin" id="loper-zin" aria-live="polite"></p>
+      </div>
+      <div class="tijd-tekst">
+        <p class="vak-label">Vak 2</p>
+        <h2 id="tijd-kop">Tik. Tak. <em>Lijkwormpje.</em></h2>
+        <p class="kopfijn">Zolang blijft mijn deur dicht. Ik tel hardop mee, dag en nacht en ik word er niet vrolijker op.</p>
+        <ol class="klok" id="aftel" aria-label="Tijd tot de deur opengaat"></ol>
+        <p class="klokvoet">Zaterdag 7 november, klokslag zes. Daarna staat ze open tot ongeveer middernacht
+          en dan gooi ik ze weer toe. Met jullie er nog in, als het aan mij ligt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VAK 3: DE KAARTEN ============ -->
+  <section class="kaarten" id="kaarten" data-vak="3" aria-labelledby="kaarten-kop">
+    <div class="wrap">
+      <p class="vak-label">Vak 3</p>
+      <h2 id="kaarten-kop">Trek een <em>kaart</em></h2>
+      <p class="kopfijn">Vijf begeleide spelletjes. Ze lopen allemaal tegelijk, dus je kiest er één.
+        Draai ze om. Ze bijten niet. Ik wel.</p>
+    </div>
+    <div class="hand" id="hand"></div>
+    <div class="wrap dobbel-vak">
+      <div class="dobbel-scene" aria-hidden="true">
+        <div class="dobbel" id="dobbel">
+          <span class="vlak v1"><i></i></span>
+          <span class="vlak v2"><i></i><i></i></span>
+          <span class="vlak v3"><i></i><i></i><i></i></span>
+          <span class="vlak v4"><i></i><i></i><i></i><i></i></span>
+          <span class="vlak v5"><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="vlak v6"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div class="dobbel-schaduw"></div>
+      </div>
+      <div class="dobbel-tekst">
+        <h3>Kan je niet kiezen?</h3>
+        <p>Laat de dobbelsteen beslissen. Ik kijk mee en ik oordeel.</p>
+        <button type="button" class="knop-lijn" id="gooi">Gooi de dobbelsteen</button>
+        <p class="dobbel-uitslag" id="uitslag" aria-live="polite"></p>
+      </div>
+    </div>
+    <p class="kast wrap">Daarnaast staat de spellenkast de hele avond open. Daarvoor hoef je je nergens in te schrijven.</p>
+  </section>
+
+  <!-- ============ VAK 4: MIJN WETTEN ============ -->
+  <section class="wetten" id="regels" data-vak="4" aria-labelledby="wetten-kop">
+    <div class="wetten-plak">
+      <div class="wetten-foto" aria-hidden="true"></div>
+      <div class="wrap wetten-kop">
+        <p class="vak-label">Vak 4</p>
+        <h2 id="wetten-kop">Mijn <em>wetten</em></h2>
+        <p class="kopfijn">Lees ze. Ik herhaal ze niet aan de deur.</p>
+      </div>
+      <div class="wetten-spoor" id="spoor"></div>
+      <p class="wetten-teller" aria-hidden="true"><b id="wet-nu">01</b> / 05</p>
+    </div>
+  </section>
+
+  <!-- ============ VAK 5: HET REGISTER ============ -->
+  <section class="register" id="inschrijven" data-vak="5" aria-labelledby="register-kop">
+    <div class="wrap">
+      <p class="vak-label">Vak 5</p>
+      <h2 id="register-kop">Zet je naam in <em>mijn register</em></h2>
+      <p class="kopfijn">Vijf begeleide spelletjes, allemaal tegelijk, veel te weinig plaatsen.
+        Kies er één en ik noteer je.</p>
+    </div>
+    <div class="boek" id="boek">
+      <div class="blad blad-links" id="blad-links"></div>
+      <div class="blad blad-rechts"><div id="formulier"></div></div>
+      <div class="omslag" id="omslag" aria-hidden="true"><span class="omslag-voor"></span><span class="omslag-achter"></span></div>
+    </div>
+  </section>
+
+  <!-- ============ VAK 6: DE TOMBOLA ============ -->
+  <section class="tombola" id="contact" data-vak="6" aria-labelledby="tombola-kop">
+    <div class="wrap tombola-kop">
+      <p class="vak-label">Vak 6</p>
+      <h2 id="tombola-kop">De <em>tombola</em></h2>
+      <img class="tombola-sticker" src="%%IMG:tombola%%" width="338" height="112" loading="lazy" decoding="async"
+        alt="Met onze TOMBOLAAARGH zijn er tal van afschuwelijk prachtige prijzen te winnen!">
+      <p class="kopfijn" id="tombola-tekst"></p>
+    </div>
+    <div class="prijzen" aria-hidden="true">
+      <img src="%%IMG:pr1%%" alt="" width="145" height="112" loading="lazy" style="--p:0">
+      <img src="%%IMG:pr2%%" alt="" width="145" height="112" loading="lazy" style="--p:1">
+      <img src="%%IMG:pr3%%" alt="" width="145" height="112" loading="lazy" style="--p:2">
+      <img src="%%IMG:pr4%%" alt="" width="145" height="112" loading="lazy" style="--p:3">
+      <img src="%%IMG:pr5%%" alt="" width="145" height="112" loading="lazy" style="--p:4">
+    </div>
+    <div class="waslijn">
+      <svg class="touw" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M-10 6C250 58 750 58 1010 6"/>
+      </svg>
+      <ul class="loten" id="loten"></ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ NA HET INSCHRIJVEN ============ -->
+<section class="dank" id="dank" hidden aria-labelledby="dank-kop"></section>
+
+<!-- ============ VAK 7: HET KERKHOF ============ -->
+<footer class="kerkhof" id="kerkhof" data-vak="7">
+  <div class="kerkhof-grond" aria-hidden="true"></div>
+  <div class="ogen-veld" id="ogen-veld" aria-hidden="true"></div>
+  <div class="wrap kerkhof-in">
+    <div class="grote-ogen" id="grote-ogen" aria-hidden="true">
+      <span class="oog"><i></i></span><span class="oog"><i></i></span>
+    </div>
+    <div class="grafsteen">
+      <span class="grafkruis" aria-hidden="true">&#10013;</span>
+      <span class="grafboven">Hier rust</span>
+      <span class="grafkop">Je vrije<br>zaterdag</span>
+      <span class="grafjaar">7 november 2026, 18:00</span>
+      <p class="grafregel">Ze wist waar ze aan begon.<br>Wij hebben haar niets beloofd.</p>
+    </div>
+    <p class="handtekening">Onvriendelijke groeten,<span class="naam">De Poortwachter</span></p>
+    <div class="vraagvak">
+      <p class="vraagvak-kop">Nog een vraag?</p>
+      <p>Kom je met een hele bende, twijfel je tussen twee spelletjes, of is er iets dat ik moet weten
+        om je een fatsoenlijk afschuwelijke avond te bezorgen? <strong>Schrijf me. Ik antwoord. Meestal.</strong></p>
+      <p><a class="knop-lijn" id="mail-knop" href="#">Mail de Poortwachter</a></p>
+    </div>
+    <p class="sociaal" id="sociaal"></p>
+    <p class="voet-klein">Halloween Boardgame Night, vierde editie.<br>
+      Kerk Minnestraat, Lebbeke. Zaterdag 7 november 2026, van 18:00 tot ongeveer 24:00.<br>
+      Ik en mijn handlangers zetten dit op, in samenwerking met Buurtatelier LAB GODS.</p>
+    <p class="voet-recht"><a href="/privacy">Wat ik met je gegevens doe</a></p>
+    <p class="fluister">psst<span>er is altijd plaats voor één lijkwormpje meer. maar zeg dat tegen niemand.</span></p>
+    <p class="voet-copy">&copy; 2026 Halloween Boardgame Night</p>
+  </div>
+</footer>
+
+<dialog id="infovenster">
+  <button type="button" class="venstersluit" id="infokruis" aria-label="Venster sluiten">&times;</button>
+  <div id="infoinhoud"></div>
+  <p><button type="button" id="infosluit">Sluiten</button></p>
+</dialog>

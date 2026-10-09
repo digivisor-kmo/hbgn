@@ -200,57 +200,66 @@ niets.
 
 ## Versie 2 (branch `v2`)
 
-Een zwaardere visuele versie, als test naast de live site. Ze leeft op de branch
-`v2`; Vercel maakt daar vanzelf een preview van met een eigen adres. `main` en
-hbgn.be blijven onaangeroerd tot iemand `v2` samenvoegt.
-
-Wat erbij komt, allemaal in twee nieuwe bestanden die `maak.sh` mee inbakt:
+Een volledig nieuwe pagina, als test naast de live site: **De Poort**, een avond in het
+domein van de Poortwachter, gespeeld als een bordspel. Elk hoofdstuk is een vak op het
+bord en een pion aan de zijkant loopt mee. Ze leeft op de branch `v2`; Vercel maakt daar
+vanzelf een preview van (`https://hbgn-git-v2-digivisor.vercel.app`, achter een
+Vercel-login). `main` en hbgn.be blijven onaangeroerd tot iemand `v2` samenvoegt.
 
 ```
-bron/v2.css   alles hangt aan .v2 op <html>; zonder v2.js doet het niets
-bron/v2.js    de sfeerlaag, als eigen <script> na het hoofdscript
+bron/v2/pagina.html   de opbouw, als echte HTML (geen app.innerHTML meer)
+bron/v2/stijl.css     alle opmaak; versie 1 gebruikt ze niet
+bron/v2/data.js       ACTIVITEITEN, PARTNERS, REGELS, spelUitUrl: letterlijk uit
+                      layout4.body.html. Pas je daar iets aan, pas het hier ook aan.
+bron/v2/app.js        de pagina: de scrollmotor, de vakken en het formulier
+bron/v2/spin.js       de spin en de tabtitels, letterlijk uit versie 1
+bron/v2/sfeer.js      mist in WebGL, de videorecorder, vleermuizen en het geluid
 ```
 
-- **Mist in WebGL** (`canvas.nevel`): één shader met mist, een lantaarn die de muis
-  volgt, opstijgende vonken en bliksem. Kleur en dikte verschuiven per hoofdstuk
-  (`HOOFDSTUK` in `v2.js`). Ze meet zelf of het vlot gaat: te traag, dan rekent ze
-  op een kleiner beeld, nog steeds te traag, dan gaat ze uit en komen de oude
-  vonken en de toorts van versie 1 terug. In Playwright zonder GPU-vlaggen is dat
-  altijd zo: start Chromium met `--use-angle=metal --enable-gpu` om haar te zien.
-- **Hero**: de tekening ligt in het donker en de lantaarn onthult ze, met vier
-  boodschappen die je alleen in het licht ziet. Het woordmerk draait in 3D mee met de
-  muis. Bij binnenkomst start een VHS-bandje, behalve via een campagnelink of
-  `#inschrijven`. Om de twintig seconden vliegen er vleermuizen over.
-- **BOE** slaat letter per letter in en de pagina schudt.
-- **De klok** is een klapklok: `klap()` in het hoofdscript vult de vier helften.
-- **Kaarten kantelen** (spelkaarten, regels, partners, grafsteen) met een holografische
-  glans. Kaarsen in de stapbalk, de grafsteen kruipt uit de grond, de handtekening
-  wordt geschreven.
-- **Geluid** wordt ter plekke gemaakt met WebAudio (donder, het tikken van de klok,
-  een dreun bij BOE), alleen als het geluid aan staat. Wie ergens `boe` tikt, roept
-  zelf de bliksem.
-- Het hoofdscript stuurt seintjes waar `v2.js` op luistert: `hbgn:home`,
-  `hbgn:formulier`, `hbgn:flits`, `hbgn:tik`, `hbgn:geluid`, `hbgn:bedankt`.
+`maak.sh` plakt `data.js`, `app.js` en `spin.js` in één `<script>` en bouwt zo
+`v2.tpl.html` voor de startpagina. `layout4.tpl.html` wordt nog gebouwd, maar alleen
+voor de opmaak van de privacypagina; `web.py` kiest per pagina het juiste sjabloon.
 
-Veilig testen:
+De vakken:
 
-- Op een preview (`VERCEL_ENV === 'preview'`) stuurt `api/inschrijven.js` niets naar
-  de Sheet: geen rij en geen mails, maar wel een geslaagd antwoord. Op hbgn.be
-  verandert er niets.
-- Alles wat niet op hbgn.be draait, krijgt `X-Robots-Tag: noindex` (zie `vercel.json`,
-  met `missing` op de host), en de pagina toont er een lint "Testversie".
+0. **De poort**: gesloten kerkdeuren met licht door de kier. Scrollen of "Klop aan"
+   opent ze in 3D, daarna loop je door de deuropening de affiche in. De sectie is een
+   aanloop van 260svh met een plakkende scène; `--p`, `--d` en `--s` komen van het script.
+1. **Boe**: slaat letter per letter in, de tekst eronder licht woord per woord op.
+2. **De zandloper**: zand in een canvas, de bovenste bol is de tijd die rest sinds
+   1 september. Erop klikken draait hem om. Daarnaast de klapklok.
+3. **De kaarten**: de vijf spellen als een waaier speelkaarten, omdraaien voor de
+   details, "Schrijf me hiervoor in" zet het spel klaar in het register. Een 3D-dobbelsteen
+   kiest voor wie twijfelt; zes betekent Atmosfear.
+4. **Mijn wetten**: grafstenen die zijwaarts schuiven terwijl je scrolt (vanaf 900px).
+5. **Het register**: het formulier als een opengeslagen boek, kaarsen per stap, een
+   blad dat omslaat met een kopie van de oude bladzijde, een stempel op het toegangsbewijs.
+6. **De tombola**: de partners als loten aan een wasdraad, met de prijzen eromheen.
+7. **Het kerkhof**: ogen in het donker die de muis volgen, en de grafsteen.
+
+Veilig testen: op een preview (`VERCEL_ENV === 'preview'`) stuurt `api/inschrijven.js`
+niets naar de Sheet, alles buiten hbgn.be krijgt `X-Robots-Tag: noindex`, en de pagina
+toont er een lint "Testversie".
+
+De bestaande tests werken ook voor versie 2, omdat die ids en klassen behouden zijn:
+`#inschrijven`, `#aftellen`, `#regels`, `#contact`, `footer`, `.infoknop`, `.klok .cijfer`,
+`.dank-kop`, `.dank-terug` en alle ids van het formulier. Wil je de mist zien in
+Playwright, start Chromium dan met `--use-angle=metal --enable-gpu`; zonder GPU schakelt
+ze zichzelf uit omdat het te traag is.
 
 Valkuilen die bij het bouwen al eens misgingen:
 
-1. `.op` zet `opacity:0` en `.op.in` maakt het zichtbaar met een animatie die haar
-   eindstand vasthoudt. Vervang je die animatie (BOE, de grafsteen), zet dan zelf
-   `opacity:1`, anders verdwijnt het element.
-2. Diezelfde vastgehouden eindstand blokkeert elke `transform` bij hover. Daarom
-   kantelt versie 2 met de losse eigenschap `rotate`, die er los van werkt.
-3. Geen View Transitions voor de stappen van het formulier: het formulier wisselt van
-   hoogte terwijl de pagina scrolt, en dan valt er een zwart gat. De oude stap vervaagt
-   nu eerst kort (`.wisselt`), en zolang is het formulier `inert` en doen de knoppen
-   niets (`wisselt()`), anders kan een snelle dubbelklik een persoon overslaan.
+1. **Geen klassen die ook op `<html>` staan.** Het script zet daar `js`, `muis`, `stil`,
+   `laat`, `nevel-aan` en `schok`. Een `.fijn` op `<html>` botste met `.fijn` van het
+   formulier en maakte de hele pagina 78 procent kleiner. `.kaart` is de speelkaart; gebruik
+   die naam nergens anders (het logo van Megableu verdween erdoor).
+2. **`svg{max-width:100%}` geldt overal.** Een SVG die groter moet zijn dan zijn houder,
+   zoals de stenen boog, heeft `max-width:none` nodig.
+3. **`backface-visibility` werkt niet samen met een filter of een gespiegeld kind.** De
+   deuren vervagen daarom voor ze voorbij negentig graden draaien.
+4. Tijdens het omslaan van een blad is het formulier `inert`, maar maar 0,38 seconden:
+   langer en je kan niet typen in een veld dat je al ziet.
+5. Tussen de stappen springt de pagina naar `#boek`, niet naar de titel van het register.
 
 ## Schrijfregels
 

@@ -38,6 +38,9 @@ PARTNERS = ['jumpsky', 'whitegoblin', 'hintlabyrinth', 'hermelijn', 'megableu']
 for k in PARTNERS:
     ext = 'jpg' if IMG[k].startswith('data:image/jpeg') else 'png'
     paden[k], n = schrijf(k, IMG[k], ext); totaal += n
+# versie 2: de tombola-sticker en de vijf prijzen
+for k in ['tombola', 'pr1', 'pr2', 'pr3', 'pr4', 'pr5']:
+    paden[k], n = schrijf(k, IMG[k], 'png'); totaal += n
 
 # de beelden staan al als webp klaar, in drie maten voor drie soorten schermen
 MATEN = {
@@ -80,12 +83,17 @@ _later = symbolen(LATER)
 assert '</script' not in _later.lower()
 FIGDEFS = '<script type="text/hbgn-defs" id="fig-defs">' + _later + '</' + 'script>'
 
-s = open(bron('layout4.tpl.html'), encoding='utf-8').read()
-s = s.replace('%%DEFS%%', DEFS + FIGDEFS).replace('%%WEB%%', WEB)
-s = re.sub(r'%%VB:([a-z0-9_]+)%%',
-           lambda m: '0 0 %s %s' % tuple(SYM[m.group(1)]['viewBox'].split()[2:]), s)
-s = re.sub(r'%%IMG:([a-z0-9_]+)%%', lambda m: paden[m.group(1)], s)
-s = s.replace('%%INSCHRIJFLINK%%', 'https://hbgn.be/#inschrijven')
+def verwerk(naam):
+    t = open(bron(naam), encoding='utf-8').read()
+    t = t.replace('%%DEFS%%', DEFS + FIGDEFS).replace('%%WEB%%', WEB)
+    t = re.sub(r'%%VB:([a-z0-9_]+)%%',
+               lambda m: '0 0 %s %s' % tuple(SYM[m.group(1)]['viewBox'].split()[2:]), t)
+    t = re.sub(r'%%IMG:([a-z0-9_]+)%%', lambda m: paden[m.group(1)], t)
+    return t.replace('%%INSCHRIJFLINK%%', 'https://hbgn.be/#inschrijven')
+
+# versie 2 heeft een eigen sjabloon; de privacypagina houdt de opmaak van versie 1
+s = verwerk('v2.tpl.html' if os.path.exists(bron('v2.tpl.html')) else 'layout4.tpl.html')
+s_priv = verwerk('layout4.tpl.html')
 
 def vars(soort):
     return ''.join('--img-%s:url("%s");' % (k, beeld(k, soort)) for k in BEELDEN)
@@ -94,9 +102,13 @@ css = (open(bron('fonts.css'), encoding='utf-8').read().strip() + '\n'
        + ':root{' + vars('gewoon') + '}\n'
        + '@media (max-width:760px){:root{' + vars('klein') + '}}\n'
        + '@media (min-width:1700px){:root{' + vars('groot') + '}}')
-ix = s.index('<style>') + len('<style>')
-s = s[:ix] + '\n' + css + '\n' + s[ix:]
+def met_css(t):
+    ix = t.index('<style>') + len('<style>')
+    return t[:ix] + '\n' + css + '\n' + t[ix:]
+s = met_css(s)
+s_priv = met_css(s_priv)
 assert '%%' not in s, 'onvervangen marker'
+assert '%%' not in s_priv, 'onvervangen marker in privacy'
 
 kop = '''<!doctype html>
 <html lang="nl">
@@ -175,7 +187,8 @@ pkop = pkop.replace('<meta property="og:description" content="Zaterdag 7 novembe
 # de hero-afbeelding hoeft hier niet vooraf geladen te worden
 pkop = re.sub(r'<link rel="preload" as="image"[^>]*>\n', '', pkop)
 
-pstijl = stijl.replace('<title>Halloween Boardgame Night 2026</title>',
+ixp = s_priv.index('</style>') + len('</style>')
+pstijl = s_priv[:ixp].replace('<title>Halloween Boardgame Night 2026</title>',
                        '<title>Wat ik met je gegevens doe | Halloween Boardgame Night</title>')
 pbody = open(bron('privacy.body.html'), encoding='utf-8').read().rstrip()
 pdoc = pkop + pstijl + '\n</head>\n<body>\n' + GTM_BODY + pbody + '\n</body>\n</html>\n'
