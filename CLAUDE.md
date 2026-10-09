@@ -198,6 +198,60 @@ getoond, dus 340 px is al ruim het dubbele. Het logo hangt in een vlak met
 eigen hoogte van het beeld de hele rij uit elkaar en betekent `max-height:100%`
 niets.
 
+## Versie 2 (branch `v2`)
+
+Een zwaardere visuele versie, als test naast de live site. Ze leeft op de branch
+`v2`; Vercel maakt daar vanzelf een preview van met een eigen adres. `main` en
+hbgn.be blijven onaangeroerd tot iemand `v2` samenvoegt.
+
+Wat erbij komt, allemaal in twee nieuwe bestanden die `maak.sh` mee inbakt:
+
+```
+bron/v2.css   alles hangt aan .v2 op <html>; zonder v2.js doet het niets
+bron/v2.js    de sfeerlaag, als eigen <script> na het hoofdscript
+```
+
+- **Mist in WebGL** (`canvas.nevel`): één shader met mist, een lantaarn die de muis
+  volgt, opstijgende vonken en bliksem. Kleur en dikte verschuiven per hoofdstuk
+  (`HOOFDSTUK` in `v2.js`). Ze meet zelf of het vlot gaat: te traag, dan rekent ze
+  op een kleiner beeld, nog steeds te traag, dan gaat ze uit en komen de oude
+  vonken en de toorts van versie 1 terug. In Playwright zonder GPU-vlaggen is dat
+  altijd zo: start Chromium met `--use-angle=metal --enable-gpu` om haar te zien.
+- **Hero**: de tekening ligt in het donker en de lantaarn onthult ze, met vier
+  boodschappen die je alleen in het licht ziet. Het woordmerk draait in 3D mee met de
+  muis. Bij binnenkomst start een VHS-bandje, behalve via een campagnelink of
+  `#inschrijven`. Om de twintig seconden vliegen er vleermuizen over.
+- **BOE** slaat letter per letter in en de pagina schudt.
+- **De klok** is een klapklok: `klap()` in het hoofdscript vult de vier helften.
+- **Kaarten kantelen** (spelkaarten, regels, partners, grafsteen) met een holografische
+  glans. Kaarsen in de stapbalk, de grafsteen kruipt uit de grond, de handtekening
+  wordt geschreven.
+- **Geluid** wordt ter plekke gemaakt met WebAudio (donder, het tikken van de klok,
+  een dreun bij BOE), alleen als het geluid aan staat. Wie ergens `boe` tikt, roept
+  zelf de bliksem.
+- Het hoofdscript stuurt seintjes waar `v2.js` op luistert: `hbgn:home`,
+  `hbgn:formulier`, `hbgn:flits`, `hbgn:tik`, `hbgn:geluid`, `hbgn:bedankt`.
+
+Veilig testen:
+
+- Op een preview (`VERCEL_ENV === 'preview'`) stuurt `api/inschrijven.js` niets naar
+  de Sheet: geen rij en geen mails, maar wel een geslaagd antwoord. Op hbgn.be
+  verandert er niets.
+- Alles wat niet op hbgn.be draait, krijgt `X-Robots-Tag: noindex` (zie `vercel.json`,
+  met `missing` op de host), en de pagina toont er een lint "Testversie".
+
+Valkuilen die bij het bouwen al eens misgingen:
+
+1. `.op` zet `opacity:0` en `.op.in` maakt het zichtbaar met een animatie die haar
+   eindstand vasthoudt. Vervang je die animatie (BOE, de grafsteen), zet dan zelf
+   `opacity:1`, anders verdwijnt het element.
+2. Diezelfde vastgehouden eindstand blokkeert elke `transform` bij hover. Daarom
+   kantelt versie 2 met de losse eigenschap `rotate`, die er los van werkt.
+3. Geen View Transitions voor de stappen van het formulier: het formulier wisselt van
+   hoogte terwijl de pagina scrolt, en dan valt er een zwart gat. De oude stap vervaagt
+   nu eerst kort (`.wisselt`), en zolang is het formulier `inert` en doen de knoppen
+   niets (`wisselt()`), anders kan een snelle dubbelklik een persoon overslaan.
+
 ## Schrijfregels
 
 De hele site staat in de stem van **De Poortwachter**, de figuur van de cassette uit

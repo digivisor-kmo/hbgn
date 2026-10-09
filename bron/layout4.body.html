@@ -128,6 +128,13 @@
   var PARTNERVAKKEN = 3;
   var AVOND = new Date("2026-11-07T18:00:00+01:00");
 
+  /* seintjes voor de sfeerlaag in v2.js: die luistert, het hoofdscript hoeft niets
+     van haar te weten */
+  function sein(naam, detail){
+    try { document.dispatchEvent(new CustomEvent("hbgn:" + naam, {detail:detail || {}})); }
+    catch(e){}
+  }
+
   function fig(naam){
     return '<svg viewBox="' + VB[naam] + '" aria-hidden="true" focusable="false">' +
       '<use href="#s-' + naam + '"/></svg>';
@@ -325,6 +332,7 @@
     bliksem.classList.remove("flits");
     void bliksem.offsetWidth;
     bliksem.classList.add("flits");
+    sein("flits");
   }
   /* af en toe onweer, maar pas nadat BOE geweest is en niet zo vaak dat het stoort */
   function onweer(){
@@ -687,12 +695,40 @@
       var c = li.querySelector(".cijfer");
       if(t !== "d" && n.length < 2) n = "0" + n;
       if(c.textContent === n) return;
+      var oud = c.textContent;
       c.textContent = n;
+      klap(li, oud, n);
       if(t === "s" && !stil){
         li.classList.remove("tik"); void li.offsetWidth; li.classList.add("tik");
+        sein("tik");
       }
     });
   }
+  /* Een flap klapt zoals op een oude stationsklok: de bovenste helft met het oude
+     cijfer valt naar voren, daarachter staat het nieuwe al klaar, en de onderste
+     helft met het nieuwe cijfer klapt erover. Zonder beweging wordt het gewoon
+     overschreven. */
+  function klap(li, oud, nieuw){
+    var f = li.querySelector(".flap");
+    if(!f) return;
+    var b = function(sel){ return f.querySelector(sel + " b"); };
+    var eerste = !/\d/.test(oud);
+    if(stil || eerste){
+      b(".flap-boven").textContent = b(".flap-onder").textContent = nieuw;
+      return;
+    }
+    b(".flap-boven").textContent = nieuw;
+    b(".flap-onder").textContent = oud;
+    b(".flap-val-boven").textContent = oud;
+    b(".flap-val-onder").textContent = nieuw;
+    f.classList.remove("klapt"); void f.offsetWidth; f.classList.add("klapt");
+    clearTimeout(f._klaar);
+    f._klaar = setTimeout(function(){
+      b(".flap-onder").textContent = nieuw;
+      f.classList.remove("klapt");
+    }, 620);
+  }
+
   function startKlok(){
     if(klok) clearInterval(klok);
     aftellen();
@@ -709,6 +745,7 @@
     var aan = knopGeluid.classList.toggle("aan");
     knopGeluid.setAttribute("aria-pressed", aan ? "true" : "false");
     knopGeluid.setAttribute("aria-label", aan ? "Zet de sfeer uit" : "Zet de sfeer aan");
+    sein("geluid", {aan:aan});
     if(aan){
       band.play().then(function(){ vervaag(band, .28, 1400); }).catch(function(){});
     } else {
@@ -804,8 +841,14 @@
     var eenheden = [["d","nachten"],["u","uren"],["m","minuten"],["s","tellen"]];
     var klokdelen = eenheden.map(function(p, i){
       return (i ? '<li class="punt" aria-hidden="true">:</li>' : '') +
-        '<li data-t="' + p[0] + '"><span class="cijfer">&mdash;</span>' +
-        '<span class="eenheid">' + p[1] + '</span></li>';
+        '<li data-t="' + p[0] + '">' +
+          '<span class="flap" aria-hidden="true">' +
+            '<span class="flap-boven"><b></b></span><span class="flap-onder"><b></b></span>' +
+            '<span class="flap-val flap-val-boven"><b></b></span>' +
+            '<span class="flap-val flap-val-onder"><b></b></span>' +
+          '</span>' +
+          '<span class="cijfer vzw">&mdash;</span>' +
+          '<span class="eenheid">' + p[1] + '</span></li>';
     }).join("");
 
     app.innerHTML =
@@ -882,7 +925,7 @@
       '<section class="band band-leeg" id="inschrijven" data-hoofdstuk="Inschrijven">' +
         '<div class="wrap">' +
           '<h2 class="op kop" style="--i:0">Zet je naam op <em>mijn lijst</em></h2>' +
-          '<p class="kopfijn op" style="--i:1">Vier begeleide spelletjes, allemaal tegelijk, veel ' +
+          '<p class="kopfijn op" style="--i:1">Vijf begeleide spelletjes, allemaal tegelijk, veel ' +
           'te weinig plaatsen. Kies er één en ik noteer je.</p>' +
           '<div id="formulier"></div>' +
         '</div>' +
@@ -974,6 +1017,7 @@
     meet();
     blanko(app);
     wekOp(app);
+    sein("home");
   }
 
   /* ============================================================
@@ -1012,14 +1056,38 @@
     f.scrollIntoView({block:"nearest", behavior:"smooth"});
   }
 
+  /* Tussen twee stappen vervaagt de oude stap eerst kort, pas daarna komt de
+     nieuwe. Zolang dat duurt, is het oude formulier inert: een tweede klik op
+     "Volgende persoon" mag geen persoon overslaan. De eerste keer tekenen en wie
+     minder beweging wil, krijgen meteen de nieuwe stap. */
+  var formulierGetekend = false, wisselKlok = null;
+  /* zolang er een stap aan het wisselen is, telt geen enkele knop van de oude stap */
+  function wisselt(){
+    var d = document.getElementById("formulier");
+    return !!(d && d.classList.contains("wisselt"));
+  }
   function tekenFormulier(){
     var doel = document.getElementById("formulier");
     if(!doel) return;
-    if(stap === 1) stapKeuze(doel);
-    else if(stap === 2) stapDeelnemer(doel);
-    else if(stap === 3) stapOverzicht(doel);
-    blanko(doel);
-    requestAnimationFrame(meet);
+    function teken(){
+      if(stap === 1) stapKeuze(doel);
+      else if(stap === 2) stapDeelnemer(doel);
+      else if(stap === 3) stapOverzicht(doel);
+      doel.classList.remove("wisselt");
+      doel.inert = false;
+      blanko(doel);
+      requestAnimationFrame(meet);
+      sein("formulier", {stap:stap});
+    }
+    clearTimeout(wisselKlok);
+    if(formulierGetekend && !stil && document.body.contains(doel)){
+      doel.classList.add("wisselt");
+      doel.inert = true;
+      wisselKlok = setTimeout(teken, 210);
+      return;
+    }
+    formulierGetekend = true;
+    teken();
   }
 
   function stapKeuze(doel){
@@ -1066,6 +1134,7 @@
 
     document.getElementById("f").addEventListener("submit", function(e){
       e.preventDefault();
+      if(wisselt()) return;
       var g = doel.querySelector('input[name="act"]:checked');
       if(!g){ toonFout("KIEZEN. Nu. Welk spelletje kies je?"); return; }
       var aantal = parseInt(document.getElementById("aantal").value, 10);
@@ -1117,12 +1186,14 @@
     hangInfo(doel);
 
     document.getElementById("terug").addEventListener("click", function(){
+      if(wisselt()) return;
       if(deelnemerIx === 0){ stap = 1; } else { deelnemerIx--; }
       tekenFormulier(); springNaarFormulier();
     });
 
     document.getElementById("f").addEventListener("submit", function(e){
       e.preventDefault();
+      if(wisselt()) return;
       p.naam = document.getElementById("naam").value.trim();
       p.mail = document.getElementById("mail").value.trim();
       a.vragen.forEach(function(v){
@@ -1174,10 +1245,12 @@
 
     var terugknop = document.getElementById("terug");
     terugknop.addEventListener("click", function(){
+      if(wisselt()) return;
       stap = 2; deelnemerIx = boeking.aantal - 1; tekenFormulier(); springNaarFormulier();
     });
     document.getElementById("f").addEventListener("submit", function(e){
       e.preventDefault();
+      if(wisselt()) return;
       verzend(e.target.querySelector('button[type="submit"]'), terugknop);
     });
   }
@@ -1340,9 +1413,11 @@
 
     boeking = null; stap = 1; deelnemerIx = 0;
     if(klok){ clearInterval(klok); klok = null; }
+    formulierGetekend = false;
     meet();
     blanko(app);
     wekOp(app);
+    sein("bedankt");
   }
 
   /* ---------- routering: alleen de bedankingspagina is een eigen adres ---------- */

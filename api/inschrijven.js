@@ -85,6 +85,14 @@ module.exports = async function (req, res) {
     });
   }
 
+  // Op een preview van Vercel (een testversie op een andere branch dan main) gaat
+  // er niets naar de Sheet: geen rij, geen mails. De bezoeker krijgt gewoon te zien
+  // dat het gelukt is, zodat het formulier tot het einde getest kan worden.
+  // Op hbgn.be zelf is VERCEL_ENV 'production' en verandert er niets.
+  if (process.env.VERCEL_ENV === 'preview') {
+    return res.status(200).json({ ok: true, kenmerk: 'TEST-' + Date.now().toString(36).toUpperCase(), test: true });
+  }
+
   const url = process.env.SHEETS_URL;
   const geheim = process.env.SHEETS_GEHEIM;
   if (!url || !geheim) {
