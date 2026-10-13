@@ -271,8 +271,8 @@ Dat bestand hoort **niet** in de repository, het staat in `.gitignore`.
 ## Wat er nog niet beslist is
 
 Starturen per spel, de capaciteit van Atmosfear en van Magic leren spelen, wat er te
-eten en te drinken is. Vijf partners liggen vast: JumpSky Aalst, White Goblin Games,
-Hintlabyrinth, Hermelijn Aalst en Megableu. Een zesde is welkom. Die staan nu als "weet ik nog
+eten en te drinken is. Zes partners liggen vast: JumpSky Aalst, White Goblin Games,
+Hintlabyrinth, Hermelijn Aalst, Megableu en Ultimate Guard. Een zevende is welkom. Die staan nu als "weet ik nog
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 
