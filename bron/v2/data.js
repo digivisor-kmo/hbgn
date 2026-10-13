@@ -77,7 +77,9 @@
     {naam:"Hermelijn Aalst", logo:"%%IMG:hermelijn%%", b:230, h:82, breed:true,
      url:"https://www.hermelijn.be/"},
     {naam:"Megableu", logo:"%%IMG:megableu%%", b:520, h:146, breed:true, kaart:true,
-     url:"https://megableu.eu/"}
+     url:"https://megableu.eu/"},
+    {naam:"Ultimate Guard", logo:"%%IMG:ultimateguard%%", b:600, h:72, breed:true,
+     url:"https://ultimateguard.com/"}
   ];
   var TELWOORD = ["Geen","E\u00e9n","Twee","Drie","Vier","Vijf","Zes","Zeven","Acht","Negen","Tien"];
   var RANGWOORD = ["eerste","tweede","derde","vierde","vijfde","zesde","zevende","achtste",
