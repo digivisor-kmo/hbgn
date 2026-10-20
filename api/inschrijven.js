@@ -14,8 +14,7 @@ const SPELLEN = {
   'dnd': 'D&D initiatie',
   'magic-leren': 'Magic leren spelen',
   'magic-draft': 'Magic draft',
-  'atmosfear': 'Atmosfear',
-  'unconscious': 'The Unconscious Mind: Nightmares'
+  'atmosfear': 'Atmosfear'
 };
 
 const MAX_PERSONEN = 5;

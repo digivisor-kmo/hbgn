@@ -127,6 +127,7 @@ vijf plekken niet, want die weten van niets:
    de server de inschrijving.
 2. `bron/web.py`, de lijst `LATER`, als het spel een figuur krijgt die er nog niet
    in zit. De tekeningen in `bundle.json` die nog vrij zijn: `bot`, `puin`, `ruit`.
+   `meeple` staat nog in `LATER` omdat versie 2 hem als pion op het speelbord gebruikt.
 3. De `VB`-lijst in `layout4.body.html`, met `%%VB:naam%%` voor diezelfde figuur.
 4. De teksten die tellen of opsommen: de zin onder de knop in de hero, regel 02 en
    regel 03 in `REGELS`.
@@ -147,11 +148,10 @@ https://hbgn.be/?spel=dnd
 https://hbgn.be/?spel=magic-leren
 https://hbgn.be/?spel=magic-draft
 https://hbgn.be/?spel=atmosfear
-https://hbgn.be/?spel=unconscious
 ```
 
 Hoofdletters, koppeltekens en spaties maken niet uit. Er zijn ook bijnamen, zie
-`BIJNAMEN` in `layout4.body.html`: `magic`, `draft`, `d&d`, `nightmares`. Kent hij
+`BIJNAMEN` in `layout4.body.html`: `magic`, `draft`, `d&d`. Kent hij
 de waarde niet, dan gebeurt er niets en staat het formulier er gewoon leeg bij.
 Andere parameters, zoals die van de advertenties, blijven onaangeroerd, dus
 `?utm_source=fb&spel=draft` werkt gewoon. Een nieuw spel werkt vanzelf mee, want
@@ -276,5 +276,5 @@ Hintlabyrinth, Megableu en Ultimate Guard. Een zesde is welkom. Die staan nu als
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 
-De prijzen liggen wel vast: Atmosfear gratis, D&D 5 euro, The Unconscious Mind:
-Nightmares 5 euro, Magic leren spelen 15 euro, de draft 20 euro. Betalen gebeurt ter plaatse, cash of met de smartphone.
+De prijzen liggen wel vast: Atmosfear gratis, D&D 5 euro, Magic leren spelen 15 euro,
+de draft 20 euro. Betalen gebeurt ter plaatse, cash of met de smartphone.
