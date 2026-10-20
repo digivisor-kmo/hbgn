@@ -64,7 +64,9 @@
     {naam:"Megableu", logo:"%%IMG:megableu%%", b:520, h:146, breed:true, kaart:true,
      url:"https://megableu.eu/"},
     {naam:"Ultimate Guard", logo:"%%IMG:ultimateguard%%", b:600, h:72, breed:true,
-     url:"https://ultimateguard.com/"}
+     url:"https://ultimateguard.com/"},
+    {naam:"Worlds' End Gent", logo:"%%IMG:worldsend%%", b:287, h:75, breed:true,
+     url:"https://www.worldsendcomics.com/"}
   ];
   var TELWOORD = ["Geen","E\u00e9n","Twee","Drie","Vier","Vijf","Zes","Zeven","Acht","Negen","Tien"];
   var RANGWOORD = ["eerste","tweede","derde","vierde","vijfde","zesde","zevende","achtste",
