@@ -126,8 +126,7 @@ vijf plekken niet, want die weten van niets:
 1. `api/inschrijven.js`, de lijst `SPELLEN`. Staat het id daar niet in, dan weigert
    de server de inschrijving.
 2. `bron/web.py`, de lijst `LATER`, als het spel een figuur krijgt die er nog niet
-   in zit. De tekeningen in `bundle.json` die nog vrij zijn: `bot`, `puin`, `ruit`.
-   `meeple` staat nog in `LATER` omdat versie 2 hem als pion op het speelbord gebruikt.
+   in zit. De tekeningen in `bundle.json` die nog vrij zijn: `bot`, `meeple`, `puin`, `ruit`.
 3. De `VB`-lijst in `layout4.body.html`, met `%%VB:naam%%` voor diezelfde figuur.
 4. De teksten die tellen of opsommen: de zin onder de knop in de hero, regel 02 en
    regel 03 in `REGELS`.
