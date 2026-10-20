@@ -82,6 +82,7 @@
 
   /* ---------- de kaarten ---------- */
   (function bouwHand(){
+    document.getElementById("hand").style.setProperty("--m", (ACTIVITEITEN.length - 1) / 2);
     document.getElementById("hand").innerHTML = ACTIVITEITEN.map(function(a, i){
       var achter = "kaart-" + a.id + "-achter";
       return '<article class="kaart" data-id="' + a.id + '" style="--k:' + i + '">' +
@@ -578,10 +579,12 @@
       steen.classList.remove("rolt"); void steen.offsetWidth; steen.classList.add("rolt");
       sein("dobbel");
       setTimeout(function(){
-        var a = n === 6 ? vind("atmosfear") : ACTIVITEITEN[n - 1];
-        uit.innerHTML = n === 6
-          ? "Zes. Dan kies ik voor je: <strong>" + esc(a.naam) + "</strong>. Daar zit ik zelf in."
-          : GETAL[n] + ". Het lot heeft gesproken: <strong>" + esc(a.naam) + "</strong>. Ik zou niet tegenspreken.";
+        /* zoveel ogen als er spellen zijn, wijzen een spel aan. Gooit iemand hoger,
+           dan kiest de Poortwachter zelf, en dat is altijd Atmosfear */
+        var a = n <= ACTIVITEITEN.length ? ACTIVITEITEN[n - 1] : vind("atmosfear");
+        uit.innerHTML = n <= ACTIVITEITEN.length
+          ? GETAL[n] + ". Het lot heeft gesproken: <strong>" + esc(a.naam) + "</strong>. Ik zou niet tegenspreken."
+          : GETAL[n] + ". Zoveel spelletjes heb ik niet. Dan kies ik voor je: <strong>" + esc(a.naam) + "</strong>. Daar zit ik zelf in.";
         var kaart = hand.querySelector('.kaart[data-id="' + a.id + '"]');
         if(kaart){
           kaart.classList.remove("aangewezen"); void kaart.offsetWidth; kaart.classList.add("aangewezen");

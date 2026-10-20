@@ -47,19 +47,6 @@
       vragen:[
         {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]},
         {id:"schrik", label:"Kan je tegen donker, geschreeuw en plotse geluiden?", opties:["Ja","Liever wat zachter","Ik kijk liever toe"]}
-      ] },
-    { id:"unconscious", naam:"The Unconscious Mind: Nightmares", kort:"\u20ac5", fig:"meeple",
-      voorWie:"Wie al zwaardere bordspellen speelt", duur:"3 tot 3.5 uur",
-      plaatsen:"4 aan \u00e9\u00e9n tafel", kost:"\u20ac5 per persoon. Begeleiding, een hapje en een drankje inbegrepen.",
-      uitleg:"Wenen, rond 1900. Jij bent psychoanalyticus en je pati\u00ebnten dromen dingen waar ze liever van af zijn. Dit is het zwaarste dat er die avond op tafel komt: veel regels, veel keuzes en drie uur nadenken. Speelde je nog nooit iets zwaarder dan een gezelschapsspel, kies dan iets anders. Er is \u00e9\u00e9n tafel en daar passen vier lijkwormpjes aan.",
-      vragen:[
-        {id:"ervaring", label:"Hoeveel bordspelervaring heb je?", opties:[
-          "Gezelschapsspelletjes, meer niet",
-          "Af en toe iets zwaarders",
-          "Ik speel regelmatig zware spellen",
-          "Ik ken dit spel al"]},
-        {id:"leeftijd", label:"Hoe oud ben je?", opties:["Onder 12","12 tot 15","16 tot 17","18 of ouder"]},
-        {id:"blijven", label:"Het duurt 3 tot 3.5 uur. Kan je tot het einde blijven?", opties:["Ja","Ik moet vroeger weg"]}
       ] }
   ];
 
@@ -87,11 +74,11 @@
   var REGELS = [
     {nr:"01", kop:"Voor wie", lead:"Iedereen die durft.",
      tekst:"Ook wie nog nooit een bordspel heeft aangeraakt, ook wie alleen komt. Kleine lijkwormpjes laat ik binnen, maar dan wel met een volwassene die op hen let."},
-    {nr:"02", kop:"Wanneer op mijn lijst", lead:"Alleen voor mijn vijf begeleide spelletjes.",
+    {nr:"02", kop:"Wanneer op mijn lijst", lead:"Alleen voor mijn vier begeleide spelletjes.",
      tekst:"Die hebben een begeleider, een startuur en veel te weinig plaatsen. Ze lopen allemaal tegelijk, dus je kiest er <strong>één</strong>. Het uur krijg je van mij per mail, zodra ik het beslist heb.",
      stempel:"Te laat is niet meer mee"},
     {nr:"03", kop:"Wat het kost", lead:"Binnenkomen kost je niets.",
-     tekst:"Atmosfear is ook gratis. D&amp;D kost <strong>&euro;5</strong> en The Unconscious Mind: Nightmares evenveel. Magic leren spelen kost <strong>&euro;15</strong> en je gaat naar huis met twee Jumpstart boosters. De draft kost <strong>&euro;20</strong> voor drie boosters die je zelf opent en houdt. Bij alles zit een hapje, een drankje en een begeleider. Betalen doe je ter plaatse, cash of met je smartphone.",
+     tekst:"Atmosfear is ook gratis. D&amp;D kost <strong>&euro;5</strong>. Magic leren spelen kost <strong>&euro;15</strong> en je gaat naar huis met twee Jumpstart boosters. De draft kost <strong>&euro;20</strong> voor drie boosters die je zelf opent en houdt. Bij alles zit een hapje, een drankje en een begeleider. Betalen doe je ter plaatse, cash of met je smartphone.",
      stempel:"Gratis inkom"},
     {nr:"04", kop:"Zonder mijn lijst", lead:"De spellenkast staat de hele avond open.",
      tekst:"Daarnaast draait er een tombola met prijzen van mijn partners. Daar moet je niets voor doen en niets voor invullen. Binnenkomen volstaat."},
@@ -102,9 +89,7 @@
   var BIJNAMEN = {
     dd:"dnd", dungeons:"dnd", dndinitiatie:"dnd",
     magic:"magic-leren", leren:"magic-leren", magicleren:"magic-leren",
-    draft:"magic-draft", magicdraft:"magic-draft",
-    unconsciousmind:"unconscious", nightmares:"unconscious",
-    theunconsciousmindnightmares:"unconscious"
+    draft:"magic-draft", magicdraft:"magic-draft"
   };
   function sleutel(t){ return String(t).toLowerCase().replace(/[^a-z0-9]/g, ""); }
   function spelUitUrl(){

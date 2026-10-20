@@ -330,7 +330,7 @@ h2 em{font-style:normal;color:var(--groen);text-shadow:0 0 2.4rem rgba(74,184,10
 .kaarten{position:relative;padding-block:clamp(5rem,12vw,9rem) clamp(4rem,9vw,7rem);overflow:hidden}
 .hand{position:relative;margin:clamp(1rem,3vw,2rem) auto 0;height:clamp(29rem,40vw,34rem);max-width:74rem}
 .kaart{position:absolute;left:50%;top:1.5rem;width:clamp(13rem,17vw,15rem);aspect-ratio:5 / 7.6;margin-left:calc(clamp(13rem,17vw,15rem) / -2);
-  --k:0;--uit:calc(var(--k) - 2);z-index:calc(10 - (var(--k) - 2) * (var(--k) - 2));
+  --k:0;--uit:calc(var(--k) - var(--m,2));z-index:calc(10 - (var(--k) - var(--m,2)) * (var(--k) - var(--m,2)));
   transform-origin:50% 130%;
   transform:translateX(calc(var(--uit) * min(13.5rem,15.5vw))) translateY(calc(var(--uit) * var(--uit) * .9rem)) rotate(calc(var(--uit) * 6deg));
   transition:transform .6s var(--zacht-uit),filter .4s ease,opacity .4s ease;perspective:1400px}
