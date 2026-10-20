@@ -184,9 +184,9 @@ een strook die om een volgende partner vraagt, met een `mailto:`-link. Die stroo
 staat bewust buiten de `ul`: in het raster zou ze over alle kolommen spannen en zo
 een lege kolom openhouden, waardoor de vakken en de logo's smaller worden.
 
-Elk logo zit als data-uri in `bundle.json` onder `img.<naam>`, als PNG of als JPEG.
+Elk logo zit als data-uri in `bundle.json` onder `img.<naam>`, als PNG, JPEG of SVG.
 Daar komen beide bouwwegen aan hetzelfde beeld: `web.py` schrijft het als
-`assets/<naam>.png` of `.jpg`, naargelang het soort, en
+`assets/<naam>.png`, `.jpg` of `.svg`, naargelang het soort, en
 vult `%%IMG:<naam>%%` met dat pad, `bouw.py` plakt de data-uri rechtstreeks in de
 losse versie. Een nieuw logo zet je er dus op drie plekken bij: in `bundle.json`
 (met een scriptje, niet met de hand), in de lijst `PARTNERS` in `web.py` en in
@@ -335,8 +335,8 @@ Dat bestand hoort **niet** in de repository, het staat in `.gitignore`.
 ## Wat er nog niet beslist is
 
 Starturen per spel, de capaciteit van Atmosfear en van Magic leren spelen, wat er te
-eten en te drinken is. Vijf partners liggen vast: JumpSky Aalst, White Goblin Games,
-Hintlabyrinth, Megableu en Ultimate Guard. Een zesde is welkom. Die staan nu als "weet ik nog
+eten en te drinken is. Zes partners liggen vast: JumpSky Aalst, White Goblin Games,
+Hintlabyrinth, Megableu, Ultimate Guard en Worlds' End Gent. Een zevende is welkom. Die staan nu als "weet ik nog
 niet" en "nog niet verklapt" op de pagina. Er is ook nog geen maximum per spel en
 geen wachtlijst: het formulier noteert alles.
 
