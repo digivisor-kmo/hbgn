@@ -374,8 +374,8 @@ footer{position:relative;overflow:hidden;border-top:0;margin-top:0;
 
 .grafsteen{position:relative;width:min(100%,22rem);margin:0 auto clamp(2.6rem,6vw,4rem);
   padding:clamp(2.4rem,5.5vw,3.2rem) clamp(1.4rem,3vw,2rem) clamp(1.8rem,4vw,2.4rem);
-  background:linear-gradient(168deg,#2a1840 0%,#1b1029 46%,#100a1a 100%);
-  border:1px solid rgba(146,56,230,.3);border-radius:12rem 12rem .3rem .3rem;
+  background:linear-gradient(168deg,#3d2958 0%,#2a1a3f 46%,#1a1029 100%);
+  border:1px solid rgba(178,92,255,.45);border-radius:12rem 12rem .3rem .3rem;
   box-shadow:inset 0 .6rem 3rem rgba(0,0,0,.8),inset .12rem 0 0 rgba(255,255,255,.05),
              0 1.8rem 4rem rgba(0,0,0,.75);
   transform:rotate(-1.4deg);
@@ -391,18 +391,20 @@ footer{position:relative;overflow:hidden;border-top:0;margin-top:0;
   width:78%;height:1.8rem;border-radius:50%;
   background:radial-gradient(closest-side,rgba(146,56,230,.3),transparent 76%)}
 
-.grafkruis{display:block;font-size:1.4rem;line-height:1;color:var(--paars);opacity:.5;
+.grafkruis{display:block;font-size:1.4rem;line-height:1;color:var(--paars-op);opacity:.8;
   margin-bottom:1rem}
-.grafboven{display:block;font-family:"Archivo Black",Arial,sans-serif;font-size:.62rem;
-  letter-spacing:.34em;text-transform:uppercase;color:var(--grijs);opacity:.7;
+.grafboven{display:block;font-family:"Archivo Black",Arial,sans-serif;font-size:.7rem;
+  letter-spacing:.34em;text-transform:uppercase;color:var(--zacht);
   margin-bottom:.9rem}
 .grafkop{display:block;font-family:Creepster,"Archivo Black",Impact,sans-serif;
-  font-size:clamp(2.1rem,6vw,3.1rem);line-height:1.02;letter-spacing:.02em;
-  color:#0c0616;text-shadow:0 1px 0 rgba(198,186,212,.34),0 -1px 0 rgba(0,0,0,.85)}
+  font-size:clamp(2.4rem,6.6vw,3.4rem);line-height:1.02;letter-spacing:.02em;
+  /* gekapt in de steen: donkere letters, met licht dat langs de onderrand valt */
+  color:#0a0512;text-shadow:0 1px 0 rgba(232,220,248,.62),0 2px 0 rgba(232,220,248,.16),
+    0 -1px 0 rgba(0,0,0,.95)}
 .grafjaar{display:block;margin-top:1rem;font-family:"Archivo Black",Arial,sans-serif;
-  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--paars-op);opacity:.75}
-.grafregel{margin:1.3rem 0 0;padding-top:1.1rem;border-top:1px solid rgba(146,56,230,.2);
-  font-size:.82rem;line-height:1.65;color:var(--zacht);font-style:italic}
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--paars-op)}
+.grafregel{margin:1.3rem 0 0;padding-top:1.1rem;border-top:1px solid rgba(178,92,255,.35);
+  font-size:.9rem;line-height:1.65;color:#ddd3e8;font-style:italic}
 
 .handtekening{margin:0 0 clamp(1.8rem,4vw,2.6rem);
   font-family:Creepster,"Archivo Black",Impact,sans-serif;text-transform:none;
