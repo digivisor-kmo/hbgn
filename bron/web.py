@@ -34,7 +34,7 @@ def schrijf(naam, uri, ext):
 paden, totaal = {}, 0
 paden[GELUID], n = schrijf(GELUID, IMG[GELUID], 'mp3'); totaal += n
 # de logo's van de partners, als gewone bestanden naast de pagina
-PARTNERS = ['jumpsky', 'whitegoblin', 'hintlabyrinth', 'megableu', 'ultimateguard', 'worldsend']
+PARTNERS = ['jumpsky', 'whitegoblin', 'hintlabyrinth', 'hermelijn', 'megableu', 'ultimateguard', 'worldsend']
 for k in PARTNERS:
     soort = IMG[k].split(';', 1)[0]
     ext = {'data:image/jpeg': 'jpg', 'data:image/svg+xml': 'svg'}.get(soort, 'png')
