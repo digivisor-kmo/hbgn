@@ -178,3 +178,16 @@ select option{background:#0B0512;color:var(--wit)}
 .chips-groot .chip span:hover em{color:var(--zacht)}
 .chips-groot .chip input:checked + span{transform:none;color:var(--zwart)}
 .chips-groot .chip input:checked + span em{color:rgba(0,0,0,.72)}
+
+/* ---- een spel dat volzet is: zichtbaar, maar niet te kiezen ---- */
+.spelkeuze.volzet .spelkaart{cursor:not-allowed;border-style:dashed;background:rgba(11,5,18,.5)}
+.spelkeuze.volzet .spelkaart:hover{transform:none;border-color:var(--paars-diep);background:rgba(11,5,18,.5)}
+.spelkeuze.volzet .spelnaam,.spelkeuze.volzet .spelduur{opacity:.55}
+.spelkeuze.volzet .spelnaam{text-decoration:line-through;text-decoration-color:rgba(220,40,70,.75);text-decoration-thickness:2px}
+.spelkeuze.volzet .spelfiguur{opacity:.06}
+.spelprijs.volzet-stempel{background:transparent;color:#ff4d6d;border:2px solid #ff4d6d;box-shadow:none;
+  font-size:clamp(.8rem,2.2vw,.92rem);letter-spacing:.14em;transform:rotate(-4deg)}
+.volzet-melding{margin:0 0 1.2rem;padding:.9rem 1.1rem;border:1px solid rgba(255,77,109,.55);
+  background:rgba(255,77,109,.08);color:var(--zacht);line-height:1.6}
+.volzet-melding strong{color:#ff8fa3}
+dialog .volzet-melding{margin:0 0 1rem}

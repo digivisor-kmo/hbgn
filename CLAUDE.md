@@ -137,6 +137,23 @@ De Sheet zelf hoef je niet aan te passen. Die maakt vanzelf een tabblad met de n
 van het spel en zet voor elke bijvraag vanzelf een kolom klaar. Wijzig je het script,
 dan moet je in Apps Script wel opnieuw implementeren, zie hierboven.
 
+## Een spel volzet zetten
+
+Twee plekken, allebei nodig:
+
+1. `volzet:true` bij het spel in `ACTIVITEITEN` in `layout4.body.html`. De kaart blijft
+   staan, maar doorstreept met een stempel "Volzet" en niet aan te vinken. Het
+   infovenster meldt het en zet "Volzet" bij de plaatsen. Een campagnelink naar dat spel
+   opent op het formulier met een melding en vinkt niets aan.
+2. Het id in `VOLZET` in `api/inschrijven.js`. Dan weigert de server het ook, met
+   `fout: 'volzet'`, voor wie de pagina al open had staan.
+
+Het prijzenblok in regel 03 van `REGELS` is gewone tekst: pas dat met de hand aan.
+Komen er weer plaatsen vrij, haal dan beide weg. `bron/test/vol.mjs` test het formulier
+met Magic leren spelen, zodat hij niet afhangt van D&D.
+
+Nu volzet: **D&D initiatie** (sinds 2026-10-30).
+
 ## Campagnelinks
 
 Voor advertenties per spel: `?spel=<id>` zet dat spel al aan in het formulier en

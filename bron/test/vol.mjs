@@ -19,14 +19,15 @@ for (const [n, w, h] of [['v_desk', 1440, 900], ['v_laptop', 1280, 720], ['v_mob
   // formulier
   await p.evaluate(() => document.querySelector('#inschrijven').scrollIntoView());
   await p.waitForTimeout(500);
-  await p.click('label[for="act-dnd"]');
+  // D&D is volzet, dus het formulier wordt getest met Magic leren spelen
+  await p.click('label[for="act-magic-leren"]');
   await p.selectOption('#aantal', '2');
   await p.click('#f button[type=submit]'); await p.waitForTimeout(500);
   await p.fill('#naam', 'Testlijk'); await p.fill('#mail', 'test@example.com');
-  for (const v of ['ervaring', 'leeftijd', 'held']) await p.click(`input[name="${v}"] + span`);
+  for (const v of ['ervaring', 'leeftijd']) await p.click(`input[name="${v}"] + span`);
   await p.click('#f button[type=submit]'); await p.waitForTimeout(400);
   await p.fill('#naam', 'Tweede lijk');
-  for (const v of ['ervaring', 'leeftijd', 'held']) await p.click(`input[name="${v}"] + span`);
+  for (const v of ['ervaring', 'leeftijd']) await p.click(`input[name="${v}"] + span`);
   await p.click('#f button[type=submit]'); await p.waitForTimeout(500);
   await p.click('#f button[type=submit]'); await p.waitForTimeout(900);
   const dank = await p.evaluate(() => !!document.querySelector('.dank-kop'));

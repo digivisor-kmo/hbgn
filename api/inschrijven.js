@@ -17,6 +17,9 @@ const SPELLEN = {
   'atmosfear': 'Atmosfear'
 };
 
+// Spellen die volzet zijn: die blijven bekend, maar nemen niemand meer aan.
+const VOLZET = ['dnd'];
+
 const MAX_PERSONEN = 5;
 const MAX_TEKST = 200;
 const MAX_LADING = 20000;
@@ -56,6 +59,7 @@ module.exports = async function (req, res) {
   const spelId = schoon(body.spelId, 40);
   const spel = SPELLEN[spelId];
   if (!spel) return res.status(400).json({ ok: false, fout: 'onbekend spel' });
+  if (VOLZET.indexOf(spelId) > -1) return res.status(409).json({ ok: false, fout: 'volzet' });
 
   const binnen = Array.isArray(body.mensen) ? body.mensen : [];
   if (!binnen.length || binnen.length > MAX_PERSONEN) {
