@@ -9,7 +9,7 @@
 
 <div class="topbalk" id="topbalk">
   <span class="topbalk-feit">Za 7 nov 2026 &middot; Kerk Minnestraat, Lebbeke</span>
-  <a class="topbalk-knop" href="#inschrijven">Schrijf je in</a>
+  <a class="topbalk-knop" id="topbalk-knop" href="#inschrijven">Schrijf je in</a>
 </div>
 
 <button type="button" class="geluid" id="geluid" aria-pressed="false" aria-label="Zet de sfeer aan">
@@ -95,6 +95,11 @@
   var IG = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:-4px"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.25" fill="currentColor"/></svg>';
   var IG_URL = "https://www.instagram.com/hbgn.be/";
   var MAIL = "mailto:depoortwachter666@gmail.com";
+  /* false: inschrijven gaat niet meer. Het formulier verdwijnt, bovenaan komt een strook,
+     de knop in de affiche gaat naar de info en de balk bovenaan naar de mail
+     van de Poortwachter en de server weigert alles (zie GESLOTEN in api/inschrijven.js).
+     Zet beide terug op open om weer inschrijvingen toe te laten. */
+  var INSCHRIJVEN_OPEN = false;
   /* de partners die al vastliggen. Zijn het er minder dan PARTNERVAKKEN, dan vult
      de rest zich vanzelf met een vraagteken. Een logo komt uit bundle.json, zie
      CLAUDE.md. breed: een woordlogo, dat staat boven de naam in plaats van ernaast.
@@ -164,6 +169,10 @@
   }
 
   var stil = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!INSCHRIJVEN_OPEN){
+    var balkKnop = document.getElementById("topbalk-knop");
+    if(balkKnop){ balkKnop.textContent = "Mail de Poortwachter"; balkKnop.href = MAIL; }
+  }
 
   /* ============================================================
      BEWEGING: één rAF-lus voor de voortgang, de parallax en het rail
@@ -758,7 +767,9 @@
      tekst:"Ook wie nog nooit een bordspel heeft aangeraakt, ook wie alleen komt. Kleine lijkwormpjes laat ik binnen, maar dan wel met een volwassene die op hen let."},
     {nr:"02", kop:"Wanneer op mijn lijst", lead:"Alleen voor mijn vier begeleide spelletjes.",
      tekst:"Die hebben een begeleider, een startuur en veel te weinig plaatsen. Ze lopen allemaal tegelijk, dus je kiest er <strong>één</strong>. Het uur krijg je van mij per mail, zodra ik het beslist heb.",
-     stempel:"Te laat is niet meer mee"},
+     stempel:"Te laat is niet meer mee",
+     dicht:{tekst:"Die zitten allemaal <strong>vol</strong>. Inschrijven gaat niet meer. Sta je al op mijn lijst? Dan krijg je het uur van mij per mail. Vragen? Mail me.",
+            stempel:"Alles zit vol"}},
     {nr:"03", kop:"Wat het kost", lead:"Binnenkomen kost je niets.",
      tekst:"Atmosfear is ook gratis. D&amp;D kostte <strong>&euro;5</strong>, maar die tafel is <strong>volzet</strong>. Magic leren spelen kost <strong>&euro;15</strong> en je gaat naar huis met twee Jumpstart boosters. De draft kost <strong>&euro;20</strong> voor drie boosters die je zelf opent en houdt. Bij alles zit een hapje, een drankje en een begeleider. Betalen doe je ter plaatse, cash of met je smartphone.",
      stempel:"Gratis inkom"},
@@ -789,8 +800,9 @@
         '<span class="regelnr" aria-hidden="true">' + r.nr + '</span>' +
         '<h3>' + r.kop + '</h3>' +
         '<p class="regellead">' + r.lead + '</p>' +
-        '<p class="regeltekst">' + r.tekst + '</p>' +
-        (r.stempel ? '<span class="stempel">' + r.stempel + '</span>' : '') +
+        '<p class="regeltekst">' + (!INSCHRIJVEN_OPEN && r.dicht ? r.dicht.tekst : r.tekst) + '</p>' +
+        ((!INSCHRIJVEN_OPEN && r.dicht ? r.dicht.stempel : r.stempel)
+          ? '<span class="stempel">' + (!INSCHRIJVEN_OPEN && r.dicht ? r.dicht.stempel : r.stempel) + '</span>' : '') +
       '</article>';
     }).join("");
 
@@ -802,6 +814,11 @@
     }).join("");
 
     app.innerHTML =
+      (INSCHRIJVEN_OPEN ? '' :
+        '<p class="meldstrook" role="status"><span class="meldstrook-teken" aria-hidden="true">!</span>' +
+        '<span>Inschrijven voor de begeleide spelletjes gaat niet meer: <strong>alles zit vol</strong>. ' +
+        'Gewoon langskomen kan nog altijd, gratis.</span> ' +
+        '<a href="#inschrijven">Vraag?</a></p>') +
       '<header class="hero" id="boven" data-hoofdstuk="Start">' +
         '<div class="hero-beeld" aria-hidden="true"></div>' +
         '<div class="lab"><svg viewBox="%%VB:logo%%" role="img" '+
@@ -821,9 +838,13 @@
           '</div>' +
 
           '<div class="hero-actie">' +
-            '<a class="knop knop-groot" href="#inschrijven">Schrijf je in</a>' +
-            '<p class="hero-fijn">Inschrijven hoeft alleen voor mijn vier begeleide spelletjes.<br>' +
-            'Wil je enkel wat spelletjes spelen? Kom dan gewoon langs.</p>' +
+            (INSCHRIJVEN_OPEN
+              ? '<a class="knop knop-groot" href="#inschrijven">Schrijf je in</a>' +
+                '<p class="hero-fijn">Inschrijven hoeft alleen voor mijn vier begeleide spelletjes.<br>' +
+                'Wil je enkel wat spelletjes spelen? Kom dan gewoon langs.</p>'
+              : '<a class="knop knop-groot" href="#regels">Alles over de avond</a>' +
+                '<p class="hero-fijn">Gratis binnen, de spellenkast staat de hele avond open<br>' +
+                'en de tombola draait. Kom gewoon langs.</p>') +
           '</div>' +
 
         '</div>' +
@@ -874,9 +895,11 @@
       /* ---------- 4. de lijst ---------- */
       '<section class="band band-leeg" id="inschrijven" data-hoofdstuk="Inschrijven">' +
         '<div class="wrap">' +
-          '<h2 class="op kop" style="--i:0">Zet je naam op <em>mijn lijst</em></h2>' +
-          '<p class="kopfijn op" style="--i:1">Vier begeleide spelletjes, allemaal tegelijk, veel ' +
-          'te weinig plaatsen. Kies er één en ik noteer je.</p>' +
+          (INSCHRIJVEN_OPEN
+            ? '<h2 class="op kop" style="--i:0">Zet je naam op <em>mijn lijst</em></h2>' +
+              '<p class="kopfijn op" style="--i:1">Vier begeleide spelletjes, allemaal tegelijk, veel ' +
+              'te weinig plaatsen. Kies er één en ik noteer je.</p>'
+            : '<h2 class="op kop" style="--i:0">Alles zit <em>vol</em></h2>') +
           '<div id="formulier"></div>' +
         '</div>' +
       '</section>' +
@@ -1010,6 +1033,23 @@
   function tekenFormulier(){
     var doel = document.getElementById("formulier");
     if(!doel) return;
+    if(!INSCHRIJVEN_OPEN){
+      doel.innerHTML =
+        '<div class="gesloten op in">' +
+          '<span class="gesloten-stempel" aria-hidden="true">Volzet</span>' +
+          '<p class="gesloten-kop">Inschrijven gaat niet meer.</p>' +
+          '<p>Mijn begeleide spelletjes zitten vol en ik neem niemand meer op. Smeken helpt niet. ' +
+          'Mailen wel, soms.</p>' +
+          '<p>Heb je een vraag, sta je al op mijn lijst en kan je toch niet komen, of wil je nog iets ' +
+          'kwijt? <strong>Schrijf me. Ik antwoord. Meestal.</strong></p>' +
+          '<p><a class="knop-zwart" href="' + MAIL + '">Mail de Poortwachter</a></p>' +
+          '<p class="gesloten-fijn">Wil je gewoon spelen? Kom langs. Binnenkomen is gratis, de ' +
+          'spellenkast staat de hele avond open en de tombola draait.</p>' +
+        '</div>';
+      blanko(doel);
+      requestAnimationFrame(meet);
+      return;
+    }
     if(stap === 1) stapKeuze(doel);
     else if(stap === 2) stapDeelnemer(doel);
     else if(stap === 3) stapOverzicht(doel);
@@ -1362,6 +1402,8 @@
        Alleen bij binnenkomen: wie later terugkeert naar het begin wil het begin zien. */
     if(eersteBezoek && spelUitUrl()) openOpFormulier();
     else if(h === "inschrijven") springNaarFormulier();
+    /* andere ankers op de pagina, zoals #regels: daarheen in plaats van naar boven */
+    else if(h && /^[a-z][a-z0-9-]*$/.test(h) && document.getElementById(h)) document.getElementById(h).scrollIntoView();
     else window.scrollTo(0, 0);
     eersteBezoek = false;
   }

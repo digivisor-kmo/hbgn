@@ -19,6 +19,16 @@ for (const [n, w, h] of [['v_desk', 1440, 900], ['v_laptop', 1280, 720], ['v_mob
   // formulier
   await p.evaluate(() => document.querySelector('#inschrijven').scrollIntoView());
   await p.waitForTimeout(500);
+  // gaat inschrijven niet meer (INSCHRIJVEN_OPEN = false), dan staat er een bord met de mail
+  // van de Poortwachter in plaats van het formulier: dat testen we dan
+  if (await p.evaluate(() => !!document.querySelector('.gesloten'))) {
+    const g = await p.evaluate(() => ({ form: !!document.getElementById('f'),
+      mail: (document.querySelector('.gesloten a[href^="mailto:"]') || {}).href || '' }));
+    if (g.form || !g.mail) fouten.push(n + ': gesloten bord niet in orde ' + JSON.stringify(g));
+    console.log(n, 'inschrijven gesloten, bord met mail:', !!g.mail);
+    await p.close();
+    continue;
+  }
   // D&D is volzet, dus het formulier wordt getest met Magic leren spelen
   await p.click('label[for="act-magic-leren"]');
   await p.selectOption('#aantal', '2');

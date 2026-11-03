@@ -137,6 +137,25 @@ De Sheet zelf hoef je niet aan te passen. Die maakt vanzelf een tabblad met de n
 van het spel en zet voor elke bijvraag vanzelf een kolom klaar. Wijzig je het script,
 dan moet je in Apps Script wel opnieuw implementeren, zie hierboven.
 
+## Inschrijvingen sluiten of weer openen
+
+Sinds 2026-11-03 zijn alle inschrijvingen dicht. Twee schakelaars, die altijd samen gaan:
+
+1. `INSCHRIJVEN_OPEN` bovenaan het script in `layout4.body.html`. Op `false` verdwijnt het
+   formulier en staat er een bord "Alles zit vol" met een knop om de Poortwachter te mailen.
+   Bovenaan de pagina komt een rode strook. De grote knop in de affiche gaat naar `#regels`
+   ("Alles over de avond"), de balk bovenaan wordt "Mail de Poortwachter", en regel 02 in
+   `REGELS` toont zijn `dicht`-tekst.
+2. `GESLOTEN` in `api/inschrijven.js`. Op `true` weigert de server alles met
+   `fout: 'gesloten'`, ook voor wie de pagina nog open had staan.
+
+Het formulier zelf blijft in de code. Zet beide terug en alles werkt weer zoals voorheen.
+`vol.mjs` en `klik2.mjs` herkennen vanzelf of de lijst open of dicht is.
+
+Een `#`-link naar een sectie (zoals `#regels`) springt daarheen. De pagina tekent zich bij
+elke `hashchange` opnieuw, dus `toon()` moet daarna zelf naar het anker; anders belandt
+je bovenaan.
+
 ## Een spel volzet zetten
 
 Twee plekken, allebei nodig:

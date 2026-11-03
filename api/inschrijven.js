@@ -17,6 +17,10 @@ const SPELLEN = {
   'atmosfear': 'Atmosfear'
 };
 
+// true: de lijst is dicht en er komt niemand meer bij. Hoort samen te gaan met
+// INSCHRIJVEN_OPEN = false in bron/layout4.body.html.
+const GESLOTEN = true;
+
 // Spellen die volzet zijn: die blijven bekend, maar nemen niemand meer aan.
 const VOLZET = ['dnd'];
 
@@ -55,6 +59,8 @@ module.exports = async function (req, res) {
   if (schoon(body.gastenboek, 50)) {
     return res.status(200).json({ ok: true, kenmerk: 'x' });
   }
+
+  if (GESLOTEN) return res.status(403).json({ ok: false, fout: 'gesloten' });
 
   const spelId = schoon(body.spelId, 40);
   const spel = SPELLEN[spelId];
